@@ -9,7 +9,7 @@ class VideoAdmin(admin.ModelAdmin):
 admin.site.register(Video, VideoAdmin) 
 
 class StarAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'is_favourite', 'views', 'videos')
+    list_display = ('id', 'name', 'is_favourite', 'is_superstar', 'views', 'videos')
 
 admin.site.register(Star, StarAdmin) 
 

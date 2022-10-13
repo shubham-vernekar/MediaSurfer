@@ -1,4 +1,5 @@
 from sqlite3 import Timestamp
+from turtle import width
 from django.db import models
 from django.utils import timezone
 
@@ -22,12 +23,16 @@ class Video(models.Model):
     duration = models.DurationField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
     size = models.FloatField(blank=True, null=True)
-    poster = models.FileField(blank=True, null=True)
     subtitle = models.FileField(blank=True, null=True)
+    poster = models.FileField(blank=True, null=True)
     preview = models.FileField(blank=True, null=True)
-    scrubber = models.FileField(blank=True, null=True)
+    preview_poster = models.FileField(blank=True, null=True)
+    scrubber_sprite = models.FileField(blank=True, null=True)
+    scrubber_vtt = models.FileField(blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
-    resolution = models.CharField(max_length=30, blank=True, null=True)
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
+    movie_id = models.CharField(max_length=25, blank=True, null=True)
     search_text = models.CharField(max_length=1024, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
     tags = models.CharField(max_length=512, blank=True, null=True)
@@ -44,7 +49,8 @@ class Star(models.Model):
     ''' Model to store actor details '''
     id = models.CharField(max_length=15, primary_key=True)
     name = models.CharField(max_length=64, unique=True)
-    is_favourite = models.BooleanField(default=False, blank=True, null=True)
+    is_favourite = models.BooleanField(default=False)
+    is_superstar = models.BooleanField(default=False)
     bio = models.CharField(max_length=1024, blank=True, null= True)
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)

@@ -10,7 +10,7 @@ __pycache__/
 package-lock.json
 db.sqlite3*
 .vscode/
-
+backend/management/commands
 
 
 # Byte-compiled / optimized / DLL files
