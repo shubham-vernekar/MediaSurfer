@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Video, Star, Navbar, Category, DashboardHistory
+from .models import Video, Star, Navbar, Category, DashboardHistory, Series
 # Register your models here.
 
 
@@ -22,5 +22,10 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'views', 'videos')
 
 admin.site.register(Category, CategoryAdmin) 
+
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'views')
+
+admin.site.register(Series, SeriesAdmin) 
 
 admin.site.register(DashboardHistory) 

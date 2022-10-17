@@ -10,33 +10,46 @@ def upload_banner(instance, filename):
     return f'MediaSurf/media/stardata/{instance.star_id}/{instance.star_id}_banner.jpg'
 
 # Create your models here.
+
+class Series(models.Model):
+    ''' Model to store Series '''
+    id = models.CharField(max_length=15, primary_key=True)
+    name = models.CharField(max_length=64, unique=True)
+    added = models.DateTimeField(default=timezone.now)
+    videos = models.IntegerField(default=0, blank=True, null=True)
+    views = models.IntegerField(default=0, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
 class Video(models.Model):
     ''' Model to store video details '''
     id = models.CharField(max_length=15, primary_key=True)
     file_path = models.CharField(max_length=512, unique=True)
     title = models.CharField(max_length=1024)
-    categories = models.CharField(max_length=512, blank=True, null=True)
+    categories = models.CharField(max_length=512, default="", blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
-    cast = models.CharField(max_length=512, blank=True, null=True)
+    cast = models.CharField(max_length=512, default="", blank=True, null=True)
     favourite = models.BooleanField(default=False, blank=True, null=True)
     description = models.CharField(max_length=1024, blank=True, null=True)
     duration = models.DurationField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
     size = models.FloatField(blank=True, null=True)
-    subtitle = models.FileField(blank=True, null=True)
+    subtitle = models.CharField(max_length=512, blank=True, null=True)
     poster = models.FileField(blank=True, null=True)
     preview = models.FileField(blank=True, null=True)
     preview_poster = models.FileField(blank=True, null=True)
+    retries = models.IntegerField(default=0)
     scrubber_sprite = models.FileField(blank=True, null=True)
     scrubber_vtt = models.FileField(blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
     width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
     movie_id = models.CharField(max_length=25, blank=True, null=True)
-    search_text = models.CharField(max_length=1024, blank=True, null=True)
+    search_text = models.CharField(max_length=2048, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
     tags = models.CharField(max_length=512, blank=True, null=True)
-    series = models.CharField(max_length=512, blank=True, null=True)
+    series = models.ForeignKey(Series, on_delete=models.DO_NOTHING, related_name="episodes", blank=True, null=True)
     episode = models.IntegerField(blank=True, null=True)
     progress = models.IntegerField(blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
@@ -95,4 +108,3 @@ class DashboardHistory(models.Model):
 
     def __str__(self):
         return self.time.strftime("%m/%d/%Y, %H:%M:%S")
-
