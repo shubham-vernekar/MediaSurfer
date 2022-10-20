@@ -72,6 +72,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MediaSurfer.wsgi.application'
 
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 25
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -121,10 +125,12 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'MediaSurfer/static'),
-    BASE_DIR
+    os.path.join(BASE_DIR, 'MediaSurfer/static')
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR
+MEDIA_DIR = 'MediaSurfer/media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

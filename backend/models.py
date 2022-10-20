@@ -2,12 +2,29 @@ from sqlite3 import Timestamp
 from turtle import width
 from django.db import models
 from django.utils import timezone
+import json 
+import os 
 
-def upload_poster(instance, filename):
-    return f'MediaSurf/media/stardata/{instance.star_id}/{instance.star_id}_poster.jpg'
+def upload_star_poster(instance, filename):
+    return f'MediaSurf/media/stardata/{instance.id}/{instance.id}_poster.jpg'
 
-def upload_banner(instance, filename):
-    return f'MediaSurf/media/stardata/{instance.star_id}/{instance.star_id}_banner.jpg'
+def upload_star_banner(instance, filename):
+    return f'MediaSurf/media/stardata/{instance.id}/{instance.id}_banner.jpg'
+
+def upload_category_poster(instance, filename):
+    return f'MediaSurf/media/categorydata/{instance.id}/{instance.id}_banner.jpg'
+
+def convert_url(file_path):
+    if file_path:
+        portmap = {}
+        try:
+            portmap = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "portmap.json"), 'r'))
+        except FileNotFoundError:
+            return file_path
+        url_prefix = portmap.get(file_path[0], "")
+        if url_prefix:
+            return f"{url_prefix}/{file_path[3:]}"
+    return file_path
 
 # Create your models here.
 
@@ -38,7 +55,7 @@ class Video(models.Model):
     subtitle = models.CharField(max_length=512, blank=True, null=True)
     poster = models.FileField(blank=True, null=True)
     preview = models.FileField(blank=True, null=True)
-    preview_poster = models.FileField(blank=True, null=True)
+    preview_thumbnail = models.FileField(blank=True, null=True)
     retries = models.IntegerField(default=0)
     scrubber_sprite = models.FileField(blank=True, null=True)
     scrubber_vtt = models.FileField(blank=True, null=True)
@@ -49,14 +66,18 @@ class Video(models.Model):
     search_text = models.CharField(max_length=2048, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
     tags = models.CharField(max_length=512, blank=True, null=True)
-    series = models.ForeignKey(Series, on_delete=models.DO_NOTHING, related_name="episodes", blank=True, null=True)
-    episode = models.IntegerField(blank=True, null=True)
+    series = models.ForeignKey(Series, on_delete=models.SET_NULL, related_name="episodes", blank=True, null=True)
     progress = models.IntegerField(blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.title
 
+    def get_video_url(self):
+        return convert_url(self.file_path)
+        
+    def get_subtitle_url(self):
+        return convert_url(self.subtitle)
 
 class Star(models.Model):
     ''' Model to store actor details '''
@@ -68,8 +89,8 @@ class Star(models.Model):
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
-    poster = models.ImageField(upload_to=upload_poster, blank=True, null=True)
-    banner = models.ImageField(upload_to=upload_banner, blank=True, null=True)
+    poster = models.ImageField(upload_to=upload_star_poster, blank=True, null=True)
+    banner = models.ImageField(upload_to=upload_star_banner, blank=True, null=True)
     tags = models.CharField(max_length=512, blank=True, null=True)
 
     def __str__(self):
@@ -90,7 +111,7 @@ class Category(models.Model):
     ''' Model to store genre details '''
     id = models.CharField(max_length=15, primary_key=True)
     title = models.CharField(max_length=64, unique=True)
-    poster = models.ImageField(upload_to="MediaSurf/media/categorydata", blank=True, null=True)
+    poster = models.ImageField(upload_to=upload_category_poster, blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
