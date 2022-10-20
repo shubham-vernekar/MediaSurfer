@@ -1,12 +1,16 @@
-from django.http import JsonResponse
 from .models import Video, Star, Category
 from .serializer import VideoListSerializer, VideoSerializer, StarSerializer, CategorySerializer
-from rest_framework.response import Response
 from rest_framework import generics
 
 class VideoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoListSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        parameters = self.request.GET
+        qs = qs.search(parameters)
+        return qs
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Video.objects.all()

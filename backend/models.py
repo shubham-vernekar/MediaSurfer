@@ -4,6 +4,64 @@ from django.db import models
 from django.utils import timezone
 import json 
 import os 
+from django.db.models import Q
+import datetime
+from django.core.exceptions import FieldError
+
+class VideoQuerySet(models.QuerySet):
+    def search(self, parameters):
+        query = parameters.get("query", None)
+        cast = parameters.get("cast", None)
+        series = parameters.get("series", None)
+        categories = parameters.get("categories", None)
+        favourite = parameters.get("favourite", None)
+        duration_max = parameters.get("duration_max", None)
+        duration_min = parameters.get("duration_min", None)
+        sort_by = parameters.get("sort_by", None)
+
+        qs = self
+        if query:
+            qs = qs.filter(Q(search_text__icontains=query))
+
+        if cast:
+            qs = qs.filter(Q(cast__icontains=cast))
+
+        if series:
+            qs = qs.filter(Q(series__id=series))
+
+        if categories:
+            qs = qs.filter(Q(categories__icontains=categories))
+
+        if favourite is not None:
+            qs = qs.filter(Q(favourite=favourite))
+        
+        if duration_max is not None:
+            try:
+                qs = qs.filter(duration__lte = datetime.timedelta(seconds=int(duration_max))).order_by('-duration')
+            except ValueError:
+                qs = self.none()
+
+        if duration_min is not None:
+            try:
+                qs = qs.filter(duration__gte = datetime.timedelta(seconds=int(duration_min))).order_by('-duration')
+            except ValueError:
+                qs = self.none()
+        
+        if sort_by:
+            try:
+                qs = qs.order_by(sort_by)
+            except FieldError:
+                qs = self.none()
+
+        return qs
+
+class VideoManager(models.Manager):
+    def get_queryset(self, *args,**kwargs):
+        return VideoQuerySet(self.model, using=self._db)
+
+    def search(self, query):
+        return self.get_queryset().search(query)
+
 
 def upload_star_poster(instance, filename):
     return f'MediaSurf/media/stardata/{instance.id}/{instance.id}_poster.jpg'
@@ -47,7 +105,7 @@ class Video(models.Model):
     categories = models.CharField(max_length=512, default="", blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
     cast = models.CharField(max_length=512, default="", blank=True, null=True)
-    favourite = models.BooleanField(default=False, blank=True, null=True)
+    favourite = models.BooleanField(default=False)
     description = models.CharField(max_length=1024, blank=True, null=True)
     duration = models.DurationField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
@@ -69,6 +127,8 @@ class Video(models.Model):
     series = models.ForeignKey(Series, on_delete=models.SET_NULL, related_name="episodes", blank=True, null=True)
     progress = models.IntegerField(blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
+
+    objects = VideoManager()
 
     def __str__(self):
         return self.title
