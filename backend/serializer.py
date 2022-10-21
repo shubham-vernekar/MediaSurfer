@@ -92,8 +92,8 @@ class StarSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'is_favourite',
-            'is_superstar',
+            'favourite',
+            'superstar',
             'views',
             'videos',
             'poster',
