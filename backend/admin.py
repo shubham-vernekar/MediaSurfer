@@ -1,17 +1,6 @@
 from django.contrib import admin
-from .models import Video, Star, Navbar, Category, DashboardHistory, Series
+from .models import Navbar, Category, DashboardHistory, Series
 # Register your models here.
-
-
-class VideoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'duration', 'views', 'cast', 'categories', 'added')
-
-admin.site.register(Video, VideoAdmin) 
-
-class StarAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'favourite', 'superstar', 'views', 'videos')
-
-admin.site.register(Star, StarAdmin) 
 
 class NavbarAdmin(admin.ModelAdmin):
     list_display = ('text', 'url', 'open_tab')

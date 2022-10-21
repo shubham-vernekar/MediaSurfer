@@ -1,36 +1,8 @@
-from .models import Video, Star, Category
-from .serializer import VideoListSerializer, VideoSerializer, StarSerializer, CategorySerializer
+from .models import Category
+from .serializer import CategorySerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
-
-class VideoListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoListSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        qs = super().get_queryset(*args, **kwargs)
-        parameters = self.request.GET
-        qs = qs.search(parameters)
-        return qs
-
-class ProductDetailAPIView(generics.RetrieveAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
-
-class StarListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Star.objects.all()
-    serializer_class = StarSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        qs = super().get_queryset(*args, **kwargs)
-        parameters = self.request.GET
-        qs = qs.search(parameters)
-        return qs
-
-class StarDetailAPIView(generics.RetrieveAPIView):
-    queryset = Star.objects.all()
-    serializer_class = StarSerializer
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
