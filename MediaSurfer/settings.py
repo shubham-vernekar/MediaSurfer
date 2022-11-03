@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'backend',
     'videos',
     'stars',
-
+    'frontend',
 ]
 
 MIDDLEWARE = [

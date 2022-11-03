@@ -6,12 +6,14 @@ media/
 __pycache__/
 /static/
 */testdata/
-/node_modules/
 package-lock.json
 db.sqlite3*
 .vscode/
 backend/management/commands
 */portmap.json
+
+node_modules
+*main.js*
 
 
 # Byte-compiled / optimized / DLL files
