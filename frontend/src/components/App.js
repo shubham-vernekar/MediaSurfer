@@ -1,10 +1,19 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+
+import VideoPlayer from './pages/VideoPlayer';
+
 function App() {
-    console.log("inside app");
-    return (
-      <div>
-        <h2>Hello React</h2>
-      </div>
-    );
-  }
-  
-  export default App;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/player" element={<VideoPlayer />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
