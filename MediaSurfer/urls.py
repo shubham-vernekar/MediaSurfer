@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/stars/', include('stars.urls')),
     path('', include('frontend.urls')),
     path('player', include('frontend.urls')),
+    path('star', include('frontend.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
