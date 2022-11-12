@@ -1,5 +1,5 @@
-from .models import Category
-from .serializer import CategorySerializer
+from .models import Category, Navbar
+from .serializer import CategorySerializer, NavbarSerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -26,4 +26,9 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = NavbarSerializer
+
+
+class NavbarListView(generics.ListCreateAPIView):
+    queryset = Navbar.objects.all()
+    serializer_class = NavbarSerializer

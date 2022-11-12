@@ -19,7 +19,7 @@ class Series(models.Model):
 class Navbar(models.Model):
     ''' Store navbar elements '''
     text = models.CharField(max_length=64, unique=True)
-    url = models.URLField(max_length=300)
+    url = models.CharField(max_length=300)
     open_tab = models.BooleanField(default=False)
 
     def __str__(self):

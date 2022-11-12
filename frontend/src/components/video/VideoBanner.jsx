@@ -17,7 +17,7 @@ function VideoBanner(props) {
     bannerVideoSourceRef.current.setAttribute("src", props.preview);
     bannerVideoRef.current.load();
     bannerVideoRef.current.play();
-    bannerVideoRef.current.volume = 0.2;
+    bannerVideoRef.current.volume = 0;
   };
 
   const handleMouseLeave = (e) => {

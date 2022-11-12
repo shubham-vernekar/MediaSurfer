@@ -13,4 +13,21 @@ class CategorySerializer(serializers.ModelSerializer):
             'videos'
         ]
 
+class NavbarSerializer(serializers.ModelSerializer):
+
+    target = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = Navbar
+        fields = [
+            'text',
+            'url',
+            'target'
+        ]
+
+    def get_target(self, obj):
+        if obj.open_tab:
+            return "_blank"
+        else:
+            return ""
+ 
 

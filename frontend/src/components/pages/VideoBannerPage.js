@@ -3,7 +3,7 @@ import VideoBanner from "../video/VideoBanner";
 function VideoBannerPage() {
   let videoData = [
     {
-      title: "Test video",
+      title: "No Country for old men",
       categories: "test",
       cast: "hugh jackman",
       views: 10,
@@ -19,7 +19,7 @@ function VideoBannerPage() {
       created: "2017-10-20T11:23:09Z",
     },
     {
-      title: "Another test video",
+      title: "Pacific Rim Starring Charlie Hunnam",
       categories: "test",
       cast: "hugh jackman",
       views: 6,

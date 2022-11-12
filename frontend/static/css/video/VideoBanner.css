@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 90%;
-  border-radius: 30px;
+  border-radius: 18px;
 }
 
 .video-banner-container {
@@ -18,12 +18,15 @@
 
 .banner-video-container {
   width: 100%;
-  border-radius: 30px;
+  height: 590px;
+  border-radius: 18px;
 }
 
 .banner-video {
   width: 100%;
-  border-radius: 30px;
+  border-radius: 18px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .banner-video-details {
@@ -48,7 +51,6 @@
   display: flex;
   min-width: 0;
   flex: 1;
-  overflow: auto;
   gap: 20px;
   font-size: 22px;
 }
