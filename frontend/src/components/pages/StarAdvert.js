@@ -54,7 +54,9 @@ function StarAdvert() {
     flexWrap: "wrap",
     alignContent: "center",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    gap: "25px",
+    paddingTop: "25px"
   };
 
   return (

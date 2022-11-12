@@ -29,7 +29,6 @@ function StarCard(props) {
   }
 
   useEffect(() => {
-    console.log(theme);
     starCardRef.current.style.setProperty(
       "--star-card-theme",
       theme
