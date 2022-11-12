@@ -8,10 +8,10 @@ function VideoCard(props) {
   const videoSourceRef = useRef(null);
 
   const videoThemeDict = {
-    "WATCHED" : ["Watched.png", "#99d3ff"],
-    "NEW" : ["new_video.png", "#ebc2ac"],
-    "FAVOURITE" : ["Favorite Icon.png", "#ff6b87"],
-    "RECOMMENDED" : ["Recommended.png", "#ebbb24"],
+    "WATCHED" : ["static/images/Watched.png", "#99d3ff"],
+    "NEW" : ["static/images/new_video.png", "#ebc2ac"],
+    "FAVOURITE" : ["static/images/Favorite Icon.png", "#ff6b87"],
+    "RECOMMENDED" : ["static/images/Recommended.png", "#ebbb24"],
   }
 
   let videoTheme = videoThemeDict[props.specialTag] || "";
@@ -118,7 +118,7 @@ function VideoCard(props) {
             <div className="cast-block">
               {/* eslint-disable-next-line  */}
               <a key={i}>{castName}</a>
-              <img src="play-small.png" alt="" />
+              <img src="static/images/play-small.png" alt="" />
             </div>
           ))}
         </div>
