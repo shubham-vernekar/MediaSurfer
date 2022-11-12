@@ -1,0 +1,16 @@
+.video-banner-slide{
+    /* width: 100%; */
+    /* 2094*590 */
+    /* width: 450%; */
+    background: linear-gradient(#2a2a2a, #141414);
+    display: block;
+    padding-top: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    transition: 0.8s ease-in-out;
+}

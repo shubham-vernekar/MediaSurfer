@@ -1,10 +1,10 @@
 import '../../../static/css/video/VideoBanner.css';
 import StarCard from "../star/StarCard";
-import { React, useRef } from "react";
+import { React, useRef, useEffect } from "react";
 
 function VideoBanner(props) {
   const bannerVideoRef = useRef(null);
-  const bannerVideoSourceRef = useRef(null);
+  const bannerRef = useRef(null);
 
   let category = props.categories.split(",");
   let cast = props.cast.split(",");
@@ -13,24 +13,17 @@ function VideoBanner(props) {
     cast = cast.slice(0, 5);
   }
 
-  const handleMouseEnter = (e) => {
-    bannerVideoSourceRef.current.setAttribute("src", props.preview);
-    bannerVideoRef.current.load();
-    bannerVideoRef.current.play();
-    bannerVideoRef.current.volume = 0;
-  };
-
-  const handleMouseLeave = (e) => {
-    bannerVideoRef.current.pause();
-    // bannerVideoRef.current.currentTime = 0;
-  };
+  useEffect(() => {
+    bannerRef.current.style.width = window.innerWidth +"px";
+    window.addEventListener("resize", (e) => {
+        bannerRef.current.style.width = window.innerWidth +"px";
+      });
+  }, []);
 
   return (
-    <div className="video-banner-container">
       <div
         className="video-banner"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        ref={bannerRef}
       >
         <div className="banner-video-details">
           <div className="banner-video-title">
@@ -74,15 +67,16 @@ function VideoBanner(props) {
             className="banner-video"
             preload="auto"
             loop
+            autoPlay
+            muted
             poster={props.previewThumbnail}
             ref={bannerVideoRef}
           >
-            <source ref={bannerVideoSourceRef} src="" type="video/ogg" />
+            <source src={props.preview} type="video/ogg" />
             Your browser does not support the video tag.
           </video>
         </div>
       </div>
-    </div>
   );
 }
 
