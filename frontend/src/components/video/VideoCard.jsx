@@ -72,6 +72,8 @@ function VideoCard(props) {
   const handleMouseLeave = (e) => {
     videoRef.current.pause()
     // videoRef.current.currentTime = 0;
+    videoRef.current.currentTime = 0;
+    videoRef.current.load();
   };
 
   return (

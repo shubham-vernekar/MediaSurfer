@@ -1,5 +1,6 @@
 import BannerSlide from "../video/BannerSlide";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
+import VideoAdvertBox from "../video/VideoAdvertBox";
 import "../../../static/css/video/BannerSlide.css";
 
 function HomePage() {
@@ -87,14 +88,28 @@ function HomePage() {
   ];
 
   videoData = videoData.concat(videoData);
+  videoData = videoData.concat(videoData);
+  videoData = videoData.concat(videoData);
 
   return (
     <div>
       <div>
-        <BannerSlide videoData={videoData} />
+        <BannerSlide videoData={videoData.slice(0, 10)} />
       </div>
       <div>
-        <VideoAdvertSlide videoData={videoData} title="Continue Watching" />
+        <VideoAdvertBox videoData={videoData.slice(0, 24)}  title="Discover" />
+      </div>
+      <div>
+        <VideoAdvertSlide videoData={videoData.slice(0, 15)} title="Continue Watching" />
+      </div>
+      <div>
+        <VideoAdvertSlide videoData={videoData.slice(0, 15)} title="Recommended" />
+      </div>
+      <div>
+        <VideoAdvertSlide videoData={videoData.slice(0, 15)} title="Newly Added" />
+      </div>
+      <div>
+        <VideoAdvertSlide videoData={videoData.slice(0, 15)} title="Favourites" />
       </div>
     </div>
   );
