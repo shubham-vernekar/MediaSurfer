@@ -11,7 +11,7 @@ function VideoCard(props) {
     "WATCHED" : ["static/images/Watched.png", "#99d3ff"],
     "NEW" : ["static/images/new_video.png", "#ebc2ac"],
     "FAVOURITE" : ["static/images/Favorite Icon.png", "#ff6b87"],
-    "RECOMMENDED" : ["static/images/Recommended.png", "#ebbb24"],
+    "RECOMMENDED" : ["static/images/Recommended.png", "#f2c73d"], //#ebbb24
   }
 
   let videoTheme = videoThemeDict[props.specialTag] || "";
@@ -78,7 +78,7 @@ function VideoCard(props) {
     <div className="video-card" ref={videoCardRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="preview-video-container">
         {/* eslint-disable-next-line  */}
-        <a href="">
+        {/* <a href=""> */}
           <div className="preview-video-box">
             <video
               className="preview-video"
@@ -91,7 +91,7 @@ function VideoCard(props) {
               Your browser does not support the video tag.
             </video>
           </div>
-        </a>
+        {/* </a> */}
       </div>
       <div className="image-tag-container">
           <img src={imageTag} className="image-tag" alt="" />
@@ -115,9 +115,9 @@ function VideoCard(props) {
         </div>
         <div className="cast-container" >
           {cast.map((castName, i) => (
-            <div className="cast-block">
+            <div key={i} className="cast-block">
               {/* eslint-disable-next-line  */}
-              <a key={i}>{castName}</a>
+              <a>{castName}</a>
               <img src="static/images/play-small.png" alt="" />
             </div>
           ))}

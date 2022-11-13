@@ -1,0 +1,76 @@
+.video-advert-slide {
+  display: flex;
+  column-gap: 10px;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-slide-container {
+  display: grid;
+  margin-top: 25px;
+  margin-left: 4%;
+  row-gap: 15px;
+  position: relative;
+  padding-bottom: 1.7%;
+}
+
+.video-advert-slide-title {
+  display: flex;
+  column-gap: 30px;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.video-advert-slide-title-name {
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.video-advert-slide-explore {
+  font-size: 19px;
+  font-weight: 600;
+  color: #c55454;
+  opacity: 0;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-slide-explore:hover {
+    color: #eb3232;
+  }
+
+.video-advert-slide-title:hover .video-advert-slide-explore {
+  width: auto;
+  opacity: 1;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-slide-left {
+  background-image: url("/static/images/left.png");
+  background-repeat: no-repeat;
+  background-size: 40px 40px;
+  background-position: 50%;
+  position: absolute;
+  left: -5%;
+  width: 5%;
+  z-index: 20;
+  height: 100%;
+  opacity: 0;
+}
+
+.video-advert-slide-right {
+  background-image: url("/static/images/right.png");
+  background-repeat: no-repeat;
+  background-size: 40px 40px;
+  background-position: 50%;
+  position: absolute;
+  right: 0;
+  width: 4%;
+  z-index: 20;
+  height: 100%;
+}
+
+.video-advert-slide-left:hover{
+    opacity: 1;
+}   

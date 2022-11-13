@@ -21,6 +21,7 @@ class Navbar(models.Model):
     text = models.CharField(max_length=64, unique=True)
     url = models.CharField(max_length=300)
     open_tab = models.BooleanField(default=False)
+    weight = models.FloatField(default=0, blank=True, null=True)
 
     def __str__(self):
         return self.text

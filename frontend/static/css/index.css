@@ -8,6 +8,7 @@ body {
   background-color: #141414; 
   color: #f8f9fa;
   font-family: 'Calibri', sans-serif;
+  overflow: hidden;
 }
 
 *,

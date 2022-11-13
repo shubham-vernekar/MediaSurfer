@@ -3,7 +3,7 @@ from .models import Navbar, Category, DashboardHistory, Series
 # Register your models here.
 
 class NavbarAdmin(admin.ModelAdmin):
-    list_display = ('text', 'url', 'open_tab')
+    list_display = ('text', 'url', 'open_tab', 'weight')
 
 admin.site.register(Navbar, NavbarAdmin) 
 

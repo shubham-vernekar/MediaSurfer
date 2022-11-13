@@ -32,3 +32,8 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
 class NavbarListView(generics.ListCreateAPIView):
     queryset = Navbar.objects.all()
     serializer_class = NavbarSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.order_by("-weight")
+        return qs

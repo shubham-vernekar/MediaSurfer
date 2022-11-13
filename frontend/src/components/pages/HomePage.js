@@ -1,6 +1,8 @@
 import BannerSlide from "../video/BannerSlide";
+import VideoAdvertSlide from "../video/VideoAdvertSlide";
+import "../../../static/css/video/BannerSlide.css";
 
-function VideoBannerPage() {
+function HomePage() {
   let videoData = [
     {
       title: "No Country for old men",
@@ -40,8 +42,10 @@ function VideoBannerPage() {
       cast: "hugh jackman,hugh jackman",
       views: 33,
       favorite: true,
-      preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-      preview_thumbnail: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
+      preview:
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+      preview_thumbnail:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
       progress: 0,
       resolution: "2K QHD",
       duration: "00:32:48",
@@ -54,8 +58,10 @@ function VideoBannerPage() {
       cast: "hugh jackman",
       views: 19,
       favorite: false,
-      preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-      preview_thumbnail: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+      preview:
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+      preview_thumbnail:
+        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
       progress: 3321,
       resolution: "4K UHD",
       duration: "03:08:46",
@@ -68,23 +74,30 @@ function VideoBannerPage() {
       cast: "hugh jackman",
       views: 76,
       favorite: true,
-      preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-      preview_thumbnail: "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
+      preview:
+        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
+      preview_thumbnail:
+        "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
       progress: 2132,
       resolution: "720p",
       duration: "00:56:57",
       special_tag: "NEW",
       created: "2017-12-22T19:31:09Z",
-    }
+    },
   ];
+
+  videoData = videoData.concat(videoData);
 
   return (
     <div>
-      <BannerSlide
-        videoData={videoData}
-      />
+      <div>
+        <BannerSlide videoData={videoData} />
+      </div>
+      <div>
+        <VideoAdvertSlide videoData={videoData} title="Continue Watching" />
+      </div>
     </div>
   );
 }
 
-export default VideoBannerPage;
+export default HomePage;

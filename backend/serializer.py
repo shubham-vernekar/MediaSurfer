@@ -21,6 +21,7 @@ class NavbarSerializer(serializers.ModelSerializer):
         fields = [
             'text',
             'url',
+            'weight',
             'target'
         ]
 
