@@ -1,7 +1,7 @@
 import BannerSlide from "../video/BannerSlide";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
-import "../../../static/css/video/BannerSlide.css";
+import "../../../static/css/pages/HomePage.css";
 
 function HomePage() {
   let videoData = [

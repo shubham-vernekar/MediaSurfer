@@ -1,0 +1,94 @@
+.star-advert-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding-top: 13px;
+  margin-left: 5%;
+  width: 92%;
+}
+
+.star-advert-index {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: nowrap;
+  column-gap: 3vw;
+  margin-left: 5%;
+  width: 85%;
+}
+
+.star-advert-index-container {
+  display: grid;
+}
+
+.index-2,
+.index-3 {
+  display: none;
+}
+
+.star-advert-right-container {
+  display: flex;
+  width: 8%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-top: 25px;
+  row-gap: 55px;
+  padding-right: 3%;
+}
+
+.star-advert-container {
+  display: flex;
+}
+
+.alphabet:hover {
+  color: red;
+  cursor: pointer;
+}
+.alphabet {
+  width: 1vw;
+  margin-bottom: 13px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.star-advert-filter:hover,
+.star-advert-sort:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.star-advert-filter,
+.star-advert-sort {
+  text-align: right;
+  padding-bottom: 5px;
+}
+
+.star-advert-filter-title,
+.star-advert-sort-title {
+  text-align: right;
+  font-size: large;
+  padding-bottom: 7px;
+}
+
+.selected-filter {
+  color: red;
+}
+
+.star-advert-search-box {
+  border-radius: 5px;
+  width: 85%;
+  height: 30px;
+  background: linear-gradient(#333, #222);
+  border: 1px solid #444;
+  color: #d7d7d7;
+  margin-bottom: -10px;
+}
+
+.star-advert-page-container {
+  margin-top: 20px;
+}
