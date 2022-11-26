@@ -11,10 +11,21 @@ class StarQuerySet(models.QuerySet):
         min_videos = parameters.get("min_videos", None)
         min_views = parameters.get("min_views", None)
         sort_by = parameters.get("sort_by", None)
+        filter = parameters.get("filter", "").lower()
+        prefix = parameters.get("prefix", None)
 
         qs = self
+
+        if filter=="favourites":
+            favourite = True
+        elif filter=="superstars":
+            superstar = True
+
         if query:
             qs = qs.filter(Q(name__icontains=query))
+
+        if prefix:
+            qs = qs.filter(Q(name__istartswith=prefix))
 
         if favourite is not None:
             try:
@@ -42,7 +53,7 @@ class StarQuerySet(models.QuerySet):
 
         if sort_by:
             try:
-                qs = qs.order_by(sort_by)
+                qs = qs.order_by(sort_by.lower())
             except (FieldError):
                 qs = self.none()
 

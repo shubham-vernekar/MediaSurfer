@@ -9,6 +9,7 @@
   padding-top: 13px;
   margin-left: 5%;
   width: 92%;
+  margin-bottom: 150px;
 }
 
 .star-advert-index {
@@ -57,7 +58,8 @@
 }
 
 .star-advert-filter:hover,
-.star-advert-sort:hover {
+.star-advert-sort:hover,
+.star-advert-clear-button:hover {
   color: red;
   cursor: pointer;
 }
@@ -91,4 +93,8 @@
 
 .star-advert-page-container {
   margin-top: 20px;
+}
+
+.star-advert-clear-button{
+  margin-top: -33px;
 }

@@ -1,69 +1,9 @@
 import StarCard from "../star/StarCard";
 import { React, useRef, useEffect, useState } from "react";
-
+import axios from "axios";
 import "../../../static/css/pages/StarsPage.css";
 
 function StarAdvert() {
-  let starData = [
-    {
-      name: "Tom cruise",
-      videos: 35,
-      views: 119,
-      favorite: true,
-      superstar: true,
-      poster:
-        "http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcRfFvKKvmGPnvJSQgTRy8MJI7ev8jnCH9CnzqNHfgqE1ml1LhlFIGBx4jY8HUAmf-yk_HZnA8IyQWc2gvI",
-    },
-    {
-      name: "Henry Cavill",
-      videos: 7,
-      views: 88,
-      favorite: false,
-      superstar: false,
-      poster:
-        "https://media.vanityfair.com/photos/54caaa74b8f23e3a0314d4d6/master/w_2560%2Cc_limit/image.jpg",
-    },
-    {
-      name: "Hugh Jackman",
-      videos: 4,
-      views: 72,
-      favorite: false,
-      superstar: false,
-      poster:
-        "https://cdn.britannica.com/47/201647-050-C547C128/Hugh-Jackman-2013.jpg",
-    },
-    {
-      name: "Scarlett Johansson",
-      videos: 135,
-      views: 65,
-      favorite: true,
-      superstar: false,
-      poster:
-        "https://img.20mn.fr/fdIDsrEsTvivbyy8Lj8Bgik/1200x768_los-angeles-premiere-of-illumination-s-sing-2-featuring-scarlett-johansson-where-los-angeles-california-united-states-when-12-dec-2021-credit-robin-lori-insta-rimages-cover-images",
-    },
-    {
-      name: "Robert Downey Jr.",
-      videos: 8,
-      views: 6,
-      favorite: false,
-      superstar: false,
-      poster:
-        "https://media1.popsugar-assets.com/files/thumbor/HwtAUAufmAZv-FgGEIMJS2eQM-A/0x1:2771x2772/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2020/03/30/878/n/1922398/eb11f12e5e825104ca01c1.02079643_/i/Robert-Downey-Jr.jpg",
-    },
-    {
-      name: "Charlize Theron",
-      videos: 899,
-      views: 456,
-      favorite: false,
-      superstar: false,
-      poster:
-        "https://image.brigitte.de/10945160/t/sE/v5/w1440/r1.5/-/charlize-theron-bild.jpg",
-    },
-  ];
-
-  starData = starData.concat(starData);
-  starData = starData.concat(starData);
-  starData = starData.concat(starData);
 
   const alphabetsLineOne = [
     "A",
@@ -99,33 +39,47 @@ function StarAdvert() {
   const [alphabetsLineTwo, SetAlphabetsLineTwo] = useState([]);
   const [alphabetsLineThree, SetAlphabetsLineThree] = useState([]);
 
-  const [alphabetOne, SetAlphabetOne] = useState("");
+  const [alphabetOne, SetAlphabetOne] = useState("A");
   const [alphabetTwo, SetAlphabetTwo] = useState("");
   const [alphabetThree, SetAlphabetThree] = useState("");
   const [sortQuery, SetSortQuery] = useState("");
   const [filterQuery, SetFilterQuery] = useState("");
+  const [searchQuery, SetSearchQuery] = useState("");
 
-  // const starAdvertIndexOne = useRef(null);
+  const [starData, SetStarData] = useState([]);
+
+  const starAdvertIndexOne = useRef(null);
   const starAdvertIndexTwo = useRef(null);
   const starAdvertIndexThree = useRef(null);
+  const starsSearch = useRef(null);
+  const starsFilter = useRef(null);
+  const starsSort = useRef(null);
 
   useEffect(() => {
-    console.log(
-      alphabetOne,
-      alphabetTwo,
-      alphabetThree,
-      sortQuery,
-      filterQuery
-    );
-  }, [alphabetOne, alphabetTwo, alphabetThree, sortQuery, filterQuery]);
+    axios({
+      method: "get",
+      url: "api/stars",
+      params: {
+        query: searchQuery,
+        filter: filterQuery,
+        sort_by: sortQuery,
+        prefix: alphabetOne + alphabetTwo + alphabetThree
+      },
+    }).then((response) => {
+      SetStarData(response.data);
+    });
+  }, [
+    alphabetOne,
+    alphabetTwo,
+    alphabetThree,
+    sortQuery,
+    filterQuery,
+    searchQuery,
+  ]);
 
   useEffect(() => {
-    [...starAdvertIndexTwo.current.children].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
-    [...starAdvertIndexThree.current.children].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
+    clearSiblingSelection(starAdvertIndexTwo);
+    clearSiblingSelection(starAdvertIndexThree);
     starAdvertIndexThree.current.style.display = "none";
     if (alphabetOne === "") {
       starAdvertIndexTwo.current.style.display = "none";
@@ -135,9 +89,7 @@ function StarAdvert() {
   }, [alphabetOne]);
 
   useEffect(() => {
-    [...starAdvertIndexThree.current.children].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
+    clearSiblingSelection(starAdvertIndexThree);
     if (alphabetTwo === "") {
       starAdvertIndexThree.current.style.display = "none";
     } else {
@@ -195,8 +147,9 @@ function StarAdvert() {
     let filterText = "";
     if (!sameButton) {
       clickedFilter.classList.add("selected-filter");
-      filterText = clickedFilter.innerText.trim();
+      filterText = clickedFilter.innerText.replace("Only ", "").trim();
     }
+    SetFilterQuery(filterText);
   };
 
   const handleSortOnClick = (e) => {
@@ -209,15 +162,40 @@ function StarAdvert() {
     let sortText = "";
     if (!sameButton) {
       clickedSort.classList.add("selected-filter");
-      sortText = clickedSort.innerText.trim();
+      sortText = clickedSort.innerText.replace("Sort by ", "").trim();
     }
-    console.log(sortText);
+    SetSortQuery(sortText);
+  };
+
+  const handleSearchTextChange = (e) => {
+    SetSearchQuery(e.currentTarget.value);
+  };
+
+  const clearSiblingSelection = (target) => {
+    [...target.current.children].forEach((sib) =>
+      sib.classList.remove("selected-filter")
+    );
+  };
+
+  const clearAllFilters = (e) => {
+    SetAlphabetOne("A");
+    SetAlphabetTwo("");
+    SetAlphabetThree("");
+    SetSortQuery("");
+    SetFilterQuery("");
+    SetSearchQuery("");
+    starsSearch.current.value = "";
+    clearSiblingSelection(starAdvertIndexOne);
+    clearSiblingSelection(starAdvertIndexTwo);
+    clearSiblingSelection(starAdvertIndexThree);
+    clearSiblingSelection(starsFilter);
+    clearSiblingSelection(starsSort);
   };
 
   return (
     <div className="star-advert-page-container">
       <div className="star-advert-index-container">
-        <div className="star-advert-index index-1">
+        <div className="star-advert-index index-1" ref={starAdvertIndexOne}>
           {alphabetsLineOne.map((alphabet, i) => (
             <div className="alphabet" key={i} onClick={handleAlphabetOnClick}>
               {" "}
@@ -247,11 +225,11 @@ function StarAdvert() {
           {starData.map((data, i) => (
             <StarCard
               key={i}
-              poster={data["poster"]}
+              poster={data["poster"] ? data["poster"] : "https://thumbs.dreamstime.com/b/no-user-profile-picture-hand-drawn-illustration-53840792.jpg"  }
               name={data["name"]}
               videos={data["videos"]}
               views={data["views"]}
-              favorite={data["favorite"]}
+              favorite={data["favourite"]}
               superstar={data["superstar"]}
             />
           ))}
@@ -261,20 +239,25 @@ function StarAdvert() {
             type="text"
             name="search-box"
             className="star-advert-search-box"
+            onChange={handleSearchTextChange}
+            ref={starsSearch}
           />
-          <div className="star-advert-filter-container">
+          <div className="star-advert-clear-button" onClick={clearAllFilters}>
+            <span>CLEAR</span>
+          </div>
+          <div className="star-advert-filter-container" ref={starsFilter}>
             <div className="star-advert-filter-title">FILTER</div>
             <div className="star-advert-filter" onClick={handleFilterOnClick}>
-              Only Favorites
+              Only favourites
             </div>
             <div className="star-advert-filter" onClick={handleFilterOnClick}>
               Only Superstars
             </div>
           </div>
-          <div className="star-advert-sort-container">
+          <div className="star-advert-sort-container" ref={starsSort}>
             <div className="star-advert-sort-title">SORT BY</div>
             <div className="star-advert-sort" onClick={handleSortOnClick}>
-              Sort by Length
+              Sort by Views
             </div>
             <div className="star-advert-sort" onClick={handleSortOnClick}>
               Sort by Videos
