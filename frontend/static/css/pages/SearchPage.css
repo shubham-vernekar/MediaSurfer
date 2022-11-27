@@ -1,0 +1,92 @@
+.search-page-container {
+  display: grid;
+  width: 100%;
+}
+
+.search-page-filters-container {
+  width: 96%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  column-gap: 30px;
+  font-size: 20px;
+  margin-top: 35px;
+}
+
+.search-page-length-box {
+  border-radius: 5px;
+  height: 30px;
+  background: linear-gradient(#333, #222);
+  border: 1px solid #444;
+  color: #d7d7d7;
+}
+
+.random-button,
+.video-filters-hamburger {
+  width: 30px;
+  margin-top: 7px;
+}
+
+.search-page-length-box {
+  width: 70px;
+}
+
+.video-adverts-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 25px;
+  margin: 50px;
+}
+
+.search-page-content-container {
+  width: 100%;
+  display: flex;
+  text-transform: capitalize;
+  text-align: right;
+  
+}
+
+.video-labels-container{
+    margin-right: 2%;
+    margin-left: -60px;
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 70px;
+    font-size: 18px;
+}
+
+.video-labels-cast-box, .video-labels-category-box{
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 7px;
+}
+
+.video-labels-cast:hover,
+.video-labels-category:hover,
+.search-page-filter:hover,
+.search-page-sort:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.video-labels-title{
+    margin-bottom: 3px;
+    font-size: 20px;
+}
+
+.selected-filter {
+    color: red;
+}
+
+.search-page-filter-box, 
+.search-page-sort-box {
+    display: flex;
+    column-gap: 30px;
+}
