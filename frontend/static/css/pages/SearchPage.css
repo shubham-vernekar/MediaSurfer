@@ -55,10 +55,10 @@
     margin-right: 2%;
     margin-left: -60px;
     margin-top: 55px;
-    display: flex;
     flex-direction: column;
     row-gap: 70px;
     font-size: 18px;
+    display: none;
 }
 
 .video-labels-cast-box, .video-labels-category-box{
@@ -89,4 +89,14 @@
 .search-page-sort-box {
     display: flex;
     column-gap: 30px;
+}
+
+.sort-direction{
+  width: 20px;
+}
+
+.search-page-sort{
+  display: flex;
+  column-gap: 7px;
+  align-items: center;
 }

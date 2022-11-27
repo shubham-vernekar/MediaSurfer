@@ -96,6 +96,8 @@ function SearchPage() {
 
   //   --------------------------------------------
 
+  const labelsContainerRef = useRef(null);
+
   const [allStars, SetAllStars] = useState([]);
   const [allCategories, SetAllCategories] = useState([]);
   const [sortQuery, SetSortQuery] = useState("latest");
@@ -143,7 +145,24 @@ function SearchPage() {
   };
 
   const handleSortOnClick = (e) => {
-    SetSortQuery(clearSiblingSelection(e));
+    let clickedSort = e.currentTarget;
+    let clickedText = clickedSort.innerText.toLowerCase().trim()
+    let clickedSiblings = clickedSort.parentElement.children;
+    let sameButton = [...clickedSort.classList].includes("selected-filter");
+    [...clickedSiblings].forEach((sib) =>
+      sib.classList.remove("selected-filter")
+    );
+    if (!sameButton) {
+      clickedSort.classList.add("selected-filter");
+      SetSortQuery(clickedText)
+    } else {
+      if (sortQuery === clickedText && clickedText !="surprise"){
+        clickedSort.classList.add("selected-filter");
+        SetSortQuery("-"+clickedText)
+      }else{
+        SetSortQuery("")
+      }
+    }
   };
 
   const handleFilterOnClick = (e) => {
@@ -162,8 +181,14 @@ function SearchPage() {
     SetCategoryQuery(clearSiblingSelection(e))
   };
 
+  const handleHamburgerOnClick = (e) => {
+    if (labelsContainerRef.current.style.display === "") {
+      labelsContainerRef.current.style.display = "flex";
+    } else {
+      labelsContainerRef.current.style.display = "";
+    }
+  };
   
-
   return (
     <div className="search-page-container">
       <div className="search-page-filters-container">
@@ -174,21 +199,33 @@ function SearchPage() {
           onChange={handleTimeTextChange}
         />
         <div className="search-page-filter-box">
-            <div className="search-page-filter selected-filter" onClick={handleSortOnClick}>
+            <div className="search-page-sort selected-filter" onClick={handleSortOnClick}>
             <span>Latest</span>
+            {sortQuery==="latest" && ( 
+              <img src="static/images/down.png"  alt="" className="sort-direction" />
+            )} 
+            {sortQuery==="-latest" && ( 
+              <img src="static/images/up.png"  alt="" className="sort-direction" />
+            )} 
             </div>
-            <div className="search-page-filter" onClick={handleSortOnClick}>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
             <span>Longest</span>
+            {sortQuery==="longest" && ( 
+              <img src="static/images/down.png"  alt="" className="sort-direction" />
+            )} 
+            {sortQuery==="-longest" && ( 
+              <img src="static/images/up.png"  alt="" className="sort-direction" />
+            )} 
             </div>
-            <div className="search-page-filter" onClick={handleSortOnClick}>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
             <span>Surprise</span>
             </div>
         </div>
         <div className="search-page-sort-box">
-            <div className="search-page-sort" onClick={handleFilterOnClick}>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
             <span>Recommended</span>
             </div>
-            <div className="search-page-sort" onClick={handleFilterOnClick}>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
             <span>Favourites</span>
             </div>
         </div>
@@ -200,6 +237,7 @@ function SearchPage() {
             src="static/images/hamburger.png"
             alt=""
             className="video-filters-hamburger"
+            onClick={handleHamburgerOnClick}
           />
         </div>
       </div>
@@ -223,7 +261,7 @@ function SearchPage() {
             />
           ))}
         </div>
-        <div className="video-labels-container">
+        <div className="video-labels-container" ref={labelsContainerRef}>
           <div className="video-labels-cast-box">
             <div className="video-labels-title">CAST</div>
             {allStars.map((data, i) => (

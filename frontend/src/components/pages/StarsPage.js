@@ -265,6 +265,9 @@ function StarAdvert() {
             <div className="star-advert-sort" onClick={handleSortOnClick}>
               Sort by Added
             </div>
+            <div className="star-advert-sort" onClick={handleSortOnClick}>
+              Sort by Name
+            </div>
           </div>
         </div>
       </div>
