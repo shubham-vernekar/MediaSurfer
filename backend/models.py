@@ -36,6 +36,7 @@ class Category(models.Model):
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
+    favourite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

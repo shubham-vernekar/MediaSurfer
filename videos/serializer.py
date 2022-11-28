@@ -4,6 +4,8 @@ from .models import Video
 class VideoListSerializer(serializers.ModelSerializer):
 
     series = serializers.SerializerMethodField(read_only=True)
+    resolution = serializers.SerializerMethodField(read_only=True)
+    special_tag = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -24,7 +26,9 @@ class VideoListSerializer(serializers.ModelSerializer):
             'tags', 
             'series', 
             'progress', 
-            'last_viewed'
+            'last_viewed',
+            'resolution',
+            'special_tag',
         ]
 
     def get_series(self, obj):
@@ -36,12 +40,20 @@ class VideoListSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_special_tag(self, obj):
+        return obj.get_special_tag()
+
+    def get_resolution(self, obj):
+        return obj.get_resolution()
+
 
 class VideoSerializer(serializers.ModelSerializer):
 
     video_url = serializers.SerializerMethodField(read_only=True)
     subtitle_url = serializers.SerializerMethodField(read_only=True)
     series = serializers.SerializerMethodField(read_only=True)
+    resolution = serializers.SerializerMethodField(read_only=True)
+    special_tag = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -66,11 +78,19 @@ class VideoSerializer(serializers.ModelSerializer):
             'tags', 
             'series', 
             'progress', 
-            'last_viewed'
+            'last_viewed',
+            'resolution',
+            'special_tag',
         ]
 
     def get_video_url(self, obj):
         return obj.get_video_url()
+
+    def get_resolution(self, obj):
+        return obj.get_resolution()
+
+    def get_special_tag(self, obj):
+        return obj.get_special_tag()
 
     def get_subtitle_url(self, obj):
         return obj.get_subtitle_url()

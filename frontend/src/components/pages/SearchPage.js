@@ -1,132 +1,99 @@
 import { React, useRef, useEffect, useState } from "react";
 import VideoCard from "../video/VideoCard";
+import MultiRangeSlider from "../slider/MultiRangeSlider";
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 
 function SearchPage() {
-  let videoData = [
-    {
-      title: "No Country for old men",
-      categories: "drama,thriller",
-      cast: "Javier Bardem",
-      views: 10,
-      favorite: false,
-      preview:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      preview_thumbnail:
-        "https://www.fotoaparat.cz/storage/a/26/2639/tg17d5xl-rosta.jpg",
-      progress: 2132,
-      resolution: "HD",
-      duration: "00:56:21",
-      special_tag: "FAVOURITE",
-      created: "2017-10-20T11:23:09Z",
-    },
-    {
-      title: "Pacific Rim Starring Charlie Hunnam",
-      categories: "action",
-      cast: "Charlie Hunnam",
-      views: 6,
-      favorite: false,
-      preview:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-      preview_thumbnail:
-        "https://www.sulasula.com/wp-content/uploads/cr_em13_14.jpg",
-      progress: 0,
-      resolution: "4K UHD",
-      duration: "00:50:35",
-      special_tag: "",
-      created: "2018-04-13T18:40:20Z",
-    },
-    {
-      title: "The Man from Toronto",
-      categories: "comedy",
-      cast: "Kevin Hart,Woody Harrelson",
-      views: 33,
-      favorite: true,
-      preview:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-      preview_thumbnail:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-      progress: 0,
-      resolution: "2K QHD",
-      duration: "00:32:48",
-      special_tag: "RECOMMENDED",
-      created: "2020-06-18T14:42:11Z",
-    },
-    {
-      title: "Texas Chainsaw Massacre",
-      categories: "Horror",
-      cast: "hugh jackman",
-      views: 19,
-      favorite: false,
-      preview:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-      preview_thumbnail:
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
-      progress: 3321,
-      resolution: "4K UHD",
-      duration: "03:08:46",
-      special_tag: "FAVOURITE",
-      created: "2021-09-08T10:37:23Z",
-    },
-    {
-      title:
-        "Fast & Furious Presents: Hobbs & Shaw and The Man from Toronto and Texas Chainsaw Massacre all together",
-      categories: "Action,Comedy",
-      cast: "Jason Statham,Idris Elba",
-      views: 76,
-      favorite: true,
-      preview:
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-      preview_thumbnail:
-        "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
-      progress: 2132,
-      resolution: "720p",
-      duration: "00:56:57",
-      special_tag: "NEW",
-      created: "2017-12-22T19:31:09Z",
-    },
-  ];
+  const [videoData, SetVideoData] = useState([]);
 
-  videoData = videoData.concat(videoData);
-  videoData = videoData.concat(videoData);
-  videoData = videoData.concat(videoData);
-  videoData = videoData.concat(videoData);
-  videoData = videoData.concat(videoData);
-
-  //   --------------------------------------------
-
+  const videosPerPage = 30;
   const labelsContainerRef = useRef(null);
+  const castBlockContainerRef = useRef(null);
+  const categoryBlockContainerRef = useRef(null);
+  const durationRangeRef = useRef(null);
 
   const [allStars, SetAllStars] = useState([]);
   const [allCategories, SetAllCategories] = useState([]);
-  const [sortQuery, SetSortQuery] = useState("latest");
+  const [sortQuery, SetSortQuery] = useState("-created");
   const [filterQuery, SetFilterQuery] = useState("");
-  const [timeQuery, SetTimeQuery] = useState("");
+  const [searchQuery, SetSearchQuery] = useState("");
   const [castQuery, SetCastQuery] = useState("");
   const [categoryQuery, SetCategoryQuery] = useState("");
+  const [videosPageOffset, SetVideosPageOffset] = useState("");
+  const [videosPageNumber, SetVideosPageNumber] = useState("");
+  const [maxDuration, SetMaxDuration] = useState(0);
+  const [minDuration, SetMinDuration] = useState(0);
+  const [maxDurationBar, SetMaxDurationBar] = useState(0);
+  const [minDurationBar, SetMinDurationBar] = useState(0);
 
   useEffect(() => {
-    console.log(sortQuery, filterQuery, timeQuery,  castQuery, categoryQuery);
+    axios({
+      method: "get",
+      url: "api/videos",
+      params: {
+        limit: videosPerPage,
+        query: searchQuery,
+        cast: castQuery,
+        sort_by: sortQuery,
+        filter: filterQuery,
+        duration_max: maxDuration,
+        duration_min: minDuration,
+        categories: categoryQuery,
+      },
+    }).then((response) => {
+      SetVideoData(response.data.results);
+    });
   }, [
-    sortQuery, filterQuery, timeQuery, castQuery, categoryQuery,
+    sortQuery,
+    filterQuery,
+    castQuery,
+    categoryQuery,
   ]);
 
   useEffect(() => {
-    let allStarsSet = new Set();
-    let allCategoriesSet = new Set();
-    Object.entries(videoData).forEach(([k, v]) => {
-      v.cast
-        .toLowerCase()
-        .split(",")
-        .forEach((item) => allStarsSet.add(item));
-      v.categories
-        .toLowerCase()
-        .split(",")
-        .forEach((item) => allCategoriesSet.add(item));
+    axios({
+      method: "get",
+      url: "api/videos",
+      params: {
+        limit: videosPerPage,
+        query: searchQuery,
+        cast: castQuery,
+        sort_by: sortQuery,
+        filter: filterQuery,
+        duration_max: maxDuration,
+        duration_min: minDuration,
+        categories: categoryQuery,
+      },
+    }).then((response) => {
+      SetVideoData(response.data.results);
+      SetAllStars(response.data["all_stars"]);
+      SetAllCategories(response.data["all_categories"]);
     });
-    SetAllStars([...allStarsSet].sort());
-    SetAllCategories([...allCategoriesSet].sort());
+  }, [
+    searchQuery,
+    maxDuration,
+    minDuration,
+  ]);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "api/videos",
+      params: {
+        limit: videosPerPage,
+        query: searchQuery,
+        cast: castQuery,
+        sort_by: sortQuery,
+        categories: categoryQuery,
+      },
+    }).then((response) => {
+      SetVideoData(response.data.results);
+      SetMaxDurationBar(response.data["max_duration"]);
+      SetMinDurationBar(response.data["min_duration"]);
+      SetAllStars(response.data["all_stars"]);
+      SetAllCategories(response.data["all_categories"]);
+    });
   }, []);
 
   const clearSiblingSelection = (target) => {
@@ -141,12 +108,17 @@ function SearchPage() {
       clickedSort.classList.add("selected-filter");
       textData = clickedSort.innerText.toLowerCase().trim();
     }
-    return textData
+    return textData;
   };
 
   const handleSortOnClick = (e) => {
     let clickedSort = e.currentTarget;
-    let clickedText = clickedSort.innerText.toLowerCase().trim()
+    let clickedText = clickedSort.innerText
+      .toLowerCase()
+      .replace("latest", "created")
+      .replace("longest", "duration")
+      .replace("surprise", "?")
+      .trim();
     let clickedSiblings = clickedSort.parentElement.children;
     let sameButton = [...clickedSort.classList].includes("selected-filter");
     [...clickedSiblings].forEach((sib) =>
@@ -154,23 +126,27 @@ function SearchPage() {
     );
     if (!sameButton) {
       clickedSort.classList.add("selected-filter");
-      SetSortQuery(clickedText)
+      SetSortQuery(clickedText);
     } else {
-      if (sortQuery === clickedText && clickedText !="surprise"){
+      if (sortQuery === clickedText && clickedText != "?") {
         clickedSort.classList.add("selected-filter");
-        SetSortQuery("-"+clickedText)
-      }else{
-        SetSortQuery("")
+        SetSortQuery("-" + clickedText);
+      } else {
+        SetSortQuery("");
       }
     }
   };
 
   const handleFilterOnClick = (e) => {
-    SetFilterQuery(clearSiblingSelection(e))
+    let filterText = clearSiblingSelection(e)
+      .replace("latest", "created")
+      .replace("longest", "duration")
+      .replace("surprise", "?");
+    SetFilterQuery(filterText);
   };
 
-  const handleTimeTextChange = (e) => {
-    SetTimeQuery(e.currentTarget.value);
+  const handleSearchQueryChange = (e) => {
+    SetSearchQuery(e.currentTarget.value);
   };
 
   const handleCastOnClick = (e) => {
@@ -178,60 +154,99 @@ function SearchPage() {
   };
 
   const handleCategoryOnClick = (e) => {
-    SetCategoryQuery(clearSiblingSelection(e))
+    SetCategoryQuery(clearSiblingSelection(e));
+  };
+
+  const toggleDisplay = (target) => {
+    if (target.style.display === "") {
+      target.style.display = "flex";
+    } else {
+      target.style.display = "";
+    }
   };
 
   const handleHamburgerOnClick = (e) => {
-    if (labelsContainerRef.current.style.display === "") {
-      labelsContainerRef.current.style.display = "flex";
-    } else {
-      labelsContainerRef.current.style.display = "";
-    }
+    toggleDisplay(labelsContainerRef.current)
+    toggleDisplay(durationRangeRef.current)
   };
-  
+
+  const toggleCastBlock = (e) => {
+    toggleDisplay(castBlockContainerRef.current)
+  };
+
+  const toggleCategoryBlock = (e) => {
+    toggleDisplay(categoryBlockContainerRef.current)
+  };
+
+  const sliderValueChange = (min, max) => {
+    SetMaxDuration(max);
+    SetMinDuration(min);
+  };
+
   return (
     <div className="search-page-container">
       <div className="search-page-filters-container">
-        <input
-          type="text"
-          name="length-box"
-          className="search-page-length-box"
-          onChange={handleTimeTextChange}
-        />
         <div className="search-page-filter-box">
-            <div className="search-page-sort selected-filter" onClick={handleSortOnClick}>
+          <div
+            className="search-page-sort selected-filter"
+            onClick={handleSortOnClick}
+          >
             <span>Latest</span>
-            {sortQuery==="latest" && ( 
-              <img src="static/images/down.png"  alt="" className="sort-direction" />
-            )} 
-            {sortQuery==="-latest" && ( 
-              <img src="static/images/up.png"  alt="" className="sort-direction" />
-            )} 
-            </div>
-            <div className="search-page-sort" onClick={handleSortOnClick}>
+            {sortQuery === "-created" && (
+              <img
+                src="static/images/down.png"
+                alt=""
+                className="sort-direction"
+              />
+            )}
+            {sortQuery === "created" && (
+              <img
+                src="static/images/up.png"
+                alt=""
+                className="sort-direction"
+              />
+            )}
+          </div>
+          <div className="search-page-sort" onClick={handleSortOnClick}>
             <span>Longest</span>
-            {sortQuery==="longest" && ( 
-              <img src="static/images/down.png"  alt="" className="sort-direction" />
-            )} 
-            {sortQuery==="-longest" && ( 
-              <img src="static/images/up.png"  alt="" className="sort-direction" />
-            )} 
-            </div>
-            <div className="search-page-sort" onClick={handleSortOnClick}>
+            {sortQuery === "-duration" && (
+              <img
+                src="static/images/down.png"
+                alt=""
+                className="sort-direction"
+              />
+            )}
+            {sortQuery === "duration" && (
+              <img
+                src="static/images/up.png"
+                alt=""
+                className="sort-direction"
+              />
+            )}
+          </div>
+          <div className="search-page-sort" onClick={handleSortOnClick}>
             <span>Surprise</span>
-            </div>
+          </div>
         </div>
         <div className="search-page-sort-box">
-            <div className="search-page-filter" onClick={handleFilterOnClick}>
+          <div className="search-page-filter" onClick={handleFilterOnClick}>
             <span>Recommended</span>
-            </div>
-            <div className="search-page-filter" onClick={handleFilterOnClick}>
+          </div>
+          <div className="search-page-filter" onClick={handleFilterOnClick}>
             <span>Favourites</span>
-            </div>
+          </div>
         </div>
         <div>
           <img src="static/images/dice.png" alt="" className="random-button" />
         </div>
+        {maxDurationBar > 0 && (
+          <MultiRangeSlider
+            min={minDurationBar}
+            max={maxDurationBar}
+            durationRangeRef = {durationRangeRef}
+            onChange={({ min, max }) => sliderValueChange(min, max)}
+          />
+        )}
         <div>
           <img
             src="static/images/hamburger.png"
@@ -250,7 +265,7 @@ function SearchPage() {
               categories={data["categories"]}
               cast={data["cast"]}
               views={data["views"]}
-              favorite={data["favorite"]}
+              favorite={data["favourite"]}
               preview={data["preview"]}
               previewThumbnail={data["preview_thumbnail"]}
               progress={data["progress"]}
@@ -262,21 +277,48 @@ function SearchPage() {
           ))}
         </div>
         <div className="video-labels-container" ref={labelsContainerRef}>
+          <input
+            type="text"
+            name="query-box"
+            className="search-page-query-box"
+            placeholder="Search"
+            onChange={handleSearchQueryChange}
+          />
           <div className="video-labels-cast-box">
-            <div className="video-labels-title">CAST</div>
-            {allStars.map((data, i) => (
-              <div key={i} className="video-labels-cast" onClick={handleCastOnClick}>
-                {data}
-              </div>
-            ))}
+            <div className="video-labels-cast-title" onClick={toggleCastBlock}>CAST <img
+                src="static/images/down.png"
+                alt=""
+                className="sort-direction"
+              /></div>
+            <div className="video-labels-cast-data" ref={castBlockContainerRef}>
+              {allStars.map((data, i) => (
+                <div
+                  key={i}
+                  className="video-labels-cast"
+                  onClick={handleCastOnClick}
+                >
+                  {data}
+                </div>
+              ))}
+            </div>
           </div>
           <div className="video-labels-category-box">
-            <div className="video-labels-title">CATEGORIES</div>
-            {allCategories.map((data, i) => (
-              <div key={i} className="video-labels-category" onClick={handleCategoryOnClick}>
-                {data}
-              </div>
-            ))}
+            <div className="video-labels-category-title" onClick={toggleCategoryBlock}>CATEGORIES <img
+                src="static/images/down.png"
+                alt=""
+                className="sort-direction"
+              /></div>
+            <div className="video-labels-category-data" ref={categoryBlockContainerRef}>
+              {allCategories.map((data, i) => (
+                <div
+                  key={i}
+                  className="video-labels-category"
+                  onClick={handleCategoryOnClick}
+                >
+                  {data}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

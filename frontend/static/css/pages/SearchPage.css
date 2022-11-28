@@ -1,6 +1,7 @@
 .search-page-container {
   display: grid;
   width: 100%;
+  margin-bottom: 100px;
 }
 
 .search-page-filters-container {
@@ -14,12 +15,14 @@
   margin-top: 35px;
 }
 
-.search-page-length-box {
+.search-page-query-box {
   border-radius: 5px;
   height: 30px;
   background: linear-gradient(#333, #222);
   border: 1px solid #444;
   color: #d7d7d7;
+  width: 85%;
+  align-self: flex-end;
 }
 
 .random-button,
@@ -28,19 +31,20 @@
   margin-top: 7px;
 }
 
-.search-page-length-box {
-  width: 70px;
+.search-page-query-box::placeholder{
+  text-align: center;
 }
 
 .video-adverts-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: flex-start;
   justify-content: center;
   align-items: flex-start;
   gap: 25px;
-  margin: 50px;
+  margin-top: 50px;
+  min-width: 91%;
 }
 
 .search-page-content-container {
@@ -52,11 +56,10 @@
 }
 
 .video-labels-container{
-    margin-right: 2%;
-    margin-left: -60px;
+    margin-right: 3%;
     margin-top: 55px;
     flex-direction: column;
-    row-gap: 70px;
+    row-gap: 35px;
     font-size: 18px;
     display: none;
 }
@@ -65,24 +68,35 @@
     width: 150px;
     display: flex;
     flex-direction: column;
-    row-gap: 7px;
+    row-gap: 12px;
 }
 
 .video-labels-cast:hover,
 .video-labels-category:hover,
 .search-page-filter:hover,
 .search-page-sort:hover {
-  color: red;
+  color: #ff445e;
   cursor: pointer;
 }
 
-.video-labels-title{
-    margin-bottom: 3px;
-    font-size: 20px;
+.video-labels-cast-title, .video-labels-category-title{
+  font-size: 20px;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  column-gap: 7px;
+}
+
+.video-labels-cast-data, .video-labels-category-data{
+  row-gap: 7px;
+  flex-direction: column;
+  display: none;
 }
 
 .selected-filter {
-    color: red;
+    color: red !important;
 }
 
 .search-page-filter-box, 

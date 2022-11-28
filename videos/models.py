@@ -6,6 +6,8 @@ from django.db.models import Q
 import datetime
 from django.core.exceptions import FieldError, ValidationError
 from backend.models import Series
+from stars.models import Star
+from backend.models import Category
 
 
 def convert_url(file_path):
@@ -54,8 +56,9 @@ class VideoQuerySet(models.QuerySet):
 
         if duration_max is not None:
             try:
-                qs = qs.filter(duration__lte=datetime.timedelta(
-                    seconds=int(duration_max))).order_by('-duration')
+                if int(duration_max)>1:
+                    qs = qs.filter(duration__lte=datetime.timedelta(
+                        seconds=int(duration_max))).order_by('-duration')
             except (ValueError, ValidationError):
                 qs = self.none()
 
@@ -126,4 +129,43 @@ class Video(models.Model):
 
     def get_subtitle_url(self):
         return convert_url(self.subtitle)
+
+    def get_resolution(self):
+        if self.height > 2100 or self.width >3800:
+            return "4K UHD"
+        elif self.height > 1400 or self.width >2500:
+            return "2K QHD"
+        elif self.height > 1050 or self.width > 1900:
+            return "HD"
+        elif self.height > 700 or self.width > 1200:
+            return "720p"
+        elif self.height > 400 or self.width > 600:
+            return "SD"
+        elif self.height > 300 or self.width > 400:
+            return "360p"
+        else:
+            return "240p"
+
+    def get_special_tag(self):
+        special_tag = ""
+        if self.favourite:
+            special_tag = "FAVOURITE"
+        if self.progress:
+            if self.progress > self.duration.seconds * 0.9:
+                special_tag = "WATCHED"
+        if (timezone.now()-self.created).days <15:
+            special_tag = "NEW"
+        if self.cast:
+            for cast in self.cast.split(","):
+                star_object = Star.objects.get(name = cast)
+                if star_object.favourite:
+                    special_tag = "RECOMMENDED"
+        if self.categories:
+            for category in self.categories.split(","):
+                category_object = Category.objects.get(title = category)
+                if category_object.favourite:
+                    special_tag = "RECOMMENDED"
+
+        return special_tag
+
 
