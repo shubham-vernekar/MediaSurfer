@@ -1,6 +1,7 @@
 import { React, useRef, useEffect, useState } from "react";
 import VideoCard from "../video/VideoCard";
 import MultiRangeSlider from "../slider/MultiRangeSlider";
+import Paginator from "../paginator/Paginator"; 
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 import { useSearchParams } from "react-router-dom";
@@ -126,7 +127,7 @@ function SearchPage() {
         url += "&cast=" + castQuery + "&category=" + categoryQuery + "&offset=" + videosPageLimit 
         url += "&max_duration=" + maxDuration + "&min_duration=" + minDuration 
         pagesData.push({
-          "pageNumber" : pageNumber,
+          "page" : pageNumber,
           "url": url
         })
     }
@@ -366,7 +367,7 @@ function SearchPage() {
           />
           <div className="video-labels-cast-box">
             <div className="video-labels-cast-title" onClick={toggleCastBlock}>
-              CAST{" "}
+              CAST
               <img
                 src="static/images/down.png"
                 alt=""
@@ -390,7 +391,7 @@ function SearchPage() {
               className="video-labels-category-title"
               onClick={toggleCategoryBlock}
             >
-              CATEGORIES{" "}
+              CATEGORIES
               <img
                 src="static/images/down.png"
                 alt=""
@@ -416,7 +417,9 @@ function SearchPage() {
       </div>
 
       <div className="search-page-pagination-container">
-        pagination here
+        {pages && (
+          <Paginator pagesData={pages}/>
+        )}
       </div>
     </div>
   );
