@@ -34,8 +34,13 @@ class VideoQuerySet(models.QuerySet):
         duration_max = parameters.get("duration_max", None)
         duration_min = parameters.get("duration_min", None)
         sort_by = parameters.get("sort_by", None)
+        filter = parameters.get("filter", "").lower()
 
         qs = self
+
+        if filter=="favourites":
+            favourite = True
+        
         if query:
             qs = qs.filter(Q(search_text__icontains=query))
 
@@ -58,14 +63,14 @@ class VideoQuerySet(models.QuerySet):
             try:
                 if int(duration_max)>1:
                     qs = qs.filter(duration__lte=datetime.timedelta(
-                        seconds=int(duration_max))).order_by('-duration')
+                        seconds=int(duration_max)+1)).order_by('-duration')
             except (ValueError, ValidationError):
                 qs = self.none()
 
         if duration_min is not None:
             try:
                 qs = qs.filter(duration__gte=datetime.timedelta(
-                    seconds=int(duration_min))).order_by('-duration')
+                    seconds=int(duration_min)-1)).order_by('-duration')
             except (ValueError, ValidationError):
                 qs = self.none()
 
@@ -74,6 +79,11 @@ class VideoQuerySet(models.QuerySet):
                 qs = qs.order_by(sort_by)
             except (FieldError):
                 qs = self.none()
+
+        if filter=="recommended":
+            qs = [x for x in qs if x.get_special_tag()=="RECOMMENDED"]
+        elif filter=="new":
+            qs = [x for x in qs if x.get_special_tag()=="NEW"]
 
         return qs
 
@@ -148,23 +158,27 @@ class Video(models.Model):
 
     def get_special_tag(self):
         special_tag = ""
-        if self.favourite:
-            special_tag = "FAVOURITE"
-        if self.progress:
-            if self.progress > self.duration.seconds * 0.9:
-                special_tag = "WATCHED"
-        if (timezone.now()-self.created).days <15:
-            special_tag = "NEW"
         if self.cast:
             for cast in self.cast.split(","):
                 star_object = Star.objects.get(name = cast)
                 if star_object.favourite:
                     special_tag = "RECOMMENDED"
+
         if self.categories:
             for category in self.categories.split(","):
                 category_object = Category.objects.get(title = category)
                 if category_object.favourite:
                     special_tag = "RECOMMENDED"
+
+        if (timezone.now()-self.created).days <15:
+            special_tag = "NEW"
+
+        if self.progress:
+            if self.progress > self.duration.seconds * 0.9:
+                special_tag = "WATCHED"
+        
+        if self.favourite:
+            special_tag = "FAVOURITE"
 
         return special_tag
 

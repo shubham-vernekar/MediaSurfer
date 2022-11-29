@@ -15,14 +15,13 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
         return qs
 
     def list(self, request, *args, **kwargs):
-        # Note the use of `get_queryset()` instead of `self.queryset`
         response = super().list(request, args, kwargs)
+        qs = self.get_queryset()
         min_duration, max_duration, all_stars, all_categories = 0, 0, set(), set()
-        for records in response.data["results"]:
-            all_stars.update([x for x in records["cast"].split(",") if x])
-            all_categories.update([x for x in records["categories"].split(",") if x])
-            duration = records["duration"].split(".")[0].split(":")
-            duration = int(duration[0])*3600 + int(duration[1])*60 + int(duration[2])
+        for records in qs:
+            all_stars.update([x for x in records.cast.split(",") if x])
+            all_categories.update([x for x in records.categories.split(",") if x])
+            duration = records.duration.seconds
             if min_duration > duration or min_duration == 0:
                 min_duration = duration
             if max_duration < duration:
@@ -32,6 +31,7 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
         response.data["max_duration"] = max_duration
         response.data["all_stars"] = sorted(list(all_stars))
         response.data["all_categories"] = sorted(list(all_categories))
+        response.data["count"] = len(qs)
         return response
 
 class VideoDetailAPIView(generics.RetrieveAPIView):

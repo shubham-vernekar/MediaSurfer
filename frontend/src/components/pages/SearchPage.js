@@ -3,36 +3,63 @@ import VideoCard from "../video/VideoCard";
 import MultiRangeSlider from "../slider/MultiRangeSlider";
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
+import { useSearchParams } from "react-router-dom";
 
 function SearchPage() {
   const [videoData, SetVideoData] = useState([]);
+
+  let [searchParams, setSearchParams] = useSearchParams();
 
   const videosPerPage = 30;
   const labelsContainerRef = useRef(null);
   const castBlockContainerRef = useRef(null);
   const categoryBlockContainerRef = useRef(null);
   const durationRangeRef = useRef(null);
+  const searchPageFilterBoxRef = useRef(null);
+  const searchPageSortBoxRef = useRef(null);
+
+  let page_no = searchParams.get("page") || 1;
+  if (page_no < 1) {
+    page_no = 1;
+  }
 
   const [allStars, SetAllStars] = useState([]);
   const [allCategories, SetAllCategories] = useState([]);
-  const [sortQuery, SetSortQuery] = useState("-created");
-  const [filterQuery, SetFilterQuery] = useState("");
-  const [searchQuery, SetSearchQuery] = useState("");
-  const [castQuery, SetCastQuery] = useState("");
-  const [categoryQuery, SetCategoryQuery] = useState("");
-  const [videosPageOffset, SetVideosPageOffset] = useState("");
-  const [videosPageNumber, SetVideosPageNumber] = useState("");
-  const [maxDuration, SetMaxDuration] = useState(0);
-  const [minDuration, SetMinDuration] = useState(0);
+  const [sortQuery, SetSortQuery] = useState(
+    searchParams.get("sort_by") || "-created"
+  );
+  const [filterQuery, SetFilterQuery] = useState(
+    searchParams.get("filter") || ""
+  );
+  const [searchQuery, SetSearchQuery] = useState(
+    searchParams.get("query") || ""
+  );
+  const [castQuery, SetCastQuery] = useState(searchParams.get("cast") || "");
+  const [categoryQuery, SetCategoryQuery] = useState(
+    searchParams.get("category") || ""
+  );
+  const [videosPageLimit, SetVideosPageLimit] = useState(
+    searchParams.get("offset") || videosPerPage
+  );
+  const [maxDuration, SetMaxDuration] = useState(
+    searchParams.get("max_duration") || 0
+  );
+  const [minDuration, SetMinDuration] = useState(
+    searchParams.get("min_duration") || 0
+  );
+  const [videosPageNumber, SetVideosPageNumber] = useState(page_no);
   const [maxDurationBar, SetMaxDurationBar] = useState(0);
   const [minDurationBar, SetMinDurationBar] = useState(0);
+  const [videoCount, SetVideoCount] = useState(0);
+  const [pages, SetPages] = useState([]);
 
   useEffect(() => {
     axios({
       method: "get",
       url: "api/videos",
       params: {
-        limit: videosPerPage,
+        limit: videosPageLimit,
+        offset: (videosPageNumber - 1) * videosPageLimit,
         query: searchQuery,
         cast: castQuery,
         sort_by: sortQuery,
@@ -43,20 +70,17 @@ function SearchPage() {
       },
     }).then((response) => {
       SetVideoData(response.data.results);
+      SetVideoCount(response.data["count"]);
     });
-  }, [
-    sortQuery,
-    filterQuery,
-    castQuery,
-    categoryQuery,
-  ]);
+  }, [sortQuery, filterQuery, castQuery, categoryQuery]);
 
   useEffect(() => {
     axios({
       method: "get",
       url: "api/videos",
       params: {
-        limit: videosPerPage,
+        limit: videosPageLimit,
+        offset: (videosPageNumber - 1) * videosPageLimit,
         query: searchQuery,
         cast: castQuery,
         sort_by: sortQuery,
@@ -69,19 +93,17 @@ function SearchPage() {
       SetVideoData(response.data.results);
       SetAllStars(response.data["all_stars"]);
       SetAllCategories(response.data["all_categories"]);
+      SetVideoCount(response.data["count"]);
     });
-  }, [
-    searchQuery,
-    maxDuration,
-    minDuration,
-  ]);
+  }, [searchQuery, maxDuration, minDuration]);
 
   useEffect(() => {
     axios({
       method: "get",
       url: "api/videos",
       params: {
-        limit: videosPerPage,
+        limit: videosPageLimit,
+        offset: (videosPageNumber - 1) * videosPageLimit,
         query: searchQuery,
         cast: castQuery,
         sort_by: sortQuery,
@@ -93,8 +115,24 @@ function SearchPage() {
       SetMinDurationBar(response.data["min_duration"]);
       SetAllStars(response.data["all_stars"]);
       SetAllCategories(response.data["all_categories"]);
+      SetVideoCount(response.data["count"]);
     });
   }, []);
+
+  useEffect(() => {
+    let pagesData = []
+    for (let pageNumber = 1; pageNumber <= Math.ceil(videoCount/videosPageLimit); pageNumber++) {
+        let url = "/search?page=" + pageNumber + "&sort_by=" + sortQuery + "&filter=" + filterQuery + "&filter=" + searchQuery
+        url += "&cast=" + castQuery + "&category=" + categoryQuery + "&offset=" + videosPageLimit 
+        url += "&max_duration=" + maxDuration + "&min_duration=" + minDuration 
+        pagesData.push({
+          "pageNumber" : pageNumber,
+          "url": url
+        })
+    }
+    
+    SetPages(pagesData)
+  }, [videoCount]);
 
   const clearSiblingSelection = (target) => {
     let clickedSort = target.currentTarget;
@@ -142,19 +180,25 @@ function SearchPage() {
       .replace("latest", "created")
       .replace("longest", "duration")
       .replace("surprise", "?");
+    SetVideosPageNumber(1);
     SetFilterQuery(filterText);
   };
 
   const handleSearchQueryChange = (e) => {
+    SetVideosPageNumber(1);
     SetSearchQuery(e.currentTarget.value);
   };
 
   const handleCastOnClick = (e) => {
+    SetVideosPageNumber(1);
     SetCastQuery(clearSiblingSelection(e));
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
   };
 
   const handleCategoryOnClick = (e) => {
+    SetVideosPageNumber(1);
     SetCategoryQuery(clearSiblingSelection(e));
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
   };
 
   const toggleDisplay = (target) => {
@@ -166,16 +210,16 @@ function SearchPage() {
   };
 
   const handleHamburgerOnClick = (e) => {
-    toggleDisplay(labelsContainerRef.current)
-    toggleDisplay(durationRangeRef.current)
+    toggleDisplay(labelsContainerRef.current);
+    toggleDisplay(durationRangeRef.current);
   };
 
   const toggleCastBlock = (e) => {
-    toggleDisplay(castBlockContainerRef.current)
+    toggleDisplay(castBlockContainerRef.current);
   };
 
   const toggleCategoryBlock = (e) => {
-    toggleDisplay(categoryBlockContainerRef.current)
+    toggleDisplay(categoryBlockContainerRef.current);
   };
 
   const sliderValueChange = (min, max) => {
@@ -183,79 +227,115 @@ function SearchPage() {
     SetMinDuration(min);
   };
 
+  const clearChildern = (target) => {
+    [...target.children].forEach((sib) =>
+      sib.classList.remove("selected-filter")
+    );
+  };
+
+  const clearAllFilters = (e) => {
+    SetSortQuery("-created");
+    SetFilterQuery("");
+    SetSearchQuery("");
+    SetCastQuery("");
+    SetCategoryQuery("");
+    SetMaxDuration(minDurationBar);
+    SetMinDuration(maxDurationBar);
+    clearChildern(castBlockContainerRef.current);
+    clearChildern(categoryBlockContainerRef.current);
+    clearChildern(searchPageFilterBoxRef.current);
+    clearChildern(searchPageSortBoxRef.current);
+  };
+
   return (
     <div className="search-page-container">
       <div className="search-page-filters-container">
-        <div className="search-page-filter-box">
-          <div
-            className="search-page-sort selected-filter"
-            onClick={handleSortOnClick}
-          >
-            <span>Latest</span>
-            {sortQuery === "-created" && (
-              <img
-                src="static/images/down.png"
-                alt=""
-                className="sort-direction"
-              />
-            )}
-            {sortQuery === "created" && (
-              <img
-                src="static/images/up.png"
-                alt=""
-                className="sort-direction"
-              />
-            )}
-          </div>
-          <div className="search-page-sort" onClick={handleSortOnClick}>
-            <span>Longest</span>
-            {sortQuery === "-duration" && (
-              <img
-                src="static/images/down.png"
-                alt=""
-                className="sort-direction"
-              />
-            )}
-            {sortQuery === "duration" && (
-              <img
-                src="static/images/up.png"
-                alt=""
-                className="sort-direction"
-              />
-            )}
-          </div>
-          <div className="search-page-sort" onClick={handleSortOnClick}>
-            <span>Surprise</span>
-          </div>
+        <div className="search-page-filters-left">
+          {videoCount} videos found
         </div>
-        <div className="search-page-sort-box">
-          <div className="search-page-filter" onClick={handleFilterOnClick}>
-            <span>Recommended</span>
+        <div className="search-page-filters-right">
+          <div className="search-page-filter-box" ref={searchPageFilterBoxRef}>
+            <div
+              className="search-page-sort selected-filter"
+              onClick={handleSortOnClick}
+            >
+              <span>Latest</span>
+              {sortQuery === "-created" && (
+                <img
+                  src="static/images/down.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+              {sortQuery === "created" && (
+                <img
+                  src="static/images/up.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+            </div>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
+              <span>Longest</span>
+              {sortQuery === "-duration" && (
+                <img
+                  src="static/images/down.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+              {sortQuery === "duration" && (
+                <img
+                  src="static/images/up.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+            </div>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
+              <span>Surprise</span>
+            </div>
           </div>
-          <div className="search-page-filter" onClick={handleFilterOnClick}>
-            <span>Favourites</span>
+          <div className="search-page-sort-box" ref={searchPageSortBoxRef}>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
+              <span>Recommended</span>
+            </div>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
+              <span>Favourites</span>
+            </div>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
+              <span>New</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <img src="static/images/dice.png" alt="" className="random-button" />
-        </div>
-        {maxDurationBar > 0 && (
-          <MultiRangeSlider
-            min={minDurationBar}
-            max={maxDurationBar}
-            durationRangeRef = {durationRangeRef}
-            onChange={({ min, max }) => sliderValueChange(min, max)}
-          />
-        )}
-        <div>
-          <img
-            src="static/images/hamburger.png"
-            alt=""
-            className="video-filters-hamburger"
-            onClick={handleHamburgerOnClick}
-          />
+          <div className="search-page-clear-filter" onClick={clearAllFilters}>
+            Clear
+          </div>
+          <div>
+            <img
+              src="static/images/dice.png"
+              alt=""
+              className="random-button"
+            />
+          </div>
+          {maxDurationBar > 0 && (
+            <MultiRangeSlider
+              min={minDurationBar}
+              max={maxDurationBar}
+              durationRangeRef={durationRangeRef}
+              onChange={({ min, max }) => sliderValueChange(min, max)}
+            />
+          )}
+          <div>
+            <img
+              src="static/images/hamburger.png"
+              alt=""
+              className="video-filters-hamburger"
+              onClick={handleHamburgerOnClick}
+            />
+          </div>
         </div>
       </div>
+
       <div className="search-page-content-container">
         <div className="video-adverts-container">
           {videoData.map((data, i) => (
@@ -285,11 +365,14 @@ function SearchPage() {
             onChange={handleSearchQueryChange}
           />
           <div className="video-labels-cast-box">
-            <div className="video-labels-cast-title" onClick={toggleCastBlock}>CAST <img
+            <div className="video-labels-cast-title" onClick={toggleCastBlock}>
+              CAST{" "}
+              <img
                 src="static/images/down.png"
                 alt=""
                 className="sort-direction"
-              /></div>
+              />
+            </div>
             <div className="video-labels-cast-data" ref={castBlockContainerRef}>
               {allStars.map((data, i) => (
                 <div
@@ -303,12 +386,21 @@ function SearchPage() {
             </div>
           </div>
           <div className="video-labels-category-box">
-            <div className="video-labels-category-title" onClick={toggleCategoryBlock}>CATEGORIES <img
+            <div
+              className="video-labels-category-title"
+              onClick={toggleCategoryBlock}
+            >
+              CATEGORIES{" "}
+              <img
                 src="static/images/down.png"
                 alt=""
                 className="sort-direction"
-              /></div>
-            <div className="video-labels-category-data" ref={categoryBlockContainerRef}>
+              />
+            </div>
+            <div
+              className="video-labels-category-data"
+              ref={categoryBlockContainerRef}
+            >
               {allCategories.map((data, i) => (
                 <div
                   key={i}
@@ -321,6 +413,10 @@ function SearchPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="search-page-pagination-container">
+        pagination here
       </div>
     </div>
   );
