@@ -18,7 +18,6 @@ function SearchPage() {
   const durationRangeRef = useRef(null);
   const searchPageFilterBoxRef = useRef(null);
   const searchPageSortBoxRef = useRef(null);
-  const searchPaginatorRef = useRef(null);
 
   let page_no = searchParams.get("page") || 1;
   if (page_no < 1) {
@@ -204,12 +203,6 @@ function SearchPage() {
   const handleHamburgerOnClick = (e) => {
     toggleDisplay(labelsContainerRef.current);
     toggleDisplay(durationRangeRef.current);
-    if (labelsContainerRef.current.style.display === "") {
-      searchPaginatorRef.current.style.width = "100%"
-    }else{
-      searchPaginatorRef.current.style.width = "91%"
-    }
-    
   };
 
   const sliderValueChange = (min, max) => {
@@ -331,24 +324,31 @@ function SearchPage() {
       </div>
 
       <div className="search-page-content-container">
-        <div className="video-adverts-container">
-          {videoData.map((data, i) => (
-            <VideoCard
-              key={i}
-              title={data["title"]}
-              categories={data["categories"]}
-              cast={data["cast"]}
-              views={data["views"]}
-              favorite={data["favourite"]}
-              preview={data["preview"]}
-              previewThumbnail={data["preview_thumbnail"]}
-              progress={data["progress"]}
-              duration={data["duration"]}
-              created={data["created"]}
-              resolution={data["resolution"]}
-              specialTag={data["special_tag"]}
-            />
-          ))}
+        <div className="search-videos-box">
+          <div className="video-adverts-container">
+            {videoData.map((data, i) => (
+              <VideoCard
+                key={i}
+                title={data["title"]}
+                categories={data["categories"]}
+                cast={data["cast"]}
+                views={data["views"]}
+                favorite={data["favourite"]}
+                preview={data["preview"]}
+                previewThumbnail={data["preview_thumbnail"]}
+                progress={data["progress"]}
+                duration={data["duration"]}
+                created={data["created"]}
+                resolution={data["resolution"]}
+                specialTag={data["special_tag"]}
+              />
+            ))}
+          </div>
+          <div className="search-page-pagination-container">
+            {videosPageNumber && (
+              <Paginator pageNo={videosPageNumber} numberOfPages={numberOfPages} paginatorCallback={paginatorCallback}/>
+            )}
+          </div>
         </div>
         <div className="video-labels-container" ref={labelsContainerRef}>
           <input
@@ -406,12 +406,6 @@ function SearchPage() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="search-page-pagination-container" ref={searchPaginatorRef}>
-        {videosPageNumber && (
-          <Paginator pageNo={videosPageNumber} numberOfPages={numberOfPages} paginatorCallback={paginatorCallback}/>
-        )}
       </div>
     </div>
   );
