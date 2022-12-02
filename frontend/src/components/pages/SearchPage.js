@@ -11,13 +11,14 @@ function SearchPage() {
 
   let [searchParams, setSearchParams] = useSearchParams();
 
-  const videosPerPage = 30;
+  const videosPerPage = 18;
   const labelsContainerRef = useRef(null);
   const castBlockContainerRef = useRef(null);
   const categoryBlockContainerRef = useRef(null);
   const durationRangeRef = useRef(null);
   const searchPageFilterBoxRef = useRef(null);
   const searchPageSortBoxRef = useRef(null);
+  const searchPaginatorRef = useRef(null);
 
   let page_no = searchParams.get("page") || 1;
   if (page_no < 1) {
@@ -203,14 +204,12 @@ function SearchPage() {
   const handleHamburgerOnClick = (e) => {
     toggleDisplay(labelsContainerRef.current);
     toggleDisplay(durationRangeRef.current);
-  };
-
-  const toggleCastBlock = (e) => {
-    toggleDisplay(castBlockContainerRef.current);
-  };
-
-  const toggleCategoryBlock = (e) => {
-    toggleDisplay(categoryBlockContainerRef.current);
+    if (labelsContainerRef.current.style.display === "") {
+      searchPaginatorRef.current.style.width = "100%"
+    }else{
+      searchPaginatorRef.current.style.width = "91%"
+    }
+    
   };
 
   const sliderValueChange = (min, max) => {
@@ -360,7 +359,7 @@ function SearchPage() {
             onChange={handleSearchQueryChange}
           />
           <div className="video-labels-cast-box">
-            <div className="video-labels-cast-title" onClick={toggleCastBlock}>
+            <div className="video-labels-cast-title">
               CAST
               <img
                 src="static/images/down.png"
@@ -383,7 +382,6 @@ function SearchPage() {
           <div className="video-labels-category-box">
             <div
               className="video-labels-category-title"
-              onClick={toggleCategoryBlock}
             >
               CATEGORIES
               <img
@@ -410,7 +408,7 @@ function SearchPage() {
         </div>
       </div>
 
-      <div className="search-page-pagination-container">
+      <div className="search-page-pagination-container" ref={searchPaginatorRef}>
         {videosPageNumber && (
           <Paginator pageNo={videosPageNumber} numberOfPages={numberOfPages} paginatorCallback={paginatorCallback}/>
         )}

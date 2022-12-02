@@ -32,14 +32,14 @@ const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
     let right = [];
     for (let i = currentPage + 1; i < currentPage + laneLength + 1; i++) {
       
-      if (i < totalPages - 1) {
+      if (i < totalPages) {
         right.push(i);
       }
     }
 
     SetRightLane(right);
 
-    if (right && right[right.length - 1] < lastPage - 1 && right.length>=laneLength) {
+    if (right && right[right.length - 1] < totalPages - 1 && right.length>=laneLength) {
       SetShowRightSkip(true);
     }else{
       SetShowRightSkip(false)
@@ -49,8 +49,8 @@ const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
   useEffect(() => {
     SetTotalPages(numberOfPages);
     SetFirstPage(1);
-    if (numberOfPages > 1) {
-      SetLastPage(numberOfPages - 1);
+    if (numberOfPages > 0) {
+      SetLastPage(numberOfPages);
     }
     if (pageNo<0){
       SetCurrentPage(1);
@@ -102,7 +102,7 @@ const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
           <span>..</span>
         </div>
       )}
-      {currentPage < totalPages-1 && (<div className="paginator-item last-page" page={lastPage} onClick={paginatorClickHandler}>
+      {currentPage < totalPages && (<div className="paginator-item last-page" page={lastPage} onClick={paginatorClickHandler}>
         {lastPage}
       </div>)}
       {currentPage < totalPages-1 && (
