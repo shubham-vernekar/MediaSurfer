@@ -6,11 +6,11 @@
     --greyLight: #23adade1;
     --greyLight-2: #cbe0dd;
     --greyDark: #2d4848;
-    font-size: 28px;
+    font-size: 20px;
     justify-content: center;
     border-style: solid;
-    border-width: 2px 0;
-    padding: 15px 0;
+    border-width: 1px 0;
+    padding: 12px 0;
 }
 
 .current-page{

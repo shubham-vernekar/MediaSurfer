@@ -52,7 +52,7 @@ function SearchPage() {
   const [maxDurationBar, SetMaxDurationBar] = useState(0);
   const [minDurationBar, SetMinDurationBar] = useState(0);
   const [videoCount, SetVideoCount] = useState(0);
-  const [pages, SetPages] = useState([]);
+  const [numberOfPages, SetNumberOfPages] = useState(0);
 
   useEffect(() => {
     axios({
@@ -73,7 +73,7 @@ function SearchPage() {
       SetVideoData(response.data.results);
       SetVideoCount(response.data["count"]);
     });
-  }, [sortQuery, filterQuery, castQuery, categoryQuery]);
+  }, [sortQuery, filterQuery, castQuery, categoryQuery, videosPageNumber]);
 
   useEffect(() => {
     axios({
@@ -121,18 +121,8 @@ function SearchPage() {
   }, []);
 
   useEffect(() => {
-    let pagesData = []
-    for (let pageNumber = 1; pageNumber <= Math.ceil(videoCount/videosPageLimit); pageNumber++) {
-        let url = "/search?page=" + pageNumber + "&sort_by=" + sortQuery + "&filter=" + filterQuery + "&filter=" + searchQuery
-        url += "&cast=" + castQuery + "&category=" + categoryQuery + "&offset=" + videosPageLimit 
-        url += "&max_duration=" + maxDuration + "&min_duration=" + minDuration 
-        pagesData.push({
-          "page" : pageNumber,
-          "url": url
-        })
-    }
-    
-    SetPages(pagesData)
+    SetVideosPageNumber(1)
+    SetNumberOfPages(Math.ceil(videoCount/videosPageLimit))
   }, [videoCount]);
 
   const clearSiblingSelection = (target) => {
@@ -246,6 +236,10 @@ function SearchPage() {
     clearChildern(categoryBlockContainerRef.current);
     clearChildern(searchPageFilterBoxRef.current);
     clearChildern(searchPageSortBoxRef.current);
+  };
+
+  const paginatorCallback = (val) => {
+    SetVideosPageNumber(val)
   };
 
   return (
@@ -417,8 +411,8 @@ function SearchPage() {
       </div>
 
       <div className="search-page-pagination-container">
-        {pages && (
-          <Paginator pagesData={pages}/>
+        {videosPageNumber && (
+          <Paginator pageNo={videosPageNumber} numberOfPages={numberOfPages} paginatorCallback={paginatorCallback}/>
         )}
       </div>
     </div>

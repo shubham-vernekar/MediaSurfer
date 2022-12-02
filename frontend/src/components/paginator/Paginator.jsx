@@ -1,8 +1,7 @@
 import { React, useRef, useEffect, useState } from "react";
 import "../../../static/css/paginator/Paginator.css";
-import { useSearchParams } from "react-router-dom";
 
-const Paginator = ({ pagesData }) => {
+const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
   const laneLength = 3;
   const [currentPage, SetCurrentPage] = useState(0);
   const [firstPage, SetFirstPage] = useState(0);
@@ -13,25 +12,26 @@ const Paginator = ({ pagesData }) => {
   const [showRightSkip, SetShowRightSkip] = useState(false);
   const [totalPages, SetTotalPages] = useState(0);
 
-  let [searchParams, setSearchParams] = useSearchParams();
-
   useEffect(() => {
     let left = [];
 
-    for (let i = currentPage - laneLength; i < currentPage; i++) {
-      if (i > 0) {
+    for (let i = currentPage - laneLength; i < currentPage ; i++) {
+      if (i > 1) {
         left.push(i);
       }
     }
 
     if (left && left[0] > firstPage + 1) {
       SetShowLeftSkip(true);
+    }else{
+      SetShowLeftSkip(false);
     }
 
     SetLeftLane(left);
 
     let right = [];
     for (let i = currentPage + 1; i < currentPage + laneLength + 1; i++) {
+      
       if (i < totalPages - 1) {
         right.push(i);
       }
@@ -39,51 +39,39 @@ const Paginator = ({ pagesData }) => {
 
     SetRightLane(right);
 
-    if (right && right[right.length - 1] < lastPage - 1) {
+    if (right && right[right.length - 1] < lastPage - 1 && right.length>=laneLength) {
       SetShowRightSkip(true);
+    }else{
+      SetShowRightSkip(false)
     }
   }, [currentPage, totalPages]);
 
   useEffect(() => {
-    SetTotalPages(pagesData.length);
-    SetFirstPage(0);
-    if (pagesData.length > 1) {
-      SetLastPage(pagesData.length - 1);
+    SetTotalPages(numberOfPages);
+    SetFirstPage(1);
+    if (numberOfPages > 1) {
+      SetLastPage(numberOfPages - 1);
     }
-    let currPage = searchParams.get("page")-1 || 0
-    if (currPage<0){
-        currPage = 0
+    if (pageNo<0){
+      SetCurrentPage(1);
+    } else{
+      SetCurrentPage(pageNo);
     }
-    SetCurrentPage(currPage);
-  }, [pagesData]);
+  }, [numberOfPages]);
 
-//   useEffect(() => {
-//       console.log("currentPage", currentPage);
-//   }, [currentPage]);
-
-//   useEffect(() => {
-//       console.log("leftLane", leftLane, "rightLane", rightLane);
-//   }, [leftLane, rightLane]);
-
-  // useEffect(() => {
-  //     console.log("showLeftSkip", showLeftSkip, "showRightSkip", showRightSkip);
-  // }, [showLeftSkip, showRightSkip]);
-
-  // useEffect(() => {
-  //     console.log("firstPage", firstPage, "lastPage", lastPage);
-  // }, [firstPage, lastPage]);
-
-  const paginatorItemOnClick = (e) => {
-    window.location.href = e.currentTarget.getAttribute("url")
+  const paginatorClickHandler = (e) => {
+    let pageNumber = parseInt(e.currentTarget.getAttribute("page")) 
+    SetCurrentPage(pageNumber)
+    paginatorCallback(pageNumber)
   };
 
   return (
     <div className="paginator-container">
-      {currentPage > 0 && (
-        <div className="paginator-item paginator-prev-button" url={pagesData[currentPage-1] && pagesData[currentPage-1].url} onClick={paginatorItemOnClick}> {"<"} </div>
+      {currentPage > 1 && (
+        <div className="paginator-item paginator-prev-button" page={currentPage-1} onClick={paginatorClickHandler}> Prev </div>
       )}
-      {currentPage > 0 && (<div className="paginator-item first-page" url={pagesData[firstPage] && pagesData[firstPage].url} onClick={paginatorItemOnClick}>
-        {pagesData[firstPage] && pagesData[firstPage].page}
+      {currentPage > 1 && (<div className="paginator-item first-page" page={firstPage} onClick={paginatorClickHandler}>
+        {firstPage}
       </div>)}
       {showLeftSkip && (
         <div className="left-skip">
@@ -93,21 +81,20 @@ const Paginator = ({ pagesData }) => {
       {leftLane.map((data, i) => (
         <div
           key={i}
-          className="paginator-item"
-          url={pagesData[data] && pagesData[data].url}
-          onClick={paginatorItemOnClick}
+          className="paginator-item left-lane"
+          page={data}
+          onClick={paginatorClickHandler}
         >
-          {pagesData[data] && pagesData[data].page}
+          {data}
         </div>
       ))}
-      <div className="paginator-item current-page" url={pagesData[currentPage] && pagesData[currentPage].url}  onClick={paginatorItemOnClick}>
-        {pagesData[currentPage] && pagesData[currentPage].page}
+      <div className="paginator-item current-page" page={currentPage}  onClick={paginatorClickHandler}>
+        {currentPage}
         
       </div>
       {rightLane.map((data, i) => (
-        <div key={i} className="paginator-item" url={pagesData[data] && pagesData[data].url}  onClick={paginatorItemOnClick}>
-          {pagesData[data] && pagesData[data].page}
-          
+        <div key={i} className="paginator-item right-lane" page={data}  onClick={paginatorClickHandler}>
+          {data}
         </div>
       ))}
       {showRightSkip && (
@@ -115,11 +102,11 @@ const Paginator = ({ pagesData }) => {
           <span>..</span>
         </div>
       )}
-      {currentPage < totalPages-1 && (<div className="paginator-item last-page" url={pagesData[lastPage] && pagesData[lastPage].url} onClick={paginatorItemOnClick}>
-        {pagesData[lastPage] && pagesData[lastPage].page}
+      {currentPage < totalPages-1 && (<div className="paginator-item last-page" page={lastPage} onClick={paginatorClickHandler}>
+        {lastPage}
       </div>)}
       {currentPage < totalPages-1 && (
-        <div className="paginator-item paginator-next-button" url={pagesData[currentPage+1] && pagesData[currentPage+1].url} onClick={paginatorItemOnClick}> {">"} </div>
+        <div className="paginator-item paginator-next-button" page={currentPage+1} onClick={paginatorClickHandler}> Next </div>
       )}
     </div>
   );
