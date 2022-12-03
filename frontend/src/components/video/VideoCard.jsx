@@ -8,10 +8,10 @@ function VideoCard(props) {
   const videoSourceRef = useRef(null);
 
   const videoThemeDict = {
-    "WATCHED" : ["static/images/Watched.png", "#99d3ff"],
-    "NEW" : ["static/images/new_video.png", "#ebc2ac"],
-    "FAVOURITE" : ["static/images/Favorite Icon.png", "#ff6b87"],
-    "RECOMMENDED" : ["static/images/Recommended.png", "#f2c73d"], //#ebbb24
+    "WATCHED" : ["/static/images/Watched.png", "#99d3ff"],
+    "NEW" : ["/static/images/new_video.png", "#ebc2ac"],
+    "FAVOURITE" : ["/static/images/Favorite Icon.png", "#ff6b87"],
+    "RECOMMENDED" : ["/static/images/Recommended.png", "#f2c73d"], //#ebbb24
   }
 
   let videoTheme = videoThemeDict[props.specialTag] || "";
@@ -105,11 +105,11 @@ function VideoCard(props) {
           <div>
             {created
               .toLocaleString("default", { month: "short" })
-              .toUpperCase()}{" "}
+              .toUpperCase()}
             {created.getFullYear()}
           </div>
           <div>{durationText}</div>
-          <div>{props.resolution}</div>
+          <div>{props.badge}</div>
           <div>{props.specialTag}</div>
         </div>
         <div className="advert-details-title">
@@ -120,7 +120,7 @@ function VideoCard(props) {
             <div key={i} className="cast-block">
               {/* eslint-disable-next-line  */}
               <a>{castName}</a>
-              <img src="static/images/play-small.png" alt="" />
+              <img src="/static/images/play-small.png" alt="" />
             </div>
           ))}
         </div>

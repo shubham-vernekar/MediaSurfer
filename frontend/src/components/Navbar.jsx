@@ -8,7 +8,7 @@ function Navbar(props) {
   useEffect(() => {
     axios({
       method: "get",
-      url: "api/navbar",
+      url: "/api/navbar",
     }).then((response) => {
       setNavbarData(response.data["results"]);
     });
@@ -17,7 +17,7 @@ function Navbar(props) {
   return (
     <div className="navbar">
       <div className="navbar-left">
-        <img className="logo-img" src="static/images/logo.png" alt="" />
+        <img className="logo-img" src="/static/images/logo.png" alt="" />
         {navbarData.map((data, i) => (
           <a
             key={i}

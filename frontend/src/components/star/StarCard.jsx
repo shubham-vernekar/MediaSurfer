@@ -10,8 +10,8 @@ function StarCard(props) {
 
   const starCardRef = useRef(null);
   let baseTheme = ["#f8f9fa", ""]
-  let favTheme = ["#fbbf00", "static/images/fire.png"]
-  let superStarTheme = ["#fe475c", "static/images/heart.png"]
+  let favTheme = ["#fbbf00", "/static/images/fire.png"]
+  let superStarTheme = ["#fe475c", "/static/images/heart.png"]
   let showGlow = false
 
   let theme = baseTheme[0]
@@ -49,11 +49,11 @@ function StarCard(props) {
         <div className="star-details">
             <span className="star-title"> {props.name} </span>
             <div className="star-videos"> 
-               <img src="static/images/video-stream.png" alt="" width="30" height="30"/>
+               <img src="/static/images/video-stream.png" alt="" width="30" height="30"/>
               <span> {props.videos} </span>
             </div>
             <div className="star-views"> 
-               <img src="static/images/view.png" alt="" width="25" height="25"/>
+               <img src="/static/images/view.png" alt="" width="25" height="25"/>
               <span> {props.views} </span>
             </div>
             <div className="star-play">

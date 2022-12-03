@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import VideoPlayer from "./pages/VideoPlayer";
+import VideoPlayerPage from "./pages/VideoPlayerPage";
 import StarsPage from "./pages/StarsPage";
 import VideoAdvert from "./pages/VideoAdvert";
 import HomePage from "./pages/HomePage";
@@ -13,7 +13,7 @@ function App() {
       <Navbar/>
       <BrowserRouter>
         <Routes>
-          <Route path="/player" element={<VideoPlayer />} />
+          <Route path="/player/:id" element={<VideoPlayerPage />} />
           <Route path="/stars" element={<StarsPage />} />
           <Route path="/video" element={<VideoAdvert />} />
           <Route path="/search" element={<SearchPage />} />

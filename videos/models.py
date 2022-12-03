@@ -140,7 +140,9 @@ class Video(models.Model):
     def get_subtitle_url(self):
         return convert_url(self.subtitle)
 
-    def get_resolution(self):
+    def get_badge(self):
+        if "vr" in self.categories.lower().split(","):
+            return "VR"
         if self.height > 2100 or self.width >3800:
             return "4K UHD"
         elif self.height > 1400 or self.width >2500:
@@ -148,13 +150,13 @@ class Video(models.Model):
         elif self.height > 1050 or self.width > 1900:
             return "HD"
         elif self.height > 700 or self.width > 1200:
-            return "720p"
+            return "720P"
         elif self.height > 400 or self.width > 600:
             return "SD"
         elif self.height > 300 or self.width > 400:
-            return "360p"
+            return "360P"
         else:
-            return "240p"
+            return "240P"
 
     def get_special_tag(self):
         special_tag = ""

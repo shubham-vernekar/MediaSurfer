@@ -8,7 +8,7 @@ function VideoAdvertSlide(props) {
   const slideRightRef = useRef(null);
 
   useEffect(() => {
-    advertSlideRef.current.style.width = 360*(props.videoData.length)+"px";
+    advertSlideRef.current.style.width = (350 + 40)*(props.videoData.length)+"px";
     advertSlideRef.current.slidePosition = 0
 
     let intervalRight = null;
@@ -31,7 +31,7 @@ function VideoAdvertSlide(props) {
         clearInterval(intervalLeft);
     });
 
-    }, []);
+    }, [props.videoData]);
 
     const moveSlideLeft = () => {
       let leftMove = advertSlideRef.current.slidePosition + 350;
@@ -74,7 +74,7 @@ function VideoAdvertSlide(props) {
             progress={data["progress"]}
             duration={data["duration"]}
             created={data["created"]}
-            resolution={data["resolution"]}
+            resolution={data["badge"]}
             specialTag={data["special_tag"]}
           />
         ))}

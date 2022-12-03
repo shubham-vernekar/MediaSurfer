@@ -22,7 +22,7 @@ function VideoAdvertBox(props) {
             progress={data["progress"]}
             duration={data["duration"]}
             created={data["created"]}
-            resolution={data["resolution"]}
+            resolution={data["badge"]}
             specialTag={data["special_tag"]}
           />
         ))}

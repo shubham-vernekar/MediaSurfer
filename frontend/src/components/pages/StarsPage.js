@@ -58,7 +58,7 @@ function StarAdvert() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "api/stars",
+      url: "/api/stars",
       params: {
         query: searchQuery,
         filter: filterQuery,

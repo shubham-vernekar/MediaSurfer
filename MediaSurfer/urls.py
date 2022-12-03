@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/videos/', include('videos.urls')),
     path('api/stars/', include('stars.urls')),
     path('', include('frontend.urls')),
-    path('player', include('frontend.urls')),
+    path('player/<id>', include('frontend.urls')),
     path('stars', include('frontend.urls')),
     path('video', include('frontend.urls')),
     path('banner', include('frontend.urls')),

@@ -19,7 +19,6 @@ function ResponsivePlayer(props) {
   const speedButtonRef = useRef(null);
   const centerPlayButtonRef = useRef(null);
 
-  const [theaterMode, SetTheaterMode] = useState(false);
   const [fullScreenMode, SetFullScreenMode] = useState(false);
   const [miniPlayer, SetMiniPlayer] = useState(false);
   const [volumeLevel, SetVolumeLevel] = useState("high");
@@ -44,21 +43,6 @@ function ResponsivePlayer(props) {
       captionsButtonRef.current.style.removeProperty("border-bottom");
     }
   }, [showCaptions]);
-
-  useEffect(() => {
-    if (theaterMode) {
-      videoContainerRef.current.style.setProperty("max-width", "initial");
-      videoContainerRef.current.style.setProperty("width", "100%");
-      videoContainerRef.current.style.setProperty("max-height", "90vh");
-      if (fullScreenMode) {
-        SetFullScreenMode(false);
-      }
-    } else {
-      videoContainerRef.current.style.removeProperty("max-width");
-      videoContainerRef.current.style.setProperty("width", "90%");
-      videoContainerRef.current.style.removeProperty("max-height");
-    } // eslint-disable-next-line
-  }, [theaterMode]);
 
   useEffect(() => {
     if (miniPlayer) {
@@ -198,9 +182,6 @@ function ResponsivePlayer(props) {
           break;
         case "f":
           toggleFullScreenMode();
-          break;
-        case "t":
-          toggleTheaterMode();
           break;
         case "i":
           toggleMiniPlayer();
@@ -382,10 +363,6 @@ function ResponsivePlayer(props) {
     return +time[0] * 60 * 60 + +time[1] * 60 + +time[2];
   };
 
-  const toggleTheaterMode = () => {
-    SetTheaterMode(!theaterMode);
-  };
-
   const changePlaybackSpeed = () => {
     let newPlaybackRate = videoRef.current.playbackRate + 0.25;
     if (newPlaybackRate > 2) newPlaybackRate = 0.25;
@@ -474,7 +451,7 @@ function ResponsivePlayer(props) {
       <canvas className="thumbnail-img" ref={thumbnailImgRef}></canvas>
 
       <img
-        src="static/images/play.png"
+        src="/static/images/play.png"
         alt="play"
         className="central-play-button"
         ref={centerPlayButtonRef}
@@ -488,8 +465,6 @@ function ResponsivePlayer(props) {
         sprite={props.sprite}
         pauseVideo={pauseVideo}
         videoControlsRef={videoControlsRef}
-        toggleTheaterMode={toggleTheaterMode}
-        theaterMode={theaterMode}
         toggleFullScreenMode={toggleFullScreenMode}
         fullScreenMode={fullScreenMode}
         toggleMiniPlayer={toggleMiniPlayer}

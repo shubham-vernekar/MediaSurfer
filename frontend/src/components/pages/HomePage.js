@@ -16,7 +16,7 @@ function HomePage() {
       preview_thumbnail:
         "https://www.fotoaparat.cz/storage/a/26/2639/tg17d5xl-rosta.jpg",
       progress: 2132,
-      resolution: "HD",
+      badge: "HD",
       duration: "00:56:21",
       special_tag: "FAVOURITE",
       created: "2017-10-20T11:23:09Z",
@@ -32,7 +32,7 @@ function HomePage() {
       preview_thumbnail:
         "https://www.sulasula.com/wp-content/uploads/cr_em13_14.jpg",
       progress: 0,
-      resolution: "4K UHD",
+      badge: "4K UHD",
       duration: "00:50:35",
       special_tag: "",
       created: "2018-04-13T18:40:20Z",
@@ -48,7 +48,7 @@ function HomePage() {
       preview_thumbnail:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
       progress: 0,
-      resolution: "2K QHD",
+      badge: "2K QHD",
       duration: "00:32:48",
       special_tag: "RECOMMENDED",
       created: "2020-06-18T14:42:11Z",
@@ -64,7 +64,7 @@ function HomePage() {
       preview_thumbnail:
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
       progress: 3321,
-      resolution: "4K UHD",
+      badge: "4K UHD",
       duration: "03:08:46",
       special_tag: "FAVOURITE",
       created: "2021-09-08T10:37:23Z",
@@ -80,7 +80,7 @@ function HomePage() {
       preview_thumbnail:
         "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
       progress: 2132,
-      resolution: "720p",
+      badge: "720p",
       duration: "00:56:57",
       special_tag: "NEW",
       created: "2017-12-22T19:31:09Z",

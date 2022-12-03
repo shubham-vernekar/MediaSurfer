@@ -1,11 +1,11 @@
 .video-advert-box{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-    column-gap: 25px;
-    row-gap: 50px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 40px;
+  row-gap: 50px;
 }
 
 .video-advert-box-container{

@@ -4,7 +4,7 @@ from .models import Video
 class VideoListSerializer(serializers.ModelSerializer):
 
     series = serializers.SerializerMethodField(read_only=True)
-    resolution = serializers.SerializerMethodField(read_only=True)
+    badge = serializers.SerializerMethodField(read_only=True)
     special_tag = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -27,7 +27,7 @@ class VideoListSerializer(serializers.ModelSerializer):
             'series', 
             'progress', 
             'last_viewed',
-            'resolution',
+            'badge',
             'special_tag',
         ]
 
@@ -43,8 +43,8 @@ class VideoListSerializer(serializers.ModelSerializer):
     def get_special_tag(self, obj):
         return obj.get_special_tag()
 
-    def get_resolution(self, obj):
-        return obj.get_resolution()
+    def get_badge(self, obj):
+        return obj.get_badge()
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class VideoSerializer(serializers.ModelSerializer):
     video_url = serializers.SerializerMethodField(read_only=True)
     subtitle_url = serializers.SerializerMethodField(read_only=True)
     series = serializers.SerializerMethodField(read_only=True)
-    resolution = serializers.SerializerMethodField(read_only=True)
+    badge = serializers.SerializerMethodField(read_only=True)
     special_tag = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -79,15 +79,15 @@ class VideoSerializer(serializers.ModelSerializer):
             'series', 
             'progress', 
             'last_viewed',
-            'resolution',
+            'badge',
             'special_tag',
         ]
 
     def get_video_url(self, obj):
         return obj.get_video_url()
 
-    def get_resolution(self, obj):
-        return obj.get_resolution()
+    def get_badge(self, obj):
+        return obj.get_badge()
 
     def get_special_tag(self, obj):
         return obj.get_special_tag()

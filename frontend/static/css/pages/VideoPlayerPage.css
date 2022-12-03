@@ -1,0 +1,41 @@
+.video-player-container{
+    display: grid;
+}
+
+.video-player-categories-pane{
+    display: flex;
+    column-gap: 20px;
+    text-transform: uppercase;
+}
+
+.video-player-details-pane{
+    display: flex;
+    column-gap: 35px;
+}
+
+.video-player-cast-pane{
+    display: flex;
+    column-gap: 30px;
+}
+
+.video-player-title h1{
+    margin: 0;
+}
+
+.video-player-details{
+    display: grid;
+    padding-left: 4%;
+    row-gap: 21px;
+    padding-top: 18px;
+    margin-bottom: 50px;
+}
+
+.video-player-details-pane div{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+
+.watch-next-container{
+    width: 100vw;
+}
