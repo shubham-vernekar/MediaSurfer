@@ -42,8 +42,15 @@ function VideoCard(props) {
 
   const created = new Date(props.created);
 
-  let cast = props.cast.split(",");
-  let category = props.categories.split(",");
+  let category = []
+  if (props.categories){
+    props.categories.split(",");
+  }
+  
+  let cast = []
+  if (props.cast){
+    cast = props.cast.split(",");
+  }
 
 
   if (h > 0) {

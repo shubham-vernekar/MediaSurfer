@@ -1,16 +1,51 @@
 .video-banner-slide{
-    /* width: 100%; */
-    /* 2094*590 */
-    /* width: 450%; */
     background: linear-gradient(#2a2a2a, #141414);
-    display: block;
-    padding-top: 25px;
     position: relative;
+    display: flex;
+    transition: 0.8s ease-in-out;
+}
+
+.video-banner-slide-box{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-content: center;
     justify-content: flex-start;
     align-items: center;
-    transition: 0.8s ease-in-out;
 }
+
+.video-banner-slide-left {
+    background-image: url("/static/images/left.png");
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+    background-position: 50%;
+    height: 500px;
+    width: 100px;
+    position: absolute;
+    left: 1%;
+    z-index: 20;
+    top: 13vh;
+    opacity: 0;
+  }
+  
+  .video-banner-slide-right {
+    background-image: url("/static/images/right.png");
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+    background-position: 50%;
+    height: 500px;
+    width: 100px;
+    position: absolute;
+    right: 1%;
+    z-index: 20;
+    top: 13vh;
+    opacity: 0;
+  }
+
+  .video-banner-slide-right:hover{
+    opacity: 1;
+  }
+
+  .video-banner-slide-left:hover{
+    opacity: 1;
+  }

@@ -14,7 +14,7 @@
 
 .banner-video {
   width: 100%;
-  border-radius: 18px;
+  border-radius: 5px 5px 18px 18px;
   height: 100%;
   object-fit: cover;
 }
@@ -59,7 +59,13 @@
 
 .banner-details-container {
   display: flex;
+  column-gap: 35px;
+}
+
+.banner-details-container div{
+  display: flex;
   column-gap: 10px;
+  align-items: center;
 }
 
 .banner-cast-block .star-card {

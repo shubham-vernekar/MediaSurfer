@@ -39,6 +39,7 @@ class VideoDetailAPIView(generics.RetrieveAPIView):
 class VideoRecommendedAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoListSerializer
+    pagination_class = None
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
@@ -48,6 +49,7 @@ class VideoRecommendedAPIView(generics.ListCreateAPIView):
 class VideoRelatedAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoListSerializer
+    pagination_class = None
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)

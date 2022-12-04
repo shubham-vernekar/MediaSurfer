@@ -1,11 +1,12 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
 import { useParams } from "react-router-dom";
-import { React, useRef, useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import axios from "axios";
 import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
+import { getDurationText, getCreatedDate } from '../utils'
 
 function VideoPlayerPage() {
   const params = useParams();
@@ -14,7 +15,6 @@ function VideoPlayerPage() {
   const [watchNextVideos, SetWatchNextVideos] = useState([]);
   const [similarVideos, SetSimilarVideos] = useState([]);
   const [categories, SetCategories] = useState([]);
-  const [createdDate, SetCreatedDate] = useState(""); 
   const [starData, SetStarData] = useState([]);
 
   useEffect(() => {
@@ -24,15 +24,13 @@ function VideoPlayerPage() {
     }).then((response) => {
       SetVideoData(response.data);
       SetCategories(response.data.categories.split(",")) 
-      const created = new Date(response.data.created);
-      SetCreatedDate(created.toLocaleString("default", { month: "long" }) + " " + created.toLocaleString("default", { day: "2-digit" }).toUpperCase() + " " + created.getFullYear())
       getCastData(response.data.cast) 
-      getOtherVideos(videoID, "similar", 18)
-      getOtherVideos(videoID, "watch next", 15)
+      GetOtherVideos(videoID, "similar", 18)
+      GetOtherVideos(videoID, "watch next", 15)
     });
   }, []);
 
-  const getOtherVideos = (videoID, type, count) => {
+  const GetOtherVideos = (videoID, type, count) => {
     axios({
       method: "get",
       url: "/api/videos/related",
@@ -43,24 +41,13 @@ function VideoPlayerPage() {
       },
     }).then((response) => {
       if (type==="similar"){
-        SetSimilarVideos(response.data.results)
+        SetSimilarVideos(response.data)
       }else if (type==="watch next"){
-        SetWatchNextVideos(response.data.results)
+        SetWatchNextVideos(response.data)
       }
     });
   };
- 
 
-  const getDurationText = (duration) => {
-    if (duration){
-      duration = duration.split(":");
-      if (parseInt(duration[0]) > 0) {
-        return parseInt(duration[0]) + " hrs " + parseInt(duration[1]) + " mins";
-      } else {
-        return parseInt(duration[1]) + " mins";
-      }
-    }
-  };
 
   const getCastData = (cast) => {
     axios({
@@ -105,7 +92,7 @@ function VideoPlayerPage() {
                 <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2z"/>
                 <path d="M16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-6.664-1.21c-1.11 0-1.656-.767-1.703-1.407h.683c.043.37.387.82 1.051.82.844 0 1.301-.848 1.305-2.164h-.027c-.153.414-.637.79-1.383.79-.852 0-1.676-.61-1.676-1.77 0-1.137.871-1.809 1.797-1.809 1.172 0 1.953.734 1.953 2.668 0 1.805-.742 2.871-2 2.871zm-2.89-5.435v5.332H5.77V8.079h-.012c-.29.156-.883.52-1.258.777V8.16a12.6 12.6 0 0 1 1.313-.805h.632z"/>
               </svg>
-              {createdDate} 
+              {getCreatedDate(videoData.created)} 
             </div>
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

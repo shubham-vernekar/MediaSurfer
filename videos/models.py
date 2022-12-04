@@ -168,10 +168,29 @@ class VideoQuerySet(models.QuerySet):
 
     
     def get_recommendation(self, parameters):
-        limit = parameters.get("limit", None)
+        limit = int(parameters.get("limit", 0))
         recommendation_type = parameters.get("type", None)
         qs = self
-        qs = qs.filter(Q(search_text__icontains="leno"))
+
+        if recommendation_type == "banner":
+            return qs.filter().order_by("?")[:limit]
+
+        if recommendation_type == "discover":
+            return qs.filter().order_by("?")[:limit]
+        
+        if recommendation_type == "continue":
+            return qs.filter(Q(progress__gte = 1)).order_by("-last_viewed")[:limit]
+        
+        if recommendation_type == "recommended":
+            return query_special_tag(qs, "?", ["RECOMMENDED"], limit, [])
+
+        if recommendation_type == "new":
+            return query_special_tag(qs, "?", ["NEW"], limit, [])
+
+        if recommendation_type == "favourites":
+            return query_special_tag(qs, "?", ["FAVOURITE"], limit, [])
+
+        # qs = qs.filter(Q(search_text__icontains="len"))
         return qs
         
 

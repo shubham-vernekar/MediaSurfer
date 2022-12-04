@@ -69,8 +69,13 @@
   width: 4%;
   z-index: 20;
   height: 100%;
+  opacity: 0;
 }
 
 .video-advert-slide-left:hover{
     opacity: 1;
+}   
+
+.video-advert-slide-right:hover{
+  opacity: 1;
 }   

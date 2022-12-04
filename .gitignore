@@ -10,6 +10,7 @@ package-lock.json
 db.sqlite3*
 .vscode/
 backend/management/commands
+frontend/static/frontend
 */portmap.json
 
 node_modules
