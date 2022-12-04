@@ -1,8 +1,6 @@
 from .models import Video
 from .serializer import VideoListSerializer, VideoSerializer
 from rest_framework import generics
-from rest_framework.response import Response
-
 
 class VideoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
@@ -10,8 +8,7 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        parameters = self.request.GET
-        qs = qs.search(parameters)
+        qs = qs.search(self.request.GET)
         return qs
 
     def list(self, request, *args, **kwargs):
@@ -37,3 +34,28 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
 class VideoDetailAPIView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+
+
+class VideoRecommendedAPIView(generics.ListCreateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoListSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.get_recommendation(self.request.GET)
+        return qs
+
+class VideoRelatedAPIView(generics.ListCreateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoListSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        video_id = self.request.GET.get("videoID", None)
+        try:
+            master_video = Video.objects.get(id = video_id)
+        except Video.DoesNotExist:
+            return qs.none()
+
+        return qs.get_related(self.request.GET, master_video)
+ 

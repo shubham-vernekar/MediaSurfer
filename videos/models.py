@@ -8,7 +8,10 @@ from django.core.exceptions import FieldError, ValidationError
 from backend.models import Series
 from stars.models import Star
 from backend.models import Category
-
+from functools import reduce
+import operator
+from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
+import difflib
 
 def convert_url(file_path):
     if file_path:
@@ -21,8 +24,47 @@ def convert_url(file_path):
         url_prefix = portmap.get(file_path[0], "")
         if url_prefix:
             return f"{url_prefix}/{file_path[3:]}"
+
     return file_path
 
+
+def query_special_tag(qs, order_by, query, limit, vids_to_exclude):
+    ids_to_exclude = [x.id for x in vids_to_exclude]
+    result = []
+
+    for vid in qs.order_by(order_by):
+        if vid.get_special_tag() in query and not vid.id in ids_to_exclude:
+            result.append(vid)
+        if len(result)>=limit:
+            break
+
+    return result
+
+
+def get_cast_videos(qs, video, limit, order_by, vids_to_exclude):
+    ids_to_exclude = [x.id for x in vids_to_exclude]
+    cast = []
+
+    if video.cast:
+        cast = [x for x in video.cast.split(",") if x]
+
+    if cast:
+        return list(qs.filter(~Q(id__in = ids_to_exclude)).filter(reduce(operator.or_, (Q(cast__contains=x) for x in cast))).order_by(order_by)[:limit])
+    else:
+        return []
+
+
+def get_categories_videos(qs, video, limit, order_by, vids_to_exclude):
+    ids_to_exclude = [x.id for x in vids_to_exclude]
+    categories = []
+
+    if video.categories:
+        categories = [x for x in video.categories.split(",") if x and not x in CATEGORIES_EXCLUDE_LIST]
+
+    if categories:
+        return list(qs.filter(~Q(id__in = ids_to_exclude)).filter(reduce(operator.or_, (Q(categories__contains=x) for x in categories))).order_by(order_by)[:limit])
+    else:
+        return []
 
 class VideoQuerySet(models.QuerySet):
     def search(self, parameters):
@@ -88,12 +130,63 @@ class VideoQuerySet(models.QuerySet):
         return qs
 
 
+    def get_related(self, parameters, master_video):
+        limit = int(parameters.get("limit", 0))
+        recommendation_type = parameters.get("type", None)
+        exclude_ids = parameters.get("exclude", "").split(",")
+        exclude_ids = [x for x in exclude_ids if x]
+        exclude_ids.append(master_video)
+
+        qs = self
+        
+        if recommendation_type == "watch next":
+            titles = list(qs.values_list('title', flat=True))
+            titles.remove(master_video.title)
+            relatives = difflib.get_close_matches(master_video.title, titles, n=6, cutoff=0.75)
+            related_vids = list(qs.filter(Q(title__in = relatives) & ~Q(id__in = exclude_ids)).order_by('title'))[:limit]
+
+            if len(related_vids) < limit:
+                related_vids += get_cast_videos(qs, master_video, limit - len(related_vids), "?", related_vids + exclude_ids)
+
+            # if len(related_vids) < limit:
+            #     related_vids += get_categories_videos(qs, master_video, limit - len(related_vids), "?", related_vids + exclude_ids)
+
+            if len(related_vids) < limit:
+                related_vids += query_special_tag(qs, "?", ["RECOMMENDED", "FAVOURITE"], limit - len(related_vids), related_vids + exclude_ids)
+
+            return related_vids
+
+        if recommendation_type == "similar":
+            related_vids = get_categories_videos(qs, master_video, limit, "?", exclude_ids)
+
+            if len(related_vids) < limit:
+                related_vids += query_special_tag(qs, "?", ["RECOMMENDED", "FAVOURITE"], limit - len(related_vids), related_vids + exclude_ids)
+
+            return related_vids
+
+        return self.none()
+
+    
+    def get_recommendation(self, parameters):
+        limit = parameters.get("limit", None)
+        recommendation_type = parameters.get("type", None)
+        qs = self
+        qs = qs.filter(Q(search_text__icontains="leno"))
+        return qs
+        
+
 class VideoManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return VideoQuerySet(self.model, using=self._db)
 
     def search(self, query):
         return self.get_queryset().search(query)
+
+    def get_recommendation(self, query):
+        return self.get_queryset().get_recommendation(query)
+
+    def get_related(self, query, master_video):
+        return self.get_queryset().get_related(query, master_video)
 
 
 class Video(models.Model):

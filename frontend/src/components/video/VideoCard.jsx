@@ -105,7 +105,7 @@ function VideoCard(props) {
           <div>
             {created
               .toLocaleString("default", { month: "short" })
-              .toUpperCase()}
+              .toUpperCase()} {" "}
             {created.getFullYear()}
           </div>
           <div>{durationText}</div>

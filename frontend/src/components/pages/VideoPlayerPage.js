@@ -27,15 +27,15 @@ function VideoPlayerPage() {
       const created = new Date(response.data.created);
       SetCreatedDate(created.toLocaleString("default", { month: "long" }) + " " + created.toLocaleString("default", { day: "2-digit" }).toUpperCase() + " " + created.getFullYear())
       getCastData(response.data.cast) 
-      getOtherVideo(videoID, "similar", 12)
-      getOtherVideo(videoID, "next", 10)
+      getOtherVideos(videoID, "similar", 18)
+      getOtherVideos(videoID, "watch next", 15)
     });
   }, []);
 
-  const getOtherVideo = (videoID, type, count) => {
+  const getOtherVideos = (videoID, type, count) => {
     axios({
       method: "get",
-      url: "/api/videos",
+      url: "/api/videos/related",
       params: {
         videoID: videoID,
         limit: count,
@@ -44,7 +44,7 @@ function VideoPlayerPage() {
     }).then((response) => {
       if (type==="similar"){
         SetSimilarVideos(response.data.results)
-      }else if (type==="next"){
+      }else if (type==="watch next"){
         SetWatchNextVideos(response.data.results)
       }
     });
@@ -71,7 +71,6 @@ function VideoPlayerPage() {
       },
     }).then((response) => {
       SetStarData(response.data);
-      // SetStarData([response.data[0], response.data[0], response.data[0]]);
     });
   };
 
