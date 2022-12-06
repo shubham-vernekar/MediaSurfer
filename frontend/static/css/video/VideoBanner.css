@@ -10,6 +10,7 @@
   width: 100%;
   height: 590px;
   border-radius: 18px;
+  cursor: pointer;
 }
 
 .banner-video {

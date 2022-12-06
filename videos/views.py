@@ -16,8 +16,10 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
         qs = self.get_queryset()
         min_duration, max_duration, all_stars, all_categories = 0, 0, set(), set()
         for records in qs:
-            all_stars.update([x for x in records.cast.split(",") if x])
-            all_categories.update([x for x in records.categories.split(",") if x])
+            if records.cast:
+                all_stars.update([x for x in records.cast.split(",") if x])
+            if records.categories:
+                all_categories.update([x for x in records.categories.split(",") if x])
             duration = records.duration.seconds
             if min_duration > duration or min_duration == 0:
                 min_duration = duration

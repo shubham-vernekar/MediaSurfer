@@ -64,6 +64,7 @@ function VideoAdvertSlide(props) {
         {props.videoData.map((data, i) => (
           <VideoCard
             key={i}
+            vidid={data["id"]}
             title={data["title"]}
             categories={data["categories"]}
             cast={data["cast"]}
@@ -74,8 +75,9 @@ function VideoAdvertSlide(props) {
             progress={data["progress"]}
             duration={data["duration"]}
             created={data["created"]}
-            resolution={data["badge"]}
+            badge={data["badge"]}
             specialTag={data["special_tag"]}
+            subtitle_badge={data["subtitle_badge"]}
           />
         ))}
       </div>

@@ -41,8 +41,7 @@ function BannerSlide(props) {
     moveBanner("right")
   }
 
-
-
+  
     return (
       <div>
         <div className="video-banner-slide" ref={bannerSlideRef}>
@@ -50,6 +49,7 @@ function BannerSlide(props) {
             {props.videoData.map((data, i) => (
               <VideoBanner
                 key={i}
+                vidID={data["id"]}
                 title={data["title"]}
                 categories={data["categories"]}
                 cast={data["cast"]}
@@ -62,6 +62,7 @@ function BannerSlide(props) {
                 created={data["created"]}
                 badge={data["badge"]}
                 specialTag={data["special_tag"]}
+                subtitle_badge={data["subtitle_badge"]}
               />
             ))}
           </div>

@@ -252,7 +252,14 @@ class Video(models.Model):
     def get_subtitle_url(self):
         return convert_url(self.subtitle)
 
+    def get_subtitle_badge(self):
+        if self.subtitle or "subbed" in self.categories:
+            return True
+        return False
+
     def get_badge(self):
+        if  self.width < self.height:
+            return "VERTICAL"
         if "vr" in self.categories.lower().split(","):
             return "VR"
         if self.height > 2100 or self.width >3800:

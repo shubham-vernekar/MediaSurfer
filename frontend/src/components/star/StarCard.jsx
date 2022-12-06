@@ -44,7 +44,7 @@ function StarCard(props) {
             <img src={bannerImg} alt="" width="45"/>
         </div>
         <div className="star-poster">
-            <img src={props.poster} alt=""/>
+          <a href={"/search?cast=" + props.name}><img src={props.poster} alt=""/></a>
         </div>
         <div className="star-details">
             <span className="star-title"> {props.name} </span>

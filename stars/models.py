@@ -13,7 +13,7 @@ class StarQuerySet(models.QuerySet):
         sort_by = parameters.get("sort_by", None)
         filter = parameters.get("filter", "").lower()
         prefix = parameters.get("prefix", None)
-        cast = parameters.get("cast", "").lower().split(",")
+        cast = [x for x in parameters.get("cast", "").lower().split(",") if x]
 
         qs = self
 

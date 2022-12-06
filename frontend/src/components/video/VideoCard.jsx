@@ -1,5 +1,6 @@
 import '../../../static/css/video/VideoCard.css';
 import { React, useEffect, useRef } from "react";
+import { dateToTimestamp } from '../utils'
 
 function VideoCard(props) {
 
@@ -44,7 +45,7 @@ function VideoCard(props) {
 
   let category = []
   if (props.categories){
-    props.categories.split(",");
+    category = props.categories.split(",");
   }
   
   let cast = []
@@ -86,25 +87,26 @@ function VideoCard(props) {
   return (
     <div className="video-card" ref={videoCardRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="preview-video-container">
-        {/* eslint-disable-next-line  */}
-        {/* <a href=""> */}
           <div className="preview-video-box">
-            <video
-              className="preview-video"
-              preload="auto"
-              loop
-              poster={props.previewThumbnail}
-              ref={videoRef}
-            >
-              <source ref={videoSourceRef}  src="" type="video/ogg" />
-              Your browser does not support the video tag.
-            </video>
+            <a href={"/player/" + props.vidid} target="_blank">
+              <video
+                className="preview-video"
+                preload="auto"
+                loop
+                poster={props.previewThumbnail}
+                ref={videoRef}
+              >
+                <source ref={videoSourceRef}  src="" type="video/ogg" />
+                Your browser does not support the video tag.
+              </video>
+            </a>
           </div>
-        {/* </a> */}
       </div>
       <div className="image-tag-container">
           <img src={imageTag} className="image-tag" alt="" />
-        </div>
+          <div className="duration-tag">{dateToTimestamp(props.duration)}</div>
+          {props.subtitle_badge && (<div className="subtitle-tag">SRT</div>)}
+      </div>
         
       <div className="advert-details">
         
@@ -112,7 +114,7 @@ function VideoCard(props) {
           <div>
             {created
               .toLocaleString("default", { month: "short" })
-              .toUpperCase()} {" "}
+              .toUpperCase()} {" "} 
             {created.getFullYear()}
           </div>
           <div>{durationText}</div>

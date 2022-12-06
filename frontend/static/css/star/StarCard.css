@@ -1,6 +1,7 @@
 .star-poster{
     width: 100%;
     height: 80%;
+    cursor: pointer;
 }
 
 .star-poster img{

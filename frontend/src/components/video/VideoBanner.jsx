@@ -41,8 +41,6 @@ function VideoBanner(props) {
     });
   };
 
-  
-
   return (
       <div
         className="video-banner"
@@ -75,6 +73,7 @@ function VideoBanner(props) {
               {props.views}
             </div>
             <div>{props.badge}</div>
+            {props.subtitle_badge && (<div>SRT</div>)}
             <div>{props.specialTag}</div>
           </div>
 
@@ -104,18 +103,20 @@ function VideoBanner(props) {
           </div>
         </div>
         <div className="banner-video-container">
-          <video
-            className="banner-video"
-            preload="auto"
-            loop
-            autoPlay
-            muted
-            poster={props.previewThumbnail}
-            ref={bannerVideoRef}
-          >
-            <source src={props.preview} type="video/ogg" />
-            Your browser does not support the video tag.
-          </video>
+          <a href={"/player/" + props.vidID} target="_blank">
+            <video
+              className="banner-video"
+              preload="auto"
+              loop
+              autoPlay
+              muted
+              poster={props.previewThumbnail}
+              ref={bannerVideoRef}
+            >
+              <source src={props.preview} type="video/ogg" />
+              Your browser does not support the video tag.
+            </video>
+          </a>
         </div>
       </div>
   );

@@ -329,6 +329,7 @@ function SearchPage() {
             {videoData.map((data, i) => (
               <VideoCard
                 key={i}
+                vidid={data["id"]}
                 title={data["title"]}
                 categories={data["categories"]}
                 cast={data["cast"]}
@@ -339,8 +340,9 @@ function SearchPage() {
                 progress={data["progress"]}
                 duration={data["duration"]}
                 created={data["created"]}
-                resolution={data["resolution"]}
+                badge={data["badge"]}
                 specialTag={data["special_tag"]}
+                subtitle_badge={data["subtitle_badge"]}
               />
             ))}
           </div>

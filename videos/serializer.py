@@ -6,6 +6,7 @@ class VideoListSerializer(serializers.ModelSerializer):
     series = serializers.SerializerMethodField(read_only=True)
     badge = serializers.SerializerMethodField(read_only=True)
     special_tag = serializers.SerializerMethodField(read_only=True)
+    subtitle_badge = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -20,7 +21,8 @@ class VideoListSerializer(serializers.ModelSerializer):
             'created', 
             'size', 
             'preview',
-            'preview_thumbnail', 
+            'preview_thumbnail',
+            'subtitle_badge',
             'width', 
             'height', 
             'tags', 
@@ -45,6 +47,9 @@ class VideoListSerializer(serializers.ModelSerializer):
 
     def get_badge(self, obj):
         return obj.get_badge()
+
+    def get_subtitle_badge(self, obj):
+        return obj.get_subtitle_badge()
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -103,4 +108,3 @@ class VideoSerializer(serializers.ModelSerializer):
             }
         else:
             return None
-

@@ -9,9 +9,16 @@ const getDurationText = (duration) => {
     }
   };
 
-const getCreatedDate= (targetDate) => {
+const getCreatedDate = (targetDate) => {
   const created = new Date(targetDate);
   return created.toLocaleString("default", { month: "long" }) + " " + created.toLocaleString("default", { day: "2-digit" }).toUpperCase() + " " + created.getFullYear()
 };
 
-  export { getDurationText, getCreatedDate }
+const dateToTimestamp = (targetDate) => {
+  if (targetDate){
+    return targetDate.split('.')[0]
+  }
+  return "NA"
+};
+
+export { getDurationText, getCreatedDate, dateToTimestamp }
