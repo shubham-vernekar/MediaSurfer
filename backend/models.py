@@ -12,6 +12,8 @@ class Series(models.Model):
     added = models.DateTimeField(default=timezone.now)
     videos = models.IntegerField(default=0, blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
+    created = models.DateTimeField(blank=True, null=True)
+    updated = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.name

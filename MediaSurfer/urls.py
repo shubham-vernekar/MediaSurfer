@@ -29,4 +29,5 @@ urlpatterns = [
     path('video', include('frontend.urls')),
     path('banner', include('frontend.urls')),
     path('search', include('frontend.urls')),
+    path('series', include('frontend.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -384,8 +384,10 @@ function ResponsivePlayer(props) {
 
   const videoContainerMouseDownHandler = (e) => {
     if (e.button === 4) {
+      e.preventDefault();
       skip(5);
     } else if (e.button === 1) {
+      e.preventDefault();
       skip(-5);
     }
   };

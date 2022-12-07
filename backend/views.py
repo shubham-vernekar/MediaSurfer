@@ -1,5 +1,5 @@
-from .models import Category, Navbar
-from .serializer import CategorySerializer, NavbarSerializer
+from .models import Category, Navbar, Series
+from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -20,7 +20,7 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
             try:
                 qs = qs.order_by(sort_by)
             except (FieldError):
-                qs = self.none()
+                return qs.none()
 
         return qs
 
@@ -36,4 +36,24 @@ class NavbarListView(generics.ListCreateAPIView):
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.order_by("-weight")
+        return qs
+
+class SeriesListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Series.objects.all()
+    serializer_class = SeriesSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        query = self.request.GET.get("query", None)
+        sort_by = self.request.GET.get("sort_by", None)
+
+        if query:
+            qs = qs.filter(Q(name__icontains=query))
+
+        if sort_by:
+            try:
+                qs = qs.order_by(sort_by)
+            except (FieldError):
+                qs = qs.none()
+
         return qs

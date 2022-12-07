@@ -5,6 +5,7 @@ import StarsPage from "./pages/StarsPage";
 import VideoAdvert from "./pages/VideoAdvert";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
+import SeriesPage from "./pages/SeriesPage";
 import Navbar from "./Navbar"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/stars" element={<StarsPage />} />
           <Route path="/video" element={<VideoAdvert />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/series" element={<SeriesPage />} />
           <Route path="" element={<HomePage />} />
         </Routes>
       </BrowserRouter>

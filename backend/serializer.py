@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Navbar, Category, DashboardHistory, Series
+from videos.models import Video
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -31,4 +32,18 @@ class NavbarSerializer(serializers.ModelSerializer):
         else:
             return ""
  
+
+class SeriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Series
+        fields = [
+            'id',
+            'name',
+            'added',
+            'videos',
+            'views',
+            'created',
+            'updated',
+        ]
 
