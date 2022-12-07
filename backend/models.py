@@ -14,6 +14,8 @@ class Series(models.Model):
     views = models.IntegerField(default=0, blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
+    cast = models.CharField(max_length=512, default="", blank=True, null=True)
+    categories = models.CharField(max_length=512, default="", blank=True, null=True)
 
     def __str__(self):
         return self.name

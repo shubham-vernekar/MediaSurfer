@@ -46,6 +46,8 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
         qs = super().get_queryset(*args, **kwargs)
         query = self.request.GET.get("query", None)
         sort_by = self.request.GET.get("sort_by", None)
+        cast = self.request.GET.get("cast", None)
+        categories = self.request.GET.get("categories", None)
 
         if query:
             qs = qs.filter(Q(name__icontains=query))
@@ -55,5 +57,11 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
                 qs = qs.order_by(sort_by)
             except (FieldError):
                 qs = qs.none()
+
+        if cast:
+            qs = qs.filter(Q(cast__icontains=cast))
+
+        if categories:
+            qs = qs.filter(Q(categories__icontains=categories))
 
         return qs

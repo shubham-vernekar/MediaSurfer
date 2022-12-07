@@ -45,5 +45,7 @@ class SeriesSerializer(serializers.ModelSerializer):
             'views',
             'created',
             'updated',
+            'cast',
+            'categories',
         ]
 
