@@ -139,6 +139,12 @@ function VideoCard(props) {
             <a key={i}>{categoryName}</a>
           ))}
         </div>
+        <div className="category-container">
+          {category.map((categoryName, i) => (
+            // eslint-disable-next-line 
+            <a key={i}>{categoryName}</a>
+          ))}
+        </div>
         {progress > 0 && (
           <div className="progress-bar">
             <div className="progress-bar-total">

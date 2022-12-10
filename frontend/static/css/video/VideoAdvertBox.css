@@ -4,13 +4,13 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
-  column-gap: 40px;
-  row-gap: 50px;
+  column-gap: 25px;
+  row-gap: 40px;
 }
 
 .video-advert-box-container{
     display: grid;
-    margin: 0 4%;
+    margin: 0 2%;
     margin-top: 25px;
     padding-bottom: 1.7%;
     row-gap: 22px;
@@ -23,6 +23,7 @@
     align-content: center;
     align-items: baseline;
     justify-content: flex-start;
+    margin-left: 2%;
   }
   
   .video-advert-box-title-name {

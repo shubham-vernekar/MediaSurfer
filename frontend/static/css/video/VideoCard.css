@@ -1,7 +1,7 @@
 .video-card {
   --video-card-theme: #fff;
-  width: 350px;
-  aspect-ratio: 16/14;
+  width: 385px;
+  height: 319px;
   border: 1px solid var(--video-card-theme);
   border-radius: 14px;
   color: var(--video-card-theme);
@@ -9,6 +9,20 @@
   transition: max-height 0.25s ease-in;
   background-color: #141414;
 }
+
+.video-card:hover {
+  height: 374px;
+  width: 429px;
+  max-height: 900px;
+  overflow: hidden;
+  transform: scale(1.15);
+  z-index: 10;
+  transition: 0.5s ease-in;
+  /* font-size: 88%; */
+  /* font-size: 15px; */
+  font-size: 0.88rem;
+}
+
 
 .preview-video-container {
   width: 100%;
@@ -32,7 +46,7 @@
 .advert-details {
   display: grid;
   align-content: center;
-  padding: 0 9%;
+  padding: 0 6%;
   row-gap: 0.3vh;
   border-radius: 0px 0px 13px 13px;
   align-items: center;
@@ -136,18 +150,6 @@
 
 .video-card:hover .preview-video-container{
   height: 68%;
-}
-
-.video-card:hover {
-  height: auto;
-  max-height: 900px;
-  overflow: hidden;
-  transform: scale(1.15);
-  z-index: 10;
-  transition: 0.5s ease-in;
-  /* font-size: 88%; */
-  /* font-size: 15px; */
-  font-size: 0.88rem;
 }
 
 .video-card:hover .image-tag-container {

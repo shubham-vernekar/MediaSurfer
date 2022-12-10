@@ -8,7 +8,7 @@
   width: 96%;
   display: flex;
   font-size: 20px;
-  margin-top: 27px;
+  margin-top: 23px;
   justify-content: space-between;
   align-items: center;
 }
@@ -54,7 +54,7 @@
   justify-content: center;
   align-items: flex-start;
   gap: 25px;
-  margin-top: 30px;
+  margin-top: 25px;
   min-width: 91%;
 }
 
@@ -137,7 +137,7 @@
 
 .search-page-pagination-container{
   padding: 10px 25%;
-  margin-top: 40px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
