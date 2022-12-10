@@ -2,6 +2,7 @@ import StarCard from "../star/StarCard";
 import { React, useRef, useEffect, useState } from "react";
 import axios from "axios";
 import "../../../static/css/pages/StarsPage.css";
+import { clearChildren } from '../utils'
 
 function StarAdvert() {
 
@@ -78,8 +79,8 @@ function StarAdvert() {
   ]);
 
   useEffect(() => {
-    clearSiblingSelection(starAdvertIndexTwo);
-    clearSiblingSelection(starAdvertIndexThree);
+    clearChildren(starAdvertIndexTwo.current);
+    clearChildren(starAdvertIndexThree.current);
     starAdvertIndexThree.current.style.display = "none";
     if (alphabetOne === "") {
       starAdvertIndexTwo.current.style.display = "none";
@@ -89,7 +90,7 @@ function StarAdvert() {
   }, [alphabetOne]);
 
   useEffect(() => {
-    clearSiblingSelection(starAdvertIndexThree);
+    clearChildren(starAdvertIndexThree.current);
     if (alphabetTwo === "") {
       starAdvertIndexThree.current.style.display = "none";
     } else {
@@ -171,12 +172,6 @@ function StarAdvert() {
     SetSearchQuery(e.currentTarget.value);
   };
 
-  const clearSiblingSelection = (target) => {
-    [...target.current.children].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
-  };
-
   const clearAllFilters = (e) => {
     SetAlphabetOne("A");
     SetAlphabetTwo("");
@@ -185,11 +180,11 @@ function StarAdvert() {
     SetFilterQuery("");
     SetSearchQuery("");
     starsSearch.current.value = "";
-    clearSiblingSelection(starAdvertIndexOne);
-    clearSiblingSelection(starAdvertIndexTwo);
-    clearSiblingSelection(starAdvertIndexThree);
-    clearSiblingSelection(starsFilter);
-    clearSiblingSelection(starsSort);
+    clearChildren(starAdvertIndexOne.current);
+    clearChildren(starAdvertIndexTwo.current);
+    clearChildren(starAdvertIndexThree.current);
+    clearChildren(starsFilter.current);
+    clearChildren(starsSort.current);
   };
 
   return (

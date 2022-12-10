@@ -5,6 +5,7 @@ import Paginator from "../paginator/Paginator";
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 import { useSearchParams } from "react-router-dom";
+import { clearSiblingSelection, clearChildren } from '../utils'
 
 function SearchPage() {
   const [videoData, SetVideoData] = useState([]);
@@ -125,21 +126,6 @@ function SearchPage() {
     SetNumberOfPages(Math.ceil(videoCount/videosPageLimit))
   }, [videoCount]);
 
-  const clearSiblingSelection = (target) => {
-    let clickedSort = target.currentTarget;
-    let clickedSiblings = clickedSort.parentElement.children;
-    let sameButton = [...clickedSort.classList].includes("selected-filter");
-    [...clickedSiblings].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
-    let textData = "";
-    if (!sameButton) {
-      clickedSort.classList.add("selected-filter");
-      textData = clickedSort.innerText.toLowerCase().trim();
-    }
-    return textData;
-  };
-
   const handleSortOnClick = (e) => {
     let clickedSort = e.currentTarget;
     let clickedText = clickedSort.innerText
@@ -210,11 +196,6 @@ function SearchPage() {
     SetMinDuration(min);
   };
 
-  const clearChildern = (target) => {
-    [...target.children].forEach((sib) =>
-      sib.classList.remove("selected-filter")
-    );
-  };
 
   const clearAllFilters = (e) => {
     SetSortQuery("-created");
@@ -224,10 +205,10 @@ function SearchPage() {
     SetCategoryQuery("");
     SetMaxDuration(minDurationBar);
     SetMinDuration(maxDurationBar);
-    clearChildern(castBlockContainerRef.current);
-    clearChildern(categoryBlockContainerRef.current);
-    clearChildern(searchPageFilterBoxRef.current);
-    clearChildern(searchPageSortBoxRef.current);
+    clearChildren(castBlockContainerRef.current);
+    clearChildren(categoryBlockContainerRef.current);
+    clearChildren(searchPageFilterBoxRef.current);
+    clearChildren(searchPageSortBoxRef.current);
   };
 
   const paginatorCallback = (val) => {
@@ -238,7 +219,7 @@ function SearchPage() {
     <div className="search-page-container">
       <div className="search-page-filters-container">
         <div className="search-page-filters-left">
-          {videoCount} videos found
+          {videoCount || "No"} videos found
         </div>
         <div className="search-page-filters-right">
           <div className="search-page-filter-box" ref={searchPageFilterBoxRef}>

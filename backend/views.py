@@ -3,6 +3,8 @@ from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
+from videos.models import Video
+from videos.serializer import VideoListSerializer
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -65,3 +67,20 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
             qs = qs.filter(Q(categories__icontains=categories))
 
         return qs
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, args, kwargs)
+        qs = self.get_queryset()
+        all_stars = set()
+
+        for records in qs:
+            if records.cast:
+                all_stars.update([x for x in records.cast.split(",") if x])
+
+        for k, records in enumerate(response.data["results"]):
+            video_qs = Video.objects.filter(series__id=records["id"])
+            video_data = VideoListSerializer(video_qs, many=True).data 
+            response.data["results"][k]["video_data"] = video_data
+            
+        response.data["all_stars"] = sorted(list(all_stars))
+        return response

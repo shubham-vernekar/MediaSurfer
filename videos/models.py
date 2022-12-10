@@ -12,18 +12,22 @@ from functools import reduce
 import operator
 from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
 import difflib
+import urllib.parse
 
 def convert_url(file_path):
+
     if file_path:
         portmap = {}
         try:
             portmap = json.load(open(os.path.join(os.path.dirname(
                 os.path.abspath(__file__)), "portmap.json"), 'r'))
         except FileNotFoundError:
-            return file_path
+            return urllib.parse.quote(file_path).replace("\\","/").replace("#","%23")
+
         url_prefix = portmap.get(file_path[0], "")
         if url_prefix:
-            return f"{url_prefix}/{file_path[3:]}"
+            x = urllib.parse.quote(file_path[3:]).replace("\\","/").replace("#","%23")
+            file_path = f"{url_prefix}/{x}"
 
     return file_path
 

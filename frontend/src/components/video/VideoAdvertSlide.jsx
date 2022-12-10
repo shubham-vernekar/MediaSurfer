@@ -49,7 +49,8 @@ function VideoAdvertSlide(props) {
   
 
   return (
-    <div className="video-advert-slide-container">
+    <div className="video-advert-slide-parent">
+      <div className="video-advert-slide-container">
       <div className="video-advert-slide-right" ref={slideRightRef}></div>
       <div className="video-advert-slide-left" ref={slideLeftRef}></div>
       <div className="video-advert-slide-title">
@@ -81,6 +82,7 @@ function VideoAdvertSlide(props) {
           />
         ))}
       </div>
+    </div>
     </div>
   );
 }

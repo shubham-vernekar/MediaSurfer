@@ -21,4 +21,25 @@ const dateToTimestamp = (targetDate) => {
   return "NA"
 };
 
-export { getDurationText, getCreatedDate, dateToTimestamp }
+const clearSiblingSelection = (target) => {
+  let clickedSort = target.currentTarget;
+  let clickedSiblings = clickedSort.parentElement.children;
+  let sameButton = [...clickedSort.classList].includes("selected-filter");
+  [...clickedSiblings].forEach((sib) =>
+    sib.classList.remove("selected-filter")
+  );
+  let textData = "";
+  if (!sameButton) {
+    clickedSort.classList.add("selected-filter");
+    textData = clickedSort.innerText.toLowerCase().trim();
+  }
+  return textData;
+};
+
+const clearChildren = (target) => {
+  [...target.children].forEach((sib) =>
+    sib.classList.remove("selected-filter")
+  );
+};
+
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren}
