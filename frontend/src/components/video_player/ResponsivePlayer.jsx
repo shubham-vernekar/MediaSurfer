@@ -388,6 +388,9 @@ function ResponsivePlayer(props) {
       skip(5);
     } else if (e.button === 1) {
       e.preventDefault();
+      toggleFullScreenMode()
+    } else if (e.button === 3) {
+      e.preventDefault();
       skip(-5);
     }
   };
@@ -395,6 +398,15 @@ function ResponsivePlayer(props) {
   const playVideoState = () => {
     centerPlayButtonRef.current.style.visibility = "hidden";
     SetPauseVideo(true);
+  };
+  
+  const videoContainerMouseWheelHandler = (e) => {
+    if (e.deltaY>0 && fullScreenMode){
+      changeVolume(-0.04);
+    }else{
+      changeVolume(0.04);
+    }
+
   };
 
   const pauseVideoState = () => {
@@ -448,6 +460,7 @@ function ResponsivePlayer(props) {
       onMouseDown={videoContainerMouseDownHandler}
       onMouseLeave={videoContainerMouseLeaveHandler}
       onMouseMove={videoContainerMouseMoveHandler}
+      onWheel={videoContainerMouseWheelHandler}
       ref={videoContainerRef}
     >
       <canvas className="thumbnail-img" ref={thumbnailImgRef}></canvas>
