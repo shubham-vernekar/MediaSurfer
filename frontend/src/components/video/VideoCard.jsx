@@ -84,6 +84,18 @@ function VideoCard(props) {
     videoRef.current.load();
   };
 
+  const handleOnClickPlayerButton = (e) => {
+  };
+
+  const handleOnClickFolderButton = (e) => {
+  };
+
+  const handleOnClickDeleteButton = (e) => {
+  };
+
+  const handleOnClickCastRandomButton = (e) => {
+  };
+
   return (
     <div className="video-card" ref={videoCardRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="preview-video-container">
@@ -126,24 +138,23 @@ function VideoCard(props) {
         </div>
         <div className="cast-container" >
           {cast.map((castName, i) => (
-            <div key={i} className="cast-block">
+            <div key={i} className="cast-block" >
               {/* eslint-disable-next-line  */}
-              <a>{castName}</a>
-              <img src="/static/images/play-small.png" alt="" />
+              <a href={"/search?cast=" + castName} target="_blank">{castName}</a>
+              <img src="/static/images/play-small.png" alt="" onClick={handleOnClickCastRandomButton}/>
             </div>
           ))}
         </div>
         <div className="category-container">
           {category.map((categoryName, i) => (
             // eslint-disable-next-line 
-            <a key={i}>{categoryName}</a>
+            <a key={i} href={"/search?category=" + categoryName} target="_blank">{categoryName}</a>
           ))}
         </div>
-        <div className="category-container">
-          {category.map((categoryName, i) => (
-            // eslint-disable-next-line 
-            <a key={i}>{categoryName}</a>
-          ))}
+        <div className="video-advert-buttons-container">
+          <div className='video-advert-button' onClick={handleOnClickPlayerButton}>Player</div>
+          <div className='video-advert-button' onClick={handleOnClickFolderButton}>Folder</div>
+          <div className='video-advert-button' onClick={handleOnClickDeleteButton}>Delete</div>
         </div>
         {progress > 0 && (
           <div className="progress-bar">

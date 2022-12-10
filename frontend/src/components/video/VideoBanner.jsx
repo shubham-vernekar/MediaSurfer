@@ -31,7 +31,7 @@ function VideoBanner(props) {
       method: "get",
       url: "/api/stars",
       params: {
-        cast: cast
+        cast: cast || "empty"
       },
     }).then((response) => {
       if (response.data.length > 5) {

@@ -16,7 +16,7 @@ function HomePage() {
 
   useEffect(() => {
     GetVideos("banner", 18)
-    GetVideos("discover", 24)
+    GetVideos("discover", 25)
     GetVideos("continue", 15)
     GetVideos("recommended", 15)
     GetVideos("new", 15)
