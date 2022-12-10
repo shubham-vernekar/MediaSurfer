@@ -5,7 +5,7 @@ import Paginator from "../paginator/Paginator";
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 import { useSearchParams } from "react-router-dom";
-import { clearSiblingSelection, clearChildren } from '../utils'
+import { clearSiblingSelection, clearChildren, toggleDisplay } from '../utils'
 
 function SearchPage() {
   const [videoData, SetVideoData] = useState([]);
@@ -176,14 +176,6 @@ function SearchPage() {
     SetVideosPageNumber(1);
     SetCategoryQuery(clearSiblingSelection(e));
     document.body.scrollTop = document.documentElement.scrollTop = 0;
-  };
-
-  const toggleDisplay = (target) => {
-    if (target.style.display === "") {
-      target.style.display = "flex";
-    } else {
-      target.style.display = "";
-    }
   };
 
   const handleHamburgerOnClick = (e) => {

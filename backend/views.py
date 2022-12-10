@@ -83,4 +83,8 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
             response.data["results"][k]["video_data"] = video_data
             
         response.data["all_stars"] = sorted(list(all_stars))
+        response.data["all_stars"] += response.data["all_stars"] 
+        response.data["all_stars"] += response.data["all_stars"] 
+        response.data["all_stars"] += response.data["all_stars"] 
+        response.data["all_stars"] += response.data["all_stars"] 
         return response

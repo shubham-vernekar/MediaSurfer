@@ -3,7 +3,8 @@ import { React, useEffect, useState, useRef } from "react";
 import "../../../static/css/pages/SeriesPage.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
-import { clearSiblingSelection, clearChildren } from '../utils'
+import { clearSiblingSelection, clearChildren, toggleDisplay } from '../utils'
+import Paginator from "../paginator/Paginator"; 
 
 function SeriesPage() {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -11,6 +12,7 @@ function SeriesPage() {
 
   const seriesPageSortBoxRef = useRef(null);
   const castBlockContainerRef = useRef(null);
+  const seriesCastBoxRef = useRef(null);
 
   let page_no = searchParams.get("page") || 1;
   if (page_no < 1) {
@@ -32,6 +34,7 @@ function SeriesPage() {
   const [seriesPageNumber, SetSeriesPageNumber] = useState(page_no);
   const [seriesCount, SetSeriesCount] = useState(0);
   const [numberOfPages, SetNumberOfPages] = useState(0);
+  const [refresherCount, SetRefresherCount] = useState(0);
 
   useEffect(() => {
     axios({
@@ -48,7 +51,7 @@ function SeriesPage() {
       SetSeriesData(response.data.results);
       SetSeriesCount(response.data["count"]);
     });
-  }, [sortQuery, castQuery, seriesPageNumber]);
+  }, [sortQuery, castQuery, seriesPageNumber, refresherCount]);
 
   useEffect(() => {
     axios({
@@ -83,6 +86,16 @@ function SeriesPage() {
       .toLowerCase()
       .replace("surprise", "?")
       .trim();
+
+    if (clickedText=="?"){
+      if (sortQuery==="?"){
+        SetRefresherCount(refresherCount+1)
+      }else{
+        SetSortQuery("?");
+      }
+      return
+    }
+
     let clickedSiblings = clickedSort.parentElement.children;
     let sameButton = [...clickedSort.classList].includes("selected-filter");
     [...clickedSiblings].forEach((sib) =>
@@ -115,13 +128,17 @@ function SeriesPage() {
   };
 
   const handleHamburgerOnClick = (e) => {
-
+    toggleDisplay(seriesCastBoxRef.current);
   };
 
   const handleCastOnClick = (e) => {
     SetSeriesPageNumber(1);
     SetCastQuery(clearSiblingSelection(e));
     document.body.scrollTop = document.documentElement.scrollTop = 0;
+  };
+
+  const paginatorCallback = (val) => {
+    SetSeriesPageNumber(val)
   };
 
   return (
@@ -209,7 +226,7 @@ function SeriesPage() {
           </div>
         </div>
         <div>
-          <div className="series-cast-box">
+          <div className="series-cast-box" ref={seriesCastBoxRef}>
             <div className="series-labels-cast-title">
               CAST
               <img
@@ -241,6 +258,11 @@ function SeriesPage() {
           />
         ))}
       </div>
+      <div className="series-page-pagination-container">
+            {seriesPageNumber && sortQuery != "?" && (
+              <Paginator pageNo={seriesPageNumber} numberOfPages={numberOfPages} paginatorCallback={paginatorCallback}/>
+            )}
+          </div>
     </div>
   );
 }

@@ -71,7 +71,7 @@
 
 .series-cast-box{
     position: absolute;
-    display: flex;
+    display: none;
     right: 3vw;
     row-gap: 12px;
     flex-direction: column;
@@ -79,19 +79,26 @@
     z-index: 50;
     background-color: #141414;
     border-radius: 16px;
-    padding: 1vw;
+    padding: 0 1vw;
 }
+
+.series-labels-cast-data::-webkit-scrollbar {
+    display: none;
+  }
   
 .series-labels-cast-data {
     row-gap: 7px;
     flex-direction: column;
     display: flex; 
     align-items: flex-end;
+    overflow-y: auto;
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+    height: 79.4vh;
   }
 
 .series-labels-cast-box {
     width: 150px;
-    display: flex;
     flex-direction: column;
     row-gap: 12px;
 } 

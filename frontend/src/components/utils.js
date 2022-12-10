@@ -42,4 +42,12 @@ const clearChildren = (target) => {
   );
 };
 
-export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren}
+const toggleDisplay = (target) => {
+  if (target.style.display === "") {
+    target.style.display = "flex";
+  } else {
+    target.style.display = "";
+  }
+};
+
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay}
