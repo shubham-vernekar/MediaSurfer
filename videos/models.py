@@ -13,6 +13,83 @@ import operator
 from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
 import difflib
 import urllib.parse
+import re
+from collections import defaultdict
+
+def text2int (textnum, numwords={}):
+    if not numwords:
+        units = [
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+        "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+        "sixteen", "seventeen", "eighteen", "nineteen",
+        ]
+
+        tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+
+        scales = ["hundred", "thousand", "million", "billion", "trillion"]
+
+        numwords["and"] = (1, 0)
+        for idx, word in enumerate(units):  numwords[word] = (1, idx)
+        for idx, word in enumerate(tens):       numwords[word] = (1, idx * 10)
+        for idx, word in enumerate(scales): numwords[word] = (10 ** (idx * 3 or 2), 0)
+
+    ordinal_words = {'first':1, 'second':2, 'third':3, 'fifth':5, 'eighth':8, 'ninth':9, 'twelfth':12}
+    ordinal_endings = [('ieth', 'y'), ('th', '')]
+
+    textnum = textnum.replace('-', ' ')
+
+    current = result = 0
+    curstring = ""
+    onnumber = False
+    for word in textnum.split():
+        if word in ordinal_words:
+            scale, increment = (1, ordinal_words[word])
+            current = current * scale + increment
+            if scale > 100:
+                result += current
+                current = 0
+            onnumber = True
+        else:
+            for ending, replacement in ordinal_endings:
+                if word.endswith(ending):
+                    word = "%s%s" % (word[:-len(ending)], replacement)
+
+            if word not in numwords:
+                if onnumber:
+                    curstring += repr(result + current) + " "
+                curstring += word + " "
+                result = current = 0
+                onnumber = False
+            else:
+                scale, increment = numwords[word]
+
+                current = current * scale + increment
+                if scale > 100:
+                    result += current
+                    current = 0
+                onnumber = True
+
+    if onnumber:
+        curstring += repr(result + current)
+
+    return curstring
+
+
+def sort_related_videos(vids):
+    episodes_found = []
+    episodes_not_found = []
+    for i in vids:
+        episode_name = re.sub(r"\D", " ", text2int(i.title.lower()))
+        episode_number = re.sub(r"\s+", " ", text2int(episode_name)).strip()
+        if episode_number:
+            episodes_found.append([int(episode_number.split(" ")[0]), i])
+        else:
+            episodes_not_found.append(i)
+    
+    episodes_found.sort(key=lambda x: x[0])
+    episodes_found = [x[1] for x in episodes_found]
+    return episodes_found + episodes_not_found
+
 
 def convert_url(file_path):
 
@@ -95,6 +172,7 @@ class VideoQuerySet(models.QuerySet):
 
         if series:
             qs = qs.filter(Q(series__id=series))
+            return sort_related_videos(qs)
 
         if categories:
             qs = qs.filter(Q(categories__icontains=categories))
@@ -144,10 +222,23 @@ class VideoQuerySet(models.QuerySet):
         qs = self
         
         if recommendation_type == "watch next":
-            titles = list(qs.values_list('title', flat=True))
-            titles.remove(master_video.title)
-            relatives = difflib.get_close_matches(master_video.title, titles, n=6, cutoff=0.75)
-            related_vids = list(qs.filter(Q(title__in = relatives) & ~Q(id__in = exclude_ids)).order_by('title'))[:limit]
+
+            if master_video.series:
+                related_vids = list(qs.filter(Q(series__id=master_video.series.id)).order_by('title'))
+            else:
+                titles = list(qs.values_list('title', flat=True))
+                relatives = difflib.get_close_matches(master_video.title, titles, n=6, cutoff=0.75)
+                related_vids = list(qs.filter(Q(title__in = relatives)).order_by('title'))[:limit]
+            
+            related_vids = sort_related_videos(related_vids)
+
+            for i in related_vids:
+                if master_video in related_vids:
+                    master_index = related_vids.index(master_video)
+                    related_vids = related_vids[master_index+1:] + related_vids[:master_index] 
+            
+            if master_video.series:
+                return related_vids
 
             if len(related_vids) < limit:
                 related_vids += get_cast_videos(qs, master_video, limit - len(related_vids), "?", related_vids + exclude_ids)
@@ -194,7 +285,6 @@ class VideoQuerySet(models.QuerySet):
         if recommendation_type == "favourites":
             return query_special_tag(qs, "?", ["FAVOURITE"], limit, [])
 
-        # qs = qs.filter(Q(search_text__icontains="len"))
         return qs
         
 

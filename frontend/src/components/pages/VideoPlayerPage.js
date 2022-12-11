@@ -25,7 +25,7 @@ function VideoPlayerPage() {
       SetVideoData(response.data);
       SetCategories(response.data.categories.split(",")) 
       getCastData(response.data.cast) 
-      GetOtherVideos(videoID, "similar", 18)
+      GetOtherVideos(videoID, "similar", 20)
       GetOtherVideos(videoID, "watch next", 15)
     });
   }, []);
@@ -50,15 +50,19 @@ function VideoPlayerPage() {
 
 
   const getCastData = (cast) => {
-    axios({
-      method: "get",
-      url: "/api/stars",
-      params: {
-        cast: cast
-      },
-    }).then((response) => {
-      SetStarData(response.data);
-    });
+    if (cast){
+      axios({
+        method: "get",
+        url: "/api/stars",
+        params: {
+          "cast": cast
+        },
+      }).then((response) => {
+        SetStarData(response.data);
+      });
+    }else{
+      SetStarData([]);
+    }
   };
 
   const getSize = (size) => {
@@ -116,9 +120,14 @@ function VideoPlayerPage() {
           </div>
           <div className="video-player-categories-pane">
             {categories.map((categoryName, i) => (
-              <a key={i}>{categoryName}</a>
+              <a key={i} href={"/search?category="+categoryName}>{categoryName}</a>
             ))}
           </div>
+          {videoData.series && videoData.series.name &&(
+            <div className="video-player-series-pane">
+              <a href={"/search?series="+videoData.series.id}>{videoData.series.name}</a>
+            </div>
+          )}
           <div className="video-player-cast-pane">
             {starData.map((data, i) => (
               <StarCard
@@ -135,7 +144,7 @@ function VideoPlayerPage() {
         </div>
       </div>
       <div className="watch-next-container">
-        <VideoAdvertSlide videoData={watchNextVideos} title="Continue Watching" />
+        <VideoAdvertSlide videoData={watchNextVideos} title={(videoData.series && videoData.series.name) || "Continue Watching"} />
       </div>
       <div className="discover-container">
         <VideoAdvertBox videoData={similarVideos}  title="Discover" />

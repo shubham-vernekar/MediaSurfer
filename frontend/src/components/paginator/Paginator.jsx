@@ -88,10 +88,9 @@ const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
           {data}
         </div>
       ))}
-      <div className="paginator-item current-page" page={currentPage}  onClick={paginatorClickHandler}>
+      {totalPages>1 && (<div className="paginator-item current-page" page={currentPage}  onClick={paginatorClickHandler}>
         {currentPage}
-        
-      </div>
+      </div>)}
       {rightLane.map((data, i) => (
         <div key={i} className="paginator-item right-lane" page={data}  onClick={paginatorClickHandler}>
           {data}

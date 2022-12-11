@@ -49,6 +49,9 @@ function SearchPage() {
   const [minDuration, SetMinDuration] = useState(
     searchParams.get("min_duration") || 0
   );
+  const [seriesQuery, SetSeriesQuery] = useState(
+    searchParams.get("series") || ""
+  );
   const [videosPageNumber, SetVideosPageNumber] = useState(page_no);
   const [maxDurationBar, SetMaxDurationBar] = useState(0);
   const [minDurationBar, SetMinDurationBar] = useState(0);
@@ -69,12 +72,13 @@ function SearchPage() {
         duration_max: maxDuration,
         duration_min: minDuration,
         categories: categoryQuery,
+        series: seriesQuery,
       },
     }).then((response) => {
       SetVideoData(response.data.results);
       SetVideoCount(response.data["count"]);
     });
-  }, [sortQuery, filterQuery, castQuery, categoryQuery, videosPageNumber]);
+  }, [sortQuery, filterQuery, castQuery, categoryQuery, videosPageNumber, seriesQuery]);
 
   useEffect(() => {
     axios({
@@ -90,6 +94,7 @@ function SearchPage() {
         duration_max: maxDuration,
         duration_min: minDuration,
         categories: categoryQuery,
+        series: seriesQuery,
       },
     }).then((response) => {
       SetVideoData(response.data.results);
@@ -110,6 +115,7 @@ function SearchPage() {
         cast: castQuery,
         sort_by: sortQuery,
         categories: categoryQuery,
+        series: seriesQuery,
       },
     }).then((response) => {
       SetVideoData(response.data.results);
