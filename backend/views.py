@@ -1,10 +1,15 @@
 from .models import Category, Navbar, Series
+from django.views import View
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from videos.models import Video
+from stars.models import Star
 from videos.serializer import VideoListSerializer
+from stars.serializer import StarSerializer
+from django.http import JsonResponse
+
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -26,6 +31,7 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
         return qs
 
+
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = NavbarSerializer
@@ -39,6 +45,7 @@ class NavbarListView(generics.ListCreateAPIView):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.order_by("-weight")
         return qs
+
 
 class SeriesListCreateAPIView(generics.ListCreateAPIView):
     queryset = Series.objects.all()
@@ -84,3 +91,20 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
             
         response.data["all_stars"] = sorted(list(all_stars))
         return response
+
+
+class MasterSearchView(View):
+    def get(self, request):
+        query = request.GET.get("query", None)
+        videos, cast, categories = [], [], []
+
+        if query:
+            videos = VideoListSerializer(Video.objects.filter(Q(search_text__icontains=query))[:8], many=True).data 
+            cast = StarSerializer(Star.objects.filter(Q(name__icontains=query))[:5], many=True).data 
+            categories = CategorySerializer(Category.objects.filter(Q(title__icontains=query))[:5], many=True).data 
+
+        return JsonResponse({
+            "videos": videos,
+            "cast": cast,
+            "categories": categories,
+        })
