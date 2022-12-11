@@ -16,3 +16,19 @@ class StarListCreateAPIView(generics.ListCreateAPIView):
 class StarDetailAPIView(generics.RetrieveAPIView):
     queryset = Star.objects.all()
     serializer_class = StarSerializer
+
+class StarUpdateAPIView(generics.UpdateAPIView):
+    queryset = Star.objects.all()
+    serializer_class = StarSerializer
+    lookup_field = "pk"
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+
+class StarDeleteAPIView(generics.DestroyAPIView):
+    queryset = Star.objects.all()
+    serializer_class = StarSerializer
+    lookup_field = "pk"
+
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)

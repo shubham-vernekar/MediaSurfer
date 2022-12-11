@@ -34,7 +34,23 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
-    serializer_class = NavbarSerializer
+    serializer_class = CategorySerializer
+
+class CategoryUpdateAPIView(generics.UpdateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field = "pk"
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+
+class CategoryDeleteAPIView(generics.DestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field = "pk"
+
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)
 
 
 class NavbarListView(generics.ListCreateAPIView):

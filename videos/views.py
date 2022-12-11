@@ -38,6 +38,24 @@ class VideoDetailAPIView(generics.RetrieveAPIView):
     serializer_class = VideoSerializer
 
 
+class VideoUpdateAPIView(generics.UpdateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+    lookup_field = "pk"
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+
+
+class VideoDeleteAPIView(generics.DestroyAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+    lookup_field = "pk"
+
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)
+ 
+
 class VideoRecommendedAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoListSerializer
