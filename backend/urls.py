@@ -9,4 +9,5 @@ urlpatterns = [
     path('navbar', views.NavbarListView.as_view(), name='navbar-list'),
     path('series', views.SeriesListCreateAPIView.as_view(), name='series-list'),
     path('mastersearch', views.MasterSearchView.as_view(), name='master-search'),
+    path('scan', views.RunScanView.as_view(), name='scan-videos'),
 ]

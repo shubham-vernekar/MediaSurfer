@@ -8,7 +8,8 @@ from stars.models import Star
 from videos.serializer import VideoListSerializer
 from stars.serializer import StarSerializer
 from rest_framework.response import Response
-
+import os
+from django.conf import settings
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -123,3 +124,11 @@ class MasterSearchView(generics.GenericAPIView):
             "cast": cast,
             "categories": categories,
         })
+
+class RunScanView(generics.GenericAPIView):
+    def post(self, request):
+        cmd = "start /B start cmd.exe @cmd /c " + '"{}" {} scan'.format(settings.PYTHON_EXE, os.path.join(settings.BASE_DIR, 'manage.py'))
+        os.system(cmd)
+        return Response({
+                "Status": "Success"
+            })

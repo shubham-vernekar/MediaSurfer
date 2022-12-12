@@ -122,6 +122,7 @@ USE_I18N = True
 USE_TZ = True
 
 LOCAL_MEDIA_PLAYER_PATH = r"C:/Program Files/DAUM/PotPlayer/PotPlayerMini64.exe"
+PYTHON_EXE = r"F:/MediaSurferV2/env/Scripts/python.exe"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

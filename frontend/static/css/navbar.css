@@ -243,6 +243,7 @@ a{
 .navbar-populate{
 	width: 25px;
     margin-right: 30px;
+	cursor: pointer;
 }
 
 .navbar-populate:hover {

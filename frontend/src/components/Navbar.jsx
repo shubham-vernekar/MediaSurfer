@@ -90,6 +90,10 @@ function Navbar(props) {
   }, [searchText]);
 
   const scanLocalVideos = (e) => {
+    axios({
+      method: "post",
+      url: "/api/scan"
+    });
   };
 
   return (
