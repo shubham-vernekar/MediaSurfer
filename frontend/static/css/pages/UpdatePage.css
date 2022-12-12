@@ -1,0 +1,79 @@
+.update-page-container{
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+    width: 100%;
+    margin: 1vh 4vw;
+}
+
+.header-container{
+    display: flex;
+    column-gap: 30px;
+    font-size: 25px;
+    align-items: center;
+}
+
+.save-icon{
+    width: 27px;
+}
+
+.save-button:hover{
+    transform:scale(1.1)
+}
+
+.save-button:active{
+    transform:scale(1.2)
+}
+
+.save-text {
+    overflow: hidden;
+    width: 0;
+    font-size: 14px;
+    transition: 0.4s ease-in-out;
+}
+
+.save-button:hover .save-text {
+    width: 30px;
+}
+
+.directories-data{
+    width: 25vw;
+    height: 86vh;
+}
+
+.labels-data{
+    width: 63vw;
+    height: 86vh;
+}
+
+.labels-data::-webkit-scrollbar, .directories-data::-webkit-scrollbar {
+    display: none;
+  }
+
+.labels-data, .directories-data{
+    background-color: #2a2a2a;
+    color: #d1d1d1;
+    scrollbar-width: none;
+}
+
+.labels-data:focus, .directories-data:focus{
+    color: #f8f9fa;
+}
+
+.labels-container, .directories-container{
+    display: flex;
+    row-gap: 15px;
+    flex-direction: column;
+}
+
+.save-button{
+    display: flex;
+    column-gap: 12px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.save-result{
+    font-size: 14px;
+    margin-left: -13px;
+    text-transform: capitalize;
+}

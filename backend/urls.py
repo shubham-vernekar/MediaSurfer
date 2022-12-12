@@ -10,4 +10,5 @@ urlpatterns = [
     path('series', views.SeriesListCreateAPIView.as_view(), name='series-list'),
     path('mastersearch', views.MasterSearchView.as_view(), name='master-search'),
     path('scan', views.RunScanView.as_view(), name='scan-videos'),
+    path('json', views.UpdateJson.as_view(), name='update-json'),
 ]

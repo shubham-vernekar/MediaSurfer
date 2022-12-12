@@ -10,6 +10,7 @@ from stars.serializer import StarSerializer
 from rest_framework.response import Response
 import os
 from django.conf import settings
+import json
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -131,4 +132,41 @@ class RunScanView(generics.GenericAPIView):
         os.system(cmd)
         return Response({
                 "Status": "Success"
+            })
+
+
+class UpdateJson(generics.GenericAPIView):
+
+    def get(self, request):
+        labels_data = open(os.path.join(settings.BASE_DIR, 'backend/management/commands/labels.json'),'r').read()
+        seeds_data = open(os.path.join(settings.BASE_DIR, 'backend/management/commands/directories.json'),'r').read()
+
+        return Response({
+                "labels_data" : labels_data,
+                "seeds_data" : seeds_data
+            })
+    
+    def post(self, request, *args, **kwargs):
+        filename = request.data.get('filename', False)
+        data = request.data.get('data', '') 
+
+        if filename:
+            try:
+                _ = json.loads(data)
+                data_file = open(os.path.join(settings.BASE_DIR, f'backend/management/commands/{filename}.json'),'w')
+                data_file.write(data)
+                data_file.close()
+                return Response({
+                        "status": "OK",
+                        "message": f"{filename} Updated Successfully",
+                    })
+            except:
+                return Response({
+                        "status": "Failed",
+                        "message": f"{filename} Update Failed",
+                    })
+
+        return Response({
+                "status": "Failed",
+                "message": f"{filename} Not found"
             })

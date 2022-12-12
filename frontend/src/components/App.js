@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import SeriesPage from "./pages/SeriesPage";
 import Navbar from "./Navbar"
+import UpdatePage from "./pages/UpdatePage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/video" element={<VideoAdvert />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/series" element={<SeriesPage />} />
+          <Route path="/update" element={<UpdatePage />} />
           <Route path="" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
