@@ -254,3 +254,19 @@
 .video-advert-button:active {
   transform:scale(1.2)
 }
+
+.video-advert-button-text{
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: 0.4s ease-in-out;
+}
+
+.video-advert-button:hover .video-advert-button-text{
+  width: 70px;
+}
+
+.advert-views-box{
+  display: flex;
+  column-gap: 6px;
+}

@@ -1,5 +1,4 @@
 from .models import Category, Navbar, Series
-from django.views import View
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
 from rest_framework import generics
 from django.core.exceptions import FieldError
@@ -8,7 +7,7 @@ from videos.models import Video
 from stars.models import Star
 from videos.serializer import VideoListSerializer
 from stars.serializer import StarSerializer
-from django.http import JsonResponse
+from rest_framework.response import Response
 
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
@@ -109,7 +108,7 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
         return response
 
 
-class MasterSearchView(View):
+class MasterSearchView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
         videos, cast, categories = [], [], []
@@ -119,7 +118,7 @@ class MasterSearchView(View):
             cast = StarSerializer(Star.objects.filter(Q(name__icontains=query))[:5], many=True).data 
             categories = CategorySerializer(Category.objects.filter(Q(title__icontains=query))[:5], many=True).data 
 
-        return JsonResponse({
+        return Response({
             "videos": videos,
             "cast": cast,
             "categories": categories,

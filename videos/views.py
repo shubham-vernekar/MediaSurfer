@@ -1,6 +1,11 @@
 from .models import Video
 from .serializer import VideoListSerializer, VideoSerializer
 from rest_framework import generics
+from django.conf import settings
+import subprocess
+from rest_framework.response import Response
+import os
+from send2trash import send2trash
 
 class VideoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
@@ -81,3 +86,50 @@ class VideoRelatedAPIView(generics.ListCreateAPIView):
 
         return qs.get_related(self.request.GET, master_video)
  
+class OpenPlayerView(generics.GenericAPIView):
+    def post(self, request, pk):
+        try:
+            video = Video.objects.get(id = pk)
+        except Video.DoesNotExist:
+            return Response({
+                "Status": "Failed"
+            })
+        
+        video.views = video.views + 1
+        video.save()
+        _ = subprocess.Popen([settings.LOCAL_MEDIA_PLAYER_PATH, video.file_path])
+        return Response({
+                "Status": "Success"
+            })
+
+
+class OpenFolderView(generics.GenericAPIView):
+    def post(self, request, pk):
+        try:
+            video = Video.objects.get(id = pk)
+        except Video.DoesNotExist:
+            return Response({
+                "Status": "Failed"
+            })
+        
+        video.views = video.views + 1
+        video.save()
+        os.system('start %windir%\explorer.exe /select, "{}"'.format(video.file_path.replace("/", "\\")))
+        return Response({
+                "Status": "Success"
+            })
+
+class LocalDeleteView(generics.GenericAPIView):
+    def post(self, request, pk):
+        try:
+            video = Video.objects.get(id = pk)
+        except Video.DoesNotExist:
+            return Response({
+                "Status": "Failed"
+            })
+
+        # send2trash(video.file_path.replace("/", "\\"))
+        # video.delete()
+        return Response({
+                "Status": "Success"
+            })

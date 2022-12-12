@@ -181,8 +181,9 @@
 	display: grid;
     position: absolute;
     top: 60px;
+    right: 78px;
     background: #292929;
-    width: 88%;
+    width: 81%;
     row-gap: 10px;
     padding: 2%;
     border-radius: 8px;
@@ -237,4 +238,17 @@ a{
     position: absolute;
     top: 75px;
     right: 665px;
+}
+
+.navbar-populate{
+	width: 25px;
+    margin-right: 30px;
+}
+
+.navbar-populate:hover {
+	transform:scale(1.1)
+}
+  
+.navbar-populate:active {
+	transform:scale(1.2)
 }
