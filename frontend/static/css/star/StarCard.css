@@ -35,7 +35,6 @@
 }
 
 .star-title{
-    margin-bottom: 6px;
     font-size: 17px;
     font-weight: 500;
     text-transform: uppercase;
@@ -49,10 +48,6 @@
     justify-content: center;
 }
 
-.star-videos img, .star-views img{
-    margin-right: 10px;
-}
-
 .star-play-button{
     display: none;
     cursor: pointer;
@@ -61,7 +56,6 @@
     text-decoration: none;
     border: 1px solid var(--star-card-theme);
     border-radius: 9px;
-    margin-bottom: 5px;
 }
 
 .star-play{
@@ -123,5 +117,18 @@ color: black;}
     position: absolute;
     top: 7px;
     right: 7px;
+}
+
+.star-videos, .star-views{
+    display: none;
+    column-gap: 12px;
+}
+
+.star-card:hover .star-videos{
+    display: flex;
+}
+
+.star-card:hover .star-views{
+    display: flex;
 }
 

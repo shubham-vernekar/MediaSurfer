@@ -259,6 +259,7 @@
   width: 0;
   overflow: hidden;
   white-space: nowrap;
+  user-select: none;
   transition: 0.4s ease-in-out;
 }
 
