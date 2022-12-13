@@ -1,6 +1,7 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
 import { useParams } from "react-router-dom";
 import { React, useEffect, useState } from "react";
+import OptionsSearchBox from "../utils/OptionsSearchBox";
 import axios from "axios";
 import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
@@ -15,8 +16,11 @@ function VideoPlayerPage() {
   const [watchNextVideos, SetWatchNextVideos] = useState([]);
   const [similarVideos, SetSimilarVideos] = useState([]);
   const [categories, SetCategories] = useState([]);
+  const [cast, SetCast] = useState([]);
   const [starData, SetStarData] = useState([]);
   const [isFavourite, SetIsFavourite] = useState(false);
+  const [allCategories, SetAllCategories] = useState([]);
+  const [allStars, SetAllStars] = useState([]);
 
   useEffect(() => {
     axios({
@@ -25,11 +29,27 @@ function VideoPlayerPage() {
     }).then((response) => {
       SetVideoData(response.data);
       SetCategories(response.data.categories.split(",")) 
+      SetCast(response.data.cast.split(",")) 
       getCastData(response.data.cast) 
       GetOtherVideos(videoID, "similar", 20)
       GetOtherVideos(videoID, "watch next", 15)
       SetIsFavourite(response.data.favourite)
     });
+
+    axios({
+        method: "get",
+        url: "/api/categories/names",
+      }).then((response) => {
+        SetAllCategories(response.data);
+    });
+
+    axios({
+        method: "get",
+        url: "/api/stars/names",
+      }).then((response) => {
+        SetAllStars(response.data);
+    });
+  
   }, []);
 
   const GetOtherVideos = (videoID, type, count) => {
@@ -51,13 +71,13 @@ function VideoPlayerPage() {
   };
 
 
-  const getCastData = (cast) => {
-    if (cast){
+  const getCastData = (castName) => {
+    if (castName){
       axios({
         method: "get",
         url: "/api/stars",
         params: {
-          "cast": cast
+          "cast": castName
         },
       }).then((response) => {
         SetStarData(response.data);
@@ -74,6 +94,26 @@ function VideoPlayerPage() {
       return parseFloat(parseFloat(size)/parseFloat(1024)).toFixed(2) + " Gb"
     }
   }
+
+  const addStar = (name) => {
+    let newCast = [...new Set([...cast,...[name.data]])].sort().join(",");
+    axios({
+        method: "put",
+        url: "/api/videos/" + videoData.id + "/update",
+        data: {
+          id: videoData.id,
+          title: videoData.title,
+          cast: newCast,
+        }
+      }).then((response) => {
+        getCastData(response.data.cast);
+        SetCast(response.data.cast.split(","));
+    });
+  };
+
+  const addCategory = (name) => {
+    console.log(name.data);
+  };
 
   return (
     <div className="video-player-container">
@@ -158,8 +198,10 @@ function VideoPlayerPage() {
             </div>
 
             <div className="player-cast-buttons-container">
-              <div>
+              <div className="player-cast-buttons-add-container">
                 <img src="/static/images/plus.svg" alt="" />
+                <OptionsSearchBox options={allStars} callbackFunction={addStar} placeholder={"Add Star"}> 
+                </OptionsSearchBox>
               </div>
               <div>
                 <img src="/static/images/trash.svg" alt="" />

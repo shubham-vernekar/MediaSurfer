@@ -1,6 +1,7 @@
 from .serializer import StarSerializer
 from .models import Star
 from rest_framework import generics
+from rest_framework.response import Response
 
 class StarListCreateAPIView(generics.ListCreateAPIView):
     queryset = Star.objects.all()
@@ -32,3 +33,12 @@ class StarDeleteAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         return super().perform_destroy(instance)
+
+class StarNamesListAPIView(generics.GenericAPIView):
+    def get(self, request):
+        query = request.GET.get("query", None)
+        qs = Star.objects.all()
+        if query:
+            qs = qs.filter(name__icontains=query)
+        
+        return Response(qs.values_list('name', flat=True))

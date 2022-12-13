@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('categories', views.CategoryListCreateAPIView.as_view(), name='categories-list'),
+    path('categories/names', views.CategoryNamesListAPIView.as_view(), name='categories-list-names'),
     path('categories/<str:pk>/', views.CategoryDetailAPIView.as_view(), name='categories-detail'),
     path('categories/<str:pk>/update', views.CategoryUpdateAPIView.as_view(), name='categories-update'),
     path('categories/<str:pk>/delete', views.CategoryDeleteAPIView.as_view(), name='categories-delete'),

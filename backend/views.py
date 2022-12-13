@@ -170,3 +170,12 @@ class UpdateJson(generics.GenericAPIView):
                 "status": "Failed",
                 "message": f"{filename} Not found"
             })
+
+class CategoryNamesListAPIView(generics.GenericAPIView):
+    def get(self, request):
+        query = request.GET.get("query", None)
+        qs = Category.objects.all()
+        if query:
+            qs = qs.filter(title__icontains=query)
+        
+        return Response(qs.values_list('title', flat=True))

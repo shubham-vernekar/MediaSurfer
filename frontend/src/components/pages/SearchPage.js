@@ -1,6 +1,6 @@
 import { React, useRef, useEffect, useState } from "react";
 import VideoCard from "../video/VideoCard";
-import MultiRangeSlider from "../slider/MultiRangeSlider";
+import MultiRangeSlider from "../utils/MultiRangeSlider";
 import Paginator from "../paginator/Paginator"; 
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
