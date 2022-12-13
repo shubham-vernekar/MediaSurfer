@@ -91,3 +91,10 @@
 .player-cast-buttons-container img:active, .player-categories-buttons-container img:active, .player-favourite-button:active{
     transform:scale(1.3)
 }
+
+.player-cast-buttons-add-container {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+  }
+  

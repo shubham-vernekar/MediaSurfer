@@ -21,6 +21,8 @@ function VideoPlayerPage() {
   const [isFavourite, SetIsFavourite] = useState(false);
   const [allCategories, SetAllCategories] = useState([]);
   const [allStars, SetAllStars] = useState([]);
+  const [showCastAdd, SetShowCastAdd] = useState(false);
+  const [showCastDelete, SetShowCastDelete] = useState(false);
 
   useEffect(() => {
     axios({
@@ -95,21 +97,31 @@ function VideoPlayerPage() {
     }
   }
 
+  const updateVideoCast = (id, title, newCast) => {
+    axios({
+      method: "put",
+      url: "/api/videos/" + videoData.id + "/update",
+      data: {
+        id: id,
+        title: title,
+        cast: newCast,
+      }
+    }).then((response) => {
+      getCastData(response.data.cast);
+      SetCast(response.data.cast.split(","));
+  });
+  }
+
   const addStar = (name) => {
     let newCast = [...new Set([...cast,...[name.data]])].sort().join(",");
-    axios({
-        method: "put",
-        url: "/api/videos/" + videoData.id + "/update",
-        data: {
-          id: videoData.id,
-          title: videoData.title,
-          cast: newCast,
-        }
-      }).then((response) => {
-        getCastData(response.data.cast);
-        SetCast(response.data.cast.split(","));
-    });
+    updateVideoCast(videoData.id , videoData.title, newCast)
   };
+
+  const deleteStar = (name) => {
+    let newCast = cast.filter(item => item !== name.data).sort().join(",");
+    updateVideoCast(videoData.id , videoData.title, newCast)
+  };
+
 
   const addCategory = (name) => {
     console.log(name.data);
@@ -199,12 +211,16 @@ function VideoPlayerPage() {
 
             <div className="player-cast-buttons-container">
               <div className="player-cast-buttons-add-container">
-                <img src="/static/images/plus.svg" alt="" />
-                <OptionsSearchBox options={allStars} callbackFunction={addStar} placeholder={"Add Star"}> 
-                </OptionsSearchBox>
+                {showCastAdd && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCastAdd(false)}/>)}
+                {!showCastAdd && (<img src="/static/images/plus.svg" alt="" onClick={() => SetShowCastAdd(true)}/>)}
+                {showCastAdd && (<OptionsSearchBox options={allStars} callbackFunction={addStar} placeholder={"Add Star"}> 
+                </OptionsSearchBox>)}
               </div>
-              <div>
-                <img src="/static/images/trash.svg" alt="" />
+              <div className="player-cast-buttons-add-container">
+                {showCastDelete && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCastDelete(false)}/>)}
+                {!showCastDelete && (<img src="/static/images/trash.svg" alt="" onClick={() => SetShowCastDelete(true)}/>)}
+                {showCastDelete && (<OptionsSearchBox options={cast} callbackFunction={deleteStar} placeholder={"Delete Star"}> 
+                </OptionsSearchBox>)}
               </div>
             </div>
             
