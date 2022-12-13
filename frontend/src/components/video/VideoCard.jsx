@@ -9,7 +9,6 @@ function VideoCard(props) {
   const [imageTag, SetImageTag] = useState("");
   const [glow, SetGlow] = useState(false);
   const [durationText, SetDurationText] = useState("");
-  const [progressBarStyle, SetProgressBarStyle] = useState({});
   const [categories, SetCategories] = useState([]);
   const [cast, SetCast] = useState([]);
   const [progress, SetProgress] = useState(0);
@@ -19,6 +18,7 @@ function VideoCard(props) {
   const videoCardRef = useRef(null);
   const videoRef = useRef(null);
   const videoSourceRef = useRef(null);
+  const progressBarRef = useRef(null);
 
   const videoThemeDict = {
     "WATCHED" : ["/static/images/Watched.png", "#99d3ff"],
@@ -53,9 +53,9 @@ function VideoCard(props) {
     let durationInSeconds = h * 3600 + m * 60 + s;
     SetProgress(parseInt(props.progress) / durationInSeconds);
 
-    SetProgressBarStyle({
-      width: progress * 100 + "%",
-    });
+    if (progressBarRef.current){
+      progressBarRef.current.style.setProperty("width", progress * 100 + "%")
+    }
   
     if (props.categories){
       SetCategories(props.categories.split(","));
@@ -276,7 +276,7 @@ function VideoCard(props) {
             <div className="progress-bar-total">
               <div
                 className="progress-bar-current"
-                style={progressBarStyle}
+                ref={progressBarRef}
               ></div>
             </div>
           </div>

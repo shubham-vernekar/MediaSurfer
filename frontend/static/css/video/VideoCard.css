@@ -89,7 +89,7 @@
 
 .progress-bar {
   position: absolute;
-  top: -1vh;
+  top: -10%;
   width: 100%;
   display: flex;
   justify-content: center;
