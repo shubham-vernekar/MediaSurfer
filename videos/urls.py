@@ -9,6 +9,7 @@ urlpatterns = [
     path('<str:pk>/open', views.OpenPlayerView.as_view(), name='video-open-player'),
     path('<str:pk>/folder', views.OpenFolderView.as_view(), name='video-open-folder'),
     path('<str:pk>/localdelete', views.LocalDeleteView.as_view(), name='video-local-delete'),
+    path('<str:pk>/viewincr', views.VideoIncrementView.as_view(), name='video-view-increment'),
     path('recommended', views.VideoRecommendedAPIView.as_view(), name='video-recommendation'),
     path('related', views.VideoRelatedAPIView.as_view(), name='video-related'),
 ]

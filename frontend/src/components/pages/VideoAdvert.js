@@ -16,6 +16,7 @@ function VideoAdvert() {
       resolution: "HD",
       duration: "00:56:21",
       special_tag: "FAVOURITE",
+      watch_time: 563,
       created: "2017-10-20T11:23:09Z",
     },
     {
@@ -32,6 +33,7 @@ function VideoAdvert() {
       resolution: "4K UHD",
       duration: "00:50:35",
       special_tag: "",
+      watch_time: 563,
       created: "2018-04-13T18:40:20Z",
     },
     {
@@ -45,6 +47,7 @@ function VideoAdvert() {
       progress: 0,
       resolution: "2K QHD",
       duration: "00:32:48",
+      watch_time: 563,
       special_tag: "RECOMMENDED",
       created: "2020-06-18T14:42:11Z",
     },
@@ -60,6 +63,7 @@ function VideoAdvert() {
       resolution: "4K UHD",
       duration: "03:08:46",
       special_tag: "FAVOURITE",
+      watch_time: 563,
       created: "2021-09-08T10:37:23Z",
     },
     {
@@ -74,6 +78,7 @@ function VideoAdvert() {
       resolution: "720p",
       duration: "00:56:57",
       special_tag: "NEW",
+      watch_time: 563,
       created: "2017-12-22T19:31:09Z",
     }
   ];

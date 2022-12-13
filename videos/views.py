@@ -1,4 +1,6 @@
 from .models import Video
+from stars.models import Star
+from backend.models import Category
 from .serializer import VideoListSerializer, VideoSerializer
 from rest_framework import generics
 from django.conf import settings
@@ -128,8 +130,38 @@ class LocalDeleteView(generics.GenericAPIView):
                 "Status": "Failed"
             })
 
-        # send2trash(video.file_path.replace("/", "\\"))
-        # video.delete()
+        send2trash(video.file_path.replace("/", "\\"))
+        video.delete()
+        return Response({
+                "Status": "Success"
+            })
+
+class VideoIncrementView(generics.GenericAPIView):
+    def post(self, request, pk):
+        try:
+            video = Video.objects.get(id = pk)
+        except Video.DoesNotExist:
+            return Response({
+                "Status": "Failed"
+            })
+
+        video.views = video.views + 1
+        video.save()
+
+        cast = [x for x in video.cast.split(",") if x]
+        for star in Star.objects.filter(name__in = cast):
+            star.views = star.views + 1
+            star.save()
+
+        categories = [x for x in video.categories.split(",") if x]
+        for category in Category.objects.filter(title__in = categories):
+            category.views = category.views + 1
+            category.save()
+        
+        if video.series:
+            video.series.views = video.series.views + 1
+            video.series.save()
+        
         return Response({
                 "Status": "Success"
             })

@@ -47,6 +47,11 @@ function VideoPlayerPage() {
     });
 
     axios({
+      method: "post",
+      url: "/api/videos/" + videoID + "/viewincr",
+    });
+
+    axios({
         method: "get",
         url: "/api/categories/names",
       }).then((response) => {
