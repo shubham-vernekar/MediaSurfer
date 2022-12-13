@@ -380,7 +380,7 @@ class Video(models.Model):
                     special_tag = "RECOMMENDED"
 
         if self.categories:
-            for category in self.categories.split(","):
+            for category in [x for x in self.categories.split(",") if x]:
                 category_object = Category.objects.get(title = category)
                 if category_object.favourite:
                     special_tag = "RECOMMENDED"
