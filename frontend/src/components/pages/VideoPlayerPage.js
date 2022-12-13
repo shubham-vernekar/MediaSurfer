@@ -1,6 +1,6 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
 import { useParams } from "react-router-dom";
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import OptionsSearchBox from "../utils/OptionsSearchBox";
 import axios from "axios";
 import "../../../static/css/pages/VideoPlayerPage.css";
@@ -25,6 +25,9 @@ function VideoPlayerPage() {
   const [showCastDelete, SetShowCastDelete] = useState(false);
   const [showCategoriesAdd, SetShowCategoriesAdd] = useState(false);
   const [showCategoriesDelete, SetShowCategoriesDelete] = useState(false);
+  const [specialTag, SetSpecialTag] = useState("");
+
+  const VideoDetailsRef = useRef(null);
 
   useEffect(() => {
     axios({
@@ -32,12 +35,13 @@ function VideoPlayerPage() {
       url: "/api/videos/" + videoID,
     }).then((response) => {
       SetVideoData(response.data);
-      SetCategories(response.data.categories.split(",")) 
-      SetCast(response.data.cast.split(",")) 
+      SetCategories(response.data.categories.split(",").filter(Boolean)) 
+      SetCast(response.data.cast.split(",").filter(Boolean)) 
       getCastData(response.data.cast) 
       GetOtherVideos(videoID, "similar", 20)
       GetOtherVideos(videoID, "watch next", 15)
       SetIsFavourite(response.data.favourite)
+      SetSpecialTag(response.data.special_tag);
     });
 
     axios({
@@ -55,6 +59,16 @@ function VideoPlayerPage() {
     });
   
   }, []);
+
+  useEffect(() => {
+    if (isFavourite){
+      VideoDetailsRef.current.style.color = "#ff6b87"
+      VideoDetailsRef.current.style.textShadow = "0px 0px 60px #ff6b87"
+    }else{
+      VideoDetailsRef.current.style.color = "#f8f9fa"
+      VideoDetailsRef.current.style.textShadow = "none"
+    }
+  }, [isFavourite]);
 
   const GetOtherVideos = (videoID, type, count) => {
     axios({
@@ -110,7 +124,7 @@ function VideoPlayerPage() {
       }
     }).then((response) => {
         getCastData(response.data.cast);
-        SetCast(response.data.cast.split(","));
+        SetCast(response.data.cast.split(",").filter(Boolean));
     });
   }
 
@@ -124,7 +138,7 @@ function VideoPlayerPage() {
         categories: newCategories,
       }
     }).then((response) => {
-        SetCategories(response.data.categories.split(","));
+        SetCategories(response.data.categories.split(",").filter(Boolean));
     });
   }
 
@@ -141,14 +155,27 @@ function VideoPlayerPage() {
   const addCategory = (name) => {
     let newCategories = [...new Set([...categories,...[name.data]])].sort().join(",");
     updateVideoCategories(videoData.id , videoData.title, newCategories)
-    console.log(newCategories);
   };
 
   const deleteCategory = (name) => {
     let newCategories = categories.filter(item => item !== name.data).sort().join(",");
     updateVideoCategories(videoData.id , videoData.title, newCategories)
-    console.log(newCategories);
   };
+
+  const updateVideoFavourite = (fav) => {
+    axios({
+      method: "put",
+      url: "/api/videos/" + videoData.id + "/update",
+      data: {
+        id: videoData.id,
+        title: videoData.title,
+        favourite: fav,
+      }
+    }).then((response) => {
+        SetSpecialTag(response.data.special_tag);
+        SetIsFavourite(response.data.favourite);
+    });
+  }
 
   return (
     <div className="video-player-container">
@@ -160,8 +187,8 @@ function VideoPlayerPage() {
           sprite={videoData.scrubber_sprite}
           sprite_pos_file={videoData.scrubber_vtt}
         />
-        <div className="video-player-details">
-          <div className="video-player-title"><h1>{videoData.title}</h1></div>
+        <div className="video-player-details" >
+          <div className="video-player-title" ref={VideoDetailsRef}><h1><span>{videoData.title}</span></h1></div>
           <div className="video-player-details-pane">
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -193,10 +220,21 @@ function VideoPlayerPage() {
               </svg>
               {videoData.height} x {videoData.width} </div>
             <div> {videoData.badge} </div>
-            <div> {videoData.special_tag} </div>
+            <div> {specialTag} </div>
 
-            {!isFavourite && (<div className="player-favourite-button"> <img src="/static/images/like-add.svg" alt="" /> </div>)}
-            {isFavourite && (<div className="player-favourite-button"> <img src="/static/images/like-remove.svg" alt="" /> </div>)}
+            {!isFavourite && (
+              <div className="player-favourite-button" onClick={() => {updateVideoFavourite(true)}}>
+                <img src="/static/images/like-add.svg" alt="" /> 
+                <div> <span className="favourites-text">Add to favourites</span></div>
+              </div>
+            )}
+
+            {isFavourite && (
+              <div className="player-favourite-button" onClick={() => {updateVideoFavourite(false)}}>
+                <img src="/static/images/like-remove.svg" alt="" />
+                <div> <span className="favourites-text">Remove from favourites</span></div>
+              </div>
+            )}
 
           </div>
           <div className="video-player-categories-pane">
