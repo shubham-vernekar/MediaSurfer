@@ -332,7 +332,8 @@ class Video(models.Model):
     tags = models.CharField(max_length=512, blank=True, null=True)
     series = models.ForeignKey(
         Series, on_delete=models.SET_NULL, related_name="episodes", blank=True, null=True)
-    progress = models.IntegerField(blank=True, null=True)
+    progress = models.IntegerField(default=0, blank=True, null=True)
+    watch_time = models.IntegerField(default=0, blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
 
     objects = VideoManager()
@@ -389,7 +390,7 @@ class Video(models.Model):
             special_tag = "NEW"
 
         if self.progress:
-            if self.progress > self.duration.seconds * 0.9:
+            if self.progress > self.duration.seconds * 0.9 or self.watch_time > 600:
                 special_tag = "WATCHED"
         
         if self.favourite:

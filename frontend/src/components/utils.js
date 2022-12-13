@@ -9,6 +9,15 @@ const getDurationText = (duration) => {
     }
   };
 
+const secondsToHHMMSS = (duration, full=false) => {
+  duration = new Date(duration * 1000).toISOString().slice(11, 19).split(":");
+  if (parseInt(duration[0]) > 0 || full) {
+    return duration.join(":")
+  } else {
+    return duration.slice(1).join(":")
+  }
+};
+
 const getCreatedDate = (targetDate) => {
   const created = new Date(targetDate);
   return created.toLocaleString("default", { month: "long" }) + " " + created.toLocaleString("default", { day: "2-digit" }).toUpperCase() + " " + created.getFullYear()
@@ -50,4 +59,4 @@ const toggleDisplay = (target) => {
   }
 };
 
-export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay}
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay, secondsToHHMMSS}

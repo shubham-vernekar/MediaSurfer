@@ -25,7 +25,8 @@ function VideoAdvertBox(props) {
             created={data["created"]}
             badge={data["badge"]}
             specialTag={data["special_tag"]}
-            subtitle_badge={data["subtitle_badge"]}
+            watchTime={data["watch_time"]}
+            subtitleBadge={data["subtitle_badge"]}
           />
         ))}
       </div>

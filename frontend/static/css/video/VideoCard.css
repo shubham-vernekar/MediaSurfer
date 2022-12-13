@@ -270,4 +270,5 @@
 .advert-views-box{
   display: flex;
   column-gap: 6px;
+  align-items: center;
 }

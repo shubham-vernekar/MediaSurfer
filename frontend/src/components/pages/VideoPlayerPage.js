@@ -7,7 +7,7 @@ import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
-import { getDurationText, getCreatedDate } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS } from '../utils'
 
 function VideoPlayerPage() {
   const params = useParams();
@@ -26,6 +26,7 @@ function VideoPlayerPage() {
   const [showCategoriesAdd, SetShowCategoriesAdd] = useState(false);
   const [showCategoriesDelete, SetShowCategoriesDelete] = useState(false);
   const [specialTag, SetSpecialTag] = useState("");
+  const [watchTime, SetWatchTime] = useState(0);
 
   const VideoDetailsRef = useRef(null);
 
@@ -42,6 +43,7 @@ function VideoPlayerPage() {
       GetOtherVideos(videoID, "watch next", 15)
       SetIsFavourite(response.data.favourite)
       SetSpecialTag(response.data.special_tag);
+      SetWatchTime(response.data.watch_time)
     });
 
     axios({
@@ -177,7 +179,7 @@ function VideoPlayerPage() {
     });
   }
 
-  const updateProgress = (progress) => {
+  const updateProgress = (progress, watchTime) => {
     axios({
       method: "put",
       url: "/api/videos/" + videoData.id + "/update",
@@ -185,9 +187,10 @@ function VideoPlayerPage() {
         id: videoData.id,
         title: videoData.title,
         progress: progress,
+        watch_time: watchTime,
       }
     }).then((response) => {
-        console.log(response.data);
+      SetWatchTime(response.data.watch_time)
     });
   }
 
@@ -201,6 +204,7 @@ function VideoPlayerPage() {
           sprite={videoData.scrubber_sprite}
           sprite_pos_file={videoData.scrubber_vtt}
           progress={videoData.progress}
+          watchTime={videoData.watch_time}
           updateProgressCallback={updateProgress}
         />
         <div className="video-player-details" >
@@ -235,6 +239,14 @@ function VideoPlayerPage() {
                 <path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM2 2h12s2 0 2 2v6s0 2-2 2H2s-2 0-2-2V4s0-2 2-2z"/>
               </svg>
               {videoData.height} x {videoData.width} </div>
+
+            <div> 
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M9 5a.5.5 0 0 0-1 0v3H6a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 .5-.5V5z"/>
+                <path d="M4 1.667v.383A2.5 2.5 0 0 0 2 4.5v7a2.5 2.5 0 0 0 2 2.45v.383C4 15.253 4.746 16 5.667 16h4.666c.92 0 1.667-.746 1.667-1.667v-.383a2.5 2.5 0 0 0 2-2.45V8h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H14v-.5a2.5 2.5 0 0 0-2-2.45v-.383C12 .747 11.254 0 10.333 0H5.667C4.747 0 4 .746 4 1.667zM4.5 3h7A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3z"/>
+              </svg>
+              {secondsToHHMMSS(watchTime)} 
+            </div>
             <div> {videoData.badge} </div>
             <div> {specialTag} </div>
 

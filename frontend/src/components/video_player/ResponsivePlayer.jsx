@@ -25,6 +25,13 @@ function ResponsivePlayer(props) {
   const [showCaptions, SetShowCaptions] = useState(true);
   const [pauseVideo, SetPauseVideo] = useState(false);
   const [lastTimeUpdate, SetLastTimeUpdate] = useState(false);
+  const [watchTime, SetWatchTime] = useState(0);
+
+  
+
+  useEffect(() => {
+    SetWatchTime(props.watchTime)
+  }, [props.watchTime]);
 
   useEffect(() => {
     if (pauseVideo) {
@@ -216,9 +223,15 @@ function ResponsivePlayer(props) {
 
   const timeUpdate = () => {
     let currentTime = videoRef.current.currentTime
-    if ((currentTime - lastTimeUpdate)>3){
-      props.updateProgressCallback(Math.round(currentTime));
+
+    if (currentTime < lastTimeUpdate){
       SetLastTimeUpdate(currentTime) 
+    }
+
+    if ((currentTime - lastTimeUpdate)>1){
+      SetWatchTime(watchTime + 1)
+      SetLastTimeUpdate(currentTime) 
+      props.updateProgressCallback(Math.round(currentTime), watchTime);
     }
 
     if (videoRef.current.reverseDuration) {

@@ -226,7 +226,8 @@ function Navbar(props) {
                 created={previewVideo["created"]}
                 badge={previewVideo["badge"]}
                 specialTag={previewVideo["special_tag"]}
-                subtitle_badge={previewVideo["subtitle_badge"]}
+                watchTime={previewVideo["watch_time"]}
+                subtitleBadge={previewVideo["subtitle_badge"]}
               />
             </div>
           )}
