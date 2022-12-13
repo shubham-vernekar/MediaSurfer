@@ -53,10 +53,6 @@ function VideoCard(props) {
     let durationInSeconds = h * 3600 + m * 60 + s;
     SetProgress(parseInt(props.progress) / durationInSeconds);
 
-    if (progressBarRef.current){
-      progressBarRef.current.style.setProperty("width", progress * 100 + "%")
-    }
-  
     if (props.categories){
       SetCategories(props.categories.split(","));
     }
@@ -67,6 +63,11 @@ function VideoCard(props) {
 
   }, []);
 
+  useEffect(() => {
+    if (progressBarRef.current){
+      progressBarRef.current.style.setProperty("width", progress * 100 + "%")
+    }
+  }, [progress]);
 
   useEffect(() => {
     videoCardRef.current.style.setProperty(

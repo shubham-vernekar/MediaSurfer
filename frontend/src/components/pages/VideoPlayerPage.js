@@ -177,6 +177,20 @@ function VideoPlayerPage() {
     });
   }
 
+  const updateProgress = (progress) => {
+    axios({
+      method: "put",
+      url: "/api/videos/" + videoData.id + "/update",
+      data: {
+        id: videoData.id,
+        title: videoData.title,
+        progress: progress,
+      }
+    }).then((response) => {
+        console.log(response.data);
+    });
+  }
+
   return (
     <div className="video-player-container">
       <div className="video-player-box">
@@ -186,6 +200,8 @@ function VideoPlayerPage() {
           poster={videoData.poster}
           sprite={videoData.scrubber_sprite}
           sprite_pos_file={videoData.scrubber_vtt}
+          progress={videoData.progress}
+          updateProgressCallback={updateProgress}
         />
         <div className="video-player-details" >
           <div className="video-player-title" ref={VideoDetailsRef}><h1><span>{videoData.title}</span></h1></div>

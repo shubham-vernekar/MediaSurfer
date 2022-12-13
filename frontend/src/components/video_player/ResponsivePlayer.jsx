@@ -24,6 +24,7 @@ function ResponsivePlayer(props) {
   const [volumeLevel, SetVolumeLevel] = useState("high");
   const [showCaptions, SetShowCaptions] = useState(true);
   const [pauseVideo, SetPauseVideo] = useState(false);
+  const [lastTimeUpdate, SetLastTimeUpdate] = useState(false);
 
   useEffect(() => {
     if (pauseVideo) {
@@ -214,6 +215,12 @@ function ResponsivePlayer(props) {
   }, []);
 
   const timeUpdate = () => {
+    let currentTime = videoRef.current.currentTime
+    if ((currentTime - lastTimeUpdate)>3){
+      props.updateProgressCallback(Math.round(currentTime));
+      SetLastTimeUpdate(currentTime) 
+    }
+
     if (videoRef.current.reverseDuration) {
       currentTimeRef.current.textContent = formatDuration(
         videoRef.current.duration - videoRef.current.currentTime
@@ -263,6 +270,7 @@ function ResponsivePlayer(props) {
         let sprite_data = parse_subs(data);
         videoRef.current.sprite_data = sprite_data;
       });
+      videoRef.current.currentTime = props.progress || 0
   };
 
   const volumeChange = () => {
