@@ -23,6 +23,8 @@ function VideoPlayerPage() {
   const [allStars, SetAllStars] = useState([]);
   const [showCastAdd, SetShowCastAdd] = useState(false);
   const [showCastDelete, SetShowCastDelete] = useState(false);
+  const [showCategoriesAdd, SetShowCategoriesAdd] = useState(false);
+  const [showCategoriesDelete, SetShowCategoriesDelete] = useState(false);
 
   useEffect(() => {
     axios({
@@ -107,9 +109,23 @@ function VideoPlayerPage() {
         cast: newCast,
       }
     }).then((response) => {
-      getCastData(response.data.cast);
-      SetCast(response.data.cast.split(","));
-  });
+        getCastData(response.data.cast);
+        SetCast(response.data.cast.split(","));
+    });
+  }
+
+  const updateVideoCategories = (id, title, newCategories) => {
+    axios({
+      method: "put",
+      url: "/api/videos/" + videoData.id + "/update",
+      data: {
+        id: id,
+        title: title,
+        categories: newCategories,
+      }
+    }).then((response) => {
+        SetCategories(response.data.categories.split(","));
+    });
   }
 
   const addStar = (name) => {
@@ -122,9 +138,16 @@ function VideoPlayerPage() {
     updateVideoCast(videoData.id , videoData.title, newCast)
   };
 
-
   const addCategory = (name) => {
-    console.log(name.data);
+    let newCategories = [...new Set([...categories,...[name.data]])].sort().join(",");
+    updateVideoCategories(videoData.id , videoData.title, newCategories)
+    console.log(newCategories);
+  };
+
+  const deleteCategory = (name) => {
+    let newCategories = categories.filter(item => item !== name.data).sort().join(",");
+    updateVideoCategories(videoData.id , videoData.title, newCategories)
+    console.log(newCategories);
   };
 
   return (
@@ -184,8 +207,19 @@ function VideoPlayerPage() {
             </div>
             
             <div className="player-categories-buttons-container">
-                <img src="/static/images/plus.svg" alt="" />
-                <img src="/static/images/trash.svg" alt="" />
+
+              <div className="player-buttons-add-container">
+                {showCategoriesAdd && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCategoriesAdd(false)}/>)}
+                {!showCategoriesAdd && (<img src="/static/images/plus.svg" alt="" onClick={() => SetShowCategoriesAdd(true)}/>)}
+                {showCategoriesAdd && (<OptionsSearchBox options={allCategories} callbackFunction={addCategory} placeholder={"Add Star"}> 
+                </OptionsSearchBox>)}
+              </div>
+              <div className="player-buttons-add-container">
+                {showCategoriesDelete && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCategoriesDelete(false)}/>)}
+                {!showCategoriesDelete && (<img src="/static/images/trash.svg" alt="" onClick={() => SetShowCategoriesDelete(true)}/>)}
+                {showCategoriesDelete && (<OptionsSearchBox options={categories} callbackFunction={deleteCategory} placeholder={"Delete Star"}> 
+                </OptionsSearchBox>)}
+              </div>
             </div>
 
           </div>
@@ -210,13 +244,13 @@ function VideoPlayerPage() {
             </div>
 
             <div className="player-cast-buttons-container">
-              <div className="player-cast-buttons-add-container">
+              <div className="player-buttons-add-container">
                 {showCastAdd && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCastAdd(false)}/>)}
                 {!showCastAdd && (<img src="/static/images/plus.svg" alt="" onClick={() => SetShowCastAdd(true)}/>)}
                 {showCastAdd && (<OptionsSearchBox options={allStars} callbackFunction={addStar} placeholder={"Add Star"}> 
                 </OptionsSearchBox>)}
               </div>
-              <div className="player-cast-buttons-add-container">
+              <div className="player-buttons-add-container">
                 {showCastDelete && (<img src="/static/images/unchecked.svg" alt="" onClick={() => SetShowCastDelete(false)}/>)}
                 {!showCastDelete && (<img src="/static/images/trash.svg" alt="" onClick={() => SetShowCastDelete(true)}/>)}
                 {showCastDelete && (<OptionsSearchBox options={cast} callbackFunction={deleteStar} placeholder={"Delete Star"}> 

@@ -92,7 +92,7 @@
     transform:scale(1.3)
 }
 
-.player-cast-buttons-add-container {
+.player-buttons-add-container {
     display: flex;
     column-gap: 20px;
     align-items: center;
