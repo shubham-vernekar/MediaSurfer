@@ -91,7 +91,7 @@ function VideoBanner(props) {
               <div key={i} className="banner-cast-block">
                 <StarCard
                 key={i}
-                poster={data["poster"] ? data["poster"] : "https://thumbs.dreamstime.com/b/no-user-profile-picture-hand-drawn-illustration-53840792.jpg"  }
+                poster={data["poster"]}
                 name={data["name"]}
                 videos={data["videos"]}
                 views={data["views"]}

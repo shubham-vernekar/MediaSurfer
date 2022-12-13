@@ -233,11 +233,7 @@ function Navbar(props) {
           {previewStar && (
             <div ref={previewVideoRef}>
               <StarCard
-                poster={
-                  previewStar["poster"]
-                    ? previewStar["poster"]
-                    : "https://thumbs.dreamstime.com/b/no-user-profile-picture-hand-drawn-illustration-53840792.jpg"
-                }
+                poster={previewStar["poster"]}
                 name={previewStar["name"]}
                 videos={previewStar["videos"]}
                 views={previewStar["views"]}

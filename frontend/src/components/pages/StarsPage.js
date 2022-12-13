@@ -220,7 +220,7 @@ function StarAdvert() {
           {starData.map((data, i) => (
             <StarCard
               key={i}
-              poster={data["poster"] ? data["poster"] : "https://thumbs.dreamstime.com/b/no-user-profile-picture-hand-drawn-illustration-53840792.jpg"  }
+              poster={data["poster"]}
               name={data["name"]}
               videos={data["videos"]}
               views={data["views"]}

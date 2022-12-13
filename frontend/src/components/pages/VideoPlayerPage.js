@@ -16,6 +16,7 @@ function VideoPlayerPage() {
   const [similarVideos, SetSimilarVideos] = useState([]);
   const [categories, SetCategories] = useState([]);
   const [starData, SetStarData] = useState([]);
+  const [isFavourite, SetIsFavourite] = useState(false);
 
   useEffect(() => {
     axios({
@@ -27,6 +28,7 @@ function VideoPlayerPage() {
       getCastData(response.data.cast) 
       GetOtherVideos(videoID, "similar", 20)
       GetOtherVideos(videoID, "watch next", 15)
+      SetIsFavourite(response.data.favourite)
     });
   }, []);
 
@@ -117,11 +119,23 @@ function VideoPlayerPage() {
               {videoData.height} x {videoData.width} </div>
             <div> {videoData.badge} </div>
             <div> {videoData.special_tag} </div>
+
+            {!isFavourite && (<div className="player-favourite-button"> <img src="/static/images/like-add.svg" alt="" /> </div>)}
+            {isFavourite && (<div className="player-favourite-button"> <img src="/static/images/like-remove.svg" alt="" /> </div>)}
+
           </div>
           <div className="video-player-categories-pane">
-            {categories.map((categoryName, i) => (
-              <a key={i} href={"/search?category="+categoryName}>{categoryName}</a>
-            ))}
+            <div className="video-player-categories-box">
+              {categories.map((categoryName, i) => (
+                <a key={i} href={"/search?category="+categoryName}>{categoryName}</a>
+              ))}
+            </div>
+            
+            <div className="player-categories-buttons-container">
+                <img src="/static/images/plus.svg" alt="" />
+                <img src="/static/images/trash.svg" alt="" />
+            </div>
+
           </div>
           {videoData.series && videoData.series.name &&(
             <div className="video-player-series-pane">
@@ -129,17 +143,29 @@ function VideoPlayerPage() {
             </div>
           )}
           <div className="video-player-cast-pane">
-            {starData.map((data, i) => (
-              <StarCard
-                key={i}
-                poster={data["poster"] ? data["poster"] : "https://thumbs.dreamstime.com/b/no-user-profile-picture-hand-drawn-illustration-53840792.jpg"  }
-                name={data["name"]}
-                videos={data["videos"]}
-                views={data["views"]}
-                favorite={data["favourite"]}
-                superstar={data["superstar"]}
-              />
-            ))}
+            <div className="video-player-cast-box">
+              {starData.map((data, i) => (
+                <StarCard
+                  key={i}
+                  poster={data["poster"]}
+                  name={data["name"]}
+                  videos={data["videos"]}
+                  views={data["views"]}
+                  favorite={data["favourite"]}
+                  superstar={data["superstar"]}
+                />
+              ))}
+            </div>
+
+            <div className="player-cast-buttons-container">
+              <div>
+                <img src="/static/images/plus.svg" alt="" />
+              </div>
+              <div>
+                <img src="/static/images/trash.svg" alt="" />
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>

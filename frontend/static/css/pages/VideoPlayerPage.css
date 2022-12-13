@@ -4,8 +4,19 @@
 
 .video-player-categories-pane{
     display: flex;
-    column-gap: 20px;
+    column-gap: 25px;
     text-transform: uppercase;
+    align-items: center;
+}
+
+.video-player-categories-box{
+    display: flex;
+    column-gap: 15px;
+}
+
+.video-player-cast-box{
+    display: flex;
+    column-gap: 30px;
 }
 
 .video-player-details-pane{
@@ -21,7 +32,12 @@
 
 .video-player-cast-pane{
     display: flex;
-    column-gap: 30px;
+    column-gap: 35px;
+    align-items: center;
+}
+
+.video-player-series-pane{
+    margin-bottom: 10px;
 }
 
 .video-player-title h1{
@@ -38,4 +54,40 @@
 
 .watch-next-container{
     width: 100vw;
+}
+
+.player-cast-buttons-container{
+    display: flex;
+    column-gap: 20px;
+}
+
+.player-categories-buttons-container{
+    display: flex;
+    column-gap: 15px;
+}
+
+.player-cast-buttons-container img{
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.player-categories-buttons-container img{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.player-favourite-button{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.player-cast-buttons-container img:hover, .player-categories-buttons-container img:hover, .player-favourite-button:hover{
+    transform:scale(1.2)
+}
+
+.player-cast-buttons-container img:active, .player-categories-buttons-container img:active, .player-favourite-button:active{
+    transform:scale(1.3)
 }
