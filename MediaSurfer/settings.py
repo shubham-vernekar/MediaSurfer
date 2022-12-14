@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-fe(4)n2*4z*wsru$-dje4zeve%d&luik50v36awj5g57w6=gn+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pin_passcode',
     'backend',
     'videos',
     'stars',
@@ -53,7 +53,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pin_passcode.middleware.PinPasscodeMiddleware',
 ]
+
+# TODO move pin to more secure location
+PIN_PASSCODE_PIN = 0000
 
 ROOT_URLCONF = 'MediaSurfer.urls'
 

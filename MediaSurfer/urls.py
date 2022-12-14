@@ -31,4 +31,5 @@ urlpatterns = [
     path('search', include('frontend.urls')),
     path('series', include('frontend.urls')),
     path('update', include('frontend.urls')),
+    path('login/', include('pin_passcode.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

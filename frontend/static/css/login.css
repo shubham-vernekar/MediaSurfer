@@ -1,0 +1,76 @@
+body {
+    background-color: #141414; 
+    color: #f8f9fa;
+    font-family: 'Calibri', sans-serif;
+}
+
+.pin-container {
+    display: grid;
+    height: 98vh;
+    justify-items: center;
+    align-content: center;
+}
+
+.pin-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 4vh;
+}
+
+.pin-title{
+    font-size: 45px;
+    color: #3ae23a;
+    vertical-align:middle;
+}
+
+.pin-keypad{
+    display: grid;
+    row-gap: 2.5vh;
+}
+
+.pin-row{
+    display: flex;
+    column-gap: 2.5vh;
+}
+
+button{
+    font-size: 46px;
+    width: 5.2vw;
+    height: 5vw;
+    border-radius: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #141414; 
+    color: #f8f9fa;
+    border: 2px solid #3ae23a;
+    transition: 0.2s ease-in-out;
+}
+
+button:hover {
+    cursor: pointer;
+    color: #3ae23a;
+    background-color: #092309; 
+    border: 3px solid #8ca78c;
+    transform:scale(1.1)
+}
+
+button:active {
+    cursor: pointer;
+    transform:scale(1.2)
+}
+
+.reset{
+    font-size: 35px;
+    font-weight: 600;
+}
+
+
+.welcome-image{
+    width: 30vw;
+    z-index: 12;
+    position: absolute;
+    top: 15vh;
+    visibility: hidden;
+}
