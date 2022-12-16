@@ -15,7 +15,7 @@
 
 .banner-video {
   width: 100%;
-  border-radius: 5px 5px 18px 18px;
+  border-radius: 35px 100px;
   height: 100%;
   object-fit: cover;
 }

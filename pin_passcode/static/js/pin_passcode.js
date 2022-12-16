@@ -15,7 +15,7 @@ var append_to_pin = function(input) {
 var update_pin_display = function() {
     the_pin = current_pin || '<i>none</i>';
     if (the_pin == '<i>none</i>') {
-        $('#current_pin').html("ENTER PIN TO LOGIN");
+        $('#current_pin').html("ENTER PIN");
     }else{
         $('#current_pin').html("* ".repeat(the_pin.length));
     }
