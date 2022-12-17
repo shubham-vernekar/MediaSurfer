@@ -36,6 +36,7 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-family: 'Nexa', sans-serif;
 }
 
 .banner-cast-container {

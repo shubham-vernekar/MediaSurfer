@@ -52,10 +52,7 @@ function StarCard(props) {
       },
     }).then((response) => {
       if (response.data.results.length > 0){
-        axios({
-          method: "post",
-          url: "/api/videos/" + response.data.results[0].id + "/open",
-        });
+        window.open("/player/"+response.data.results[0].id, '_blank');
       }
     });
   };

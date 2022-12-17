@@ -212,6 +212,11 @@
 .cast-block img {
   width: 15px;
   display: none;
+  cursor: pointer;
+}
+
+.cast-block img:hover {
+  transform:scale(1.2);
 }
 
 .cast-block:hover img {

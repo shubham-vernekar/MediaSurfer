@@ -194,6 +194,28 @@ function SearchPage() {
     SetMinDuration(min);
   };
 
+  const openRandomSearchVideo = (e) => {
+    axios({
+      method: "get",
+      url: "api/videos",
+      params: {
+        limit: 1,
+        query: searchQuery,
+        cast: castQuery,
+        sort_by: "?",
+        filter: filterQuery,
+        duration_max: maxDuration,
+        duration_min: minDuration,
+        categories: categoryQuery,
+        series: seriesQuery,
+      },
+    }).then((response) => {
+      if (response.data.results.length>0) {
+        window.open("/player/"+response.data.results[0]["id"], '_blank');
+      }
+    });
+  }
+
 
   const clearAllFilters = (e) => {
     SetSortQuery("-created");
@@ -281,6 +303,7 @@ function SearchPage() {
               src="static/images/dice.png"
               alt=""
               className="random-button"
+              onClick={openRandomSearchVideo}
             />
           </div>
           {maxDurationBar > 0 && (
