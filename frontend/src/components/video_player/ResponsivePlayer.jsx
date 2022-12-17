@@ -45,7 +45,7 @@ function ResponsivePlayer(props) {
     if (showCaptions) {
       captionsButtonRef.current.style.setProperty(
         "border-bottom",
-        "3px solid #2497f3"
+        "3px solid #3ae23a"
       );
     } else {
       captionsButtonRef.current.style.removeProperty("border-bottom");
@@ -283,7 +283,9 @@ function ResponsivePlayer(props) {
         let sprite_data = parse_subs(data);
         videoRef.current.sprite_data = sprite_data;
       });
-      videoRef.current.currentTime = props.progress || 0
+      if (props.progress>5){
+        videoRef.current.currentTime = props.progress
+      }
   };
 
   const volumeChange = () => {
