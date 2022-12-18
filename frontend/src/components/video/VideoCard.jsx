@@ -70,7 +70,7 @@ function VideoCard(props) {
       SetCast(props.cast.split(","));
     }
 
-  }, []);
+  }, [props]);
 
   useEffect(() => {
     if (progressBarRef.current){

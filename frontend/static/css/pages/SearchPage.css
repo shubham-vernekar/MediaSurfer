@@ -90,7 +90,6 @@
 .search-page-clear-filter:hover {
   color: #ff445e;
   cursor: pointer;
-  transform: scale(1.1);
 }
 
 .video-labels-cast:active,
@@ -100,6 +99,17 @@
 .search-page-clear-filter:active {
   color: #ff445e;
   cursor: pointer;
+}
+
+.search-page-filter:hover,
+.search-page-sort:hover,
+.search-page-clear-filter:hover {
+  transform: scale(1.1);
+}
+
+.search-page-filter:active,
+.search-page-sort:active,
+.search-page-clear-filter:active {
   transform: scale(1.2);
 }
 
