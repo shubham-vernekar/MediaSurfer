@@ -13,7 +13,7 @@ function VideoCard(props) {
   const [cast, SetCast] = useState([]);
   const [progress, SetProgress] = useState(0);
   const [favorite, SetFavorite] = useState(props.favorite);
-
+  const [progressText, SetProgressText] = useState("");
   
   const videoCardRef = useRef(null);
   const videoRef = useRef(null);
@@ -52,6 +52,15 @@ function VideoCard(props) {
   
     let durationInSeconds = h * 3600 + m * 60 + s;
     SetProgress(parseInt(props.progress) / durationInSeconds);
+
+    if (props.progress){
+      if (props.progress>durationInSeconds){
+        SetProgress(1)
+        SetProgressText("Watched");
+      }else{
+        SetProgressText(parseInt(parseInt(props.progress)/60) + " of " + parseInt(parseInt(durationInSeconds)/60) + "m");
+      }
+    }
 
     if (props.categories){
       SetCategories(props.categories.split(","));
@@ -276,6 +285,9 @@ function VideoCard(props) {
                 className="progress-bar-current"
                 ref={progressBarRef}
               ></div>
+            </div>
+            <div className="progress-bar-text">
+                {progressText}
             </div>
           </div>
         )}
