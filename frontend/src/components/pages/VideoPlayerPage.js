@@ -213,7 +213,7 @@ function VideoPlayerPage() {
           updateProgressCallback={updateProgress}
         />
         <div className="video-player-details" >
-          <div className="video-player-title" ref={VideoDetailsRef}><h1><span>{videoData.title}</span></h1></div>
+          <div className="video-player-title" ref={VideoDetailsRef}><h1>{videoData.title}</h1></div>
           <div className="video-player-details-pane">
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

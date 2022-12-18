@@ -71,8 +71,12 @@
 }
 
 .banner-cast-block .star-card {
-  width: 160px;
-  height: 240px;
+  width: 170px;
+  height: 255px;
+}
+
+.banner-cast-block .star-title {
+  font-size: 16px!important;
 }
 
 .banner-cast-block {
@@ -82,10 +86,6 @@
   align-content: center;
   justify-content: flex-start;
   align-items: center;
-}
-
-.banner-cast-block .star-details {
-  height: 40px;
 }
 
 .banner-cast-block .star-play-button {
