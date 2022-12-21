@@ -57,7 +57,7 @@ MIDDLEWARE = [
 ]
 
 # TODO move pin to more secure location
-PIN_PASSCODE_PIN = 0000
+PIN_PASSCODE_PIN = 1234
 
 ROOT_URLCONF = 'MediaSurfer.urls'
 

@@ -43,7 +43,7 @@
 
 .video-player-title h1{
     margin: 0;
-    background: linear-gradient( 135deg, #81FFEF 10%, #F067B4 100%);
+    background: linear-gradient(90deg,#2ca2b4,#5598de 24%,#7f87ff 45%,#f65aad 76%,#ec3d43);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }

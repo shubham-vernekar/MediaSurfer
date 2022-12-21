@@ -1,13 +1,19 @@
 .video-card {
+  --video-card-text-color: #fff;
+  --video-card-border-color: #fff;
   --video-card-theme: #fff;
+  --video-card-glow: #fff;
+  --video-card-background: linear-gradient(to bottom, #323232 0%, #343434 40%, #000000 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+
   width: 385px;
   height: 319px;
-  border: 1px solid var(--video-card-theme);
+  border: 1px solid var(--video-card-border-color);
   border-radius: 14px;
-  color: var(--video-card-theme);
+  color: var(--video-card-text-color);
   max-height: 510px;
   transition: max-height 0.25s ease-in;
-  background-color: #141414;
+  background-image: var(--video-card-background);
+  background-blend-mode: multiply;
 }
 
 .video-card:hover {
@@ -26,7 +32,7 @@
 
 .video-card a {
   text-decoration: none !important;
-  color: var(--video-card-theme);
+  color: var(--video-card-text-color);
 }
 
 .preview-video-container {
@@ -291,16 +297,10 @@
   align-items: center;
 }
 
-/* 
-.video-card {
-  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
-}
-
-.video-card:hover{
+.animate-background:hover{
   animation: animatedgradient 3s ease alternate infinite;
   background-size: 300% 300%;
 }
-
 
 @keyframes animatedgradient {
 	0% {
@@ -312,5 +312,49 @@
 	100% {
 		background-position: 0% 50%;
 	}
+}  
+
+/* .video-card {
+  
+  background: bottom;
+  background-image: url(https://static.vecteezy.com/system/resources/thumbnails/001/857/413/small/gold-metal-background-vector.jpg);
+  box-shadow: 0px 18px 70px -33px #ffde11;
+  font-weight: 600;
+  border: 1px solid #ffe400;
+  color: black!important;
+} */
+
+
+/* 
+
+.video-card {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+  background-blend-mode: multiply,multiply;
+  color: #fff;
+  border: 1px solid white!important;
+  box-shadow: 0px 18px 131px -33px #000000!important;
 }
- */
+
+.video-card { GOLD
+  background: bottom;
+  background-image: url(https://static.vecteezy.com/system/resources/thumbnails/001/857/413/small/gold-metal-background-vector.jpg);
+  box-shadow: 0px 18px 131px -33px #ffde11;
+  font-weight: 600;
+  border: 1px solid #ffe400;
+  color: black!important;
+}
+
+
+.video-card {
+  background: linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%);
+  color: white!important;
+}
+
+.video-card:hover{
+  animation: animatedgradient 3s ease alternate infinite;
+  background: linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%);
+  background-size: 300% 300%;
+}
+
+*/
+

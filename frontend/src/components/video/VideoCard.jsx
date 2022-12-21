@@ -21,19 +21,69 @@ function VideoCard(props) {
   const progressBarRef = useRef(null);
 
   const videoThemeDict = {
-    "WATCHED" : ["/static/images/Watched.png", "#99d3ff"],
-    "NEW" : ["/static/images/new_video.png", "#ebc2ac"],
-    "FAVOURITE" : ["/static/images/Favorite Icon.png", "#ff6b87"],
-    "RECOMMENDED" : ["/static/images/Recommended.png", "#f2c73d"], //#ebbb24
+    "DEFAULT" : {
+      "icon" : "",
+      "text": "#fff",
+      "border": "#fff",
+      "theme": "#fff",
+      "glow": false,
+      "background": "linear-gradient(to bottom, #323232 0%, #343434 40%, #000000 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%)",
+      "animate": false,
+    },
+    "WATCHED" : {
+      "icon" : "/static/images/Watched.png",
+      "text": "#fff",
+      "border": "#fff",
+      "theme": "#fff",
+      "glow": false,
+      // "background": "radial-gradient(circle, #2e89b5 0%, #071217 100%)",
+      "background": "radial-gradient(circle, #247196 0%, #0e2129 100%)",
+      "animate": true,
+    },
+    "NEW" : {
+      "icon" : "/static/images/new_video.png",
+      "text": "#fff",
+      "border": "#fff",
+      "theme": "#fff",
+      "glow": false,
+      "background": "radial-gradient(circle, rgba(236,20,20,1) 0%, rgba(65,12,12,1) 100%)",
+      // "background": "linear-gradient(90deg, rgba(58,134,255,1) 0%, rgba(255,0,110,1) 35%, rgba(255,190,11,1) 100%)",
+      "animate": false,
+    },
+    "FAVOURITE" : {
+      "icon" : "/static/images/Favorite Icon.png",
+      "text": "#fff",
+      "border": "#933595",
+      "theme": "#c5b8f8",
+      "glow": "#bb3eff",
+      "background": "linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%)",
+      "animate": true,
+    },
+    "RECOMMENDED" : {
+      "icon" : "/static/images/Recommended.png",
+      "text": "#fff",
+      "border": "#fff",
+      "theme": "#fff",
+      "glow": "#594ae5",
+      "background": "linear-gradient(to right, #0f0c29, #302b63, #24243e)",
+      "animate": true,
+    }
   }
+
+  // const videoThemeDict = {
+  //   "WATCHED" : ["/static/images/Watched.png", "#99d3ff"],
+  //   "NEW" : ["/static/images/new_video.png", "#ebc2ac"],
+  //   "FAVOURITE" : ["/static/images/Favorite Icon.png", "#ff6b87"],
+  //   "RECOMMENDED" : ["/static/images/Recommended.png", "#f2c73d"],
+  // }
 
   const created = new Date(props.created);
 
   useEffect(() => {
-    let videoTheme = videoThemeDict[props.specialTag] || "";
+    let videoTheme = videoThemeDict[props.specialTag] || videoThemeDict["DEFAULT"];
     if (videoTheme) {
-      SetImageTag(videoTheme[0])
-      SetTheme(videoTheme[1])
+      SetImageTag(videoTheme["icon"])
+      SetTheme(videoTheme)
       if (props.specialTag!=="WATCHED") {
         SetGlow(true)
       }
@@ -80,11 +130,32 @@ function VideoCard(props) {
 
   useEffect(() => {
     videoCardRef.current.style.setProperty(
-      "--video-card-theme",
-      theme
+      "--video-card-text-color",
+      theme["text"]
     );
+    videoCardRef.current.style.setProperty(
+      "--video-card-border-color",
+      theme["border"]
+    );
+    videoCardRef.current.style.setProperty(
+      "--video-card-theme",
+      theme["theme"]
+    );
+    videoCardRef.current.style.setProperty(
+      "--video-card-background",
+      theme["background"]
+    );
+    videoCardRef.current.style.setProperty(
+      "--video-card-glow",
+      theme["glow"]
+    );
+
+    if (theme["animate"]){
+      videoCardRef.current.classList.add("animate-background");
+    }
+
     if (glow){
-      videoCardRef.current.style.boxShadow = "0px 18px 60px -33px  var(--video-card-theme)"
+      videoCardRef.current.style.boxShadow = "0px 18px 60px -33px  var(--video-card-glow)"
     }
   }, [theme, glow]);
 
@@ -148,21 +219,21 @@ function VideoCard(props) {
         let videoTheme = videoThemeDict[response.data.special_tag] || "";
         SetFavorite(false)
         if (videoTheme) {
-          SetImageTag(videoTheme[0])
-          SetTheme(videoTheme[1])
+          SetImageTag(videoTheme["icon"])
+          SetTheme(videoTheme)
           if (props.specialTag!=="WATCHED") {
             SetGlow(true)
           }
         }else{
           SetGlow(false)
           SetImageTag("")
-          SetTheme("#f8f9fa")
+          SetTheme(videoThemeDict["DEFAULT"])
         }
       }else{
         SetFavorite(true)
         SetGlow(true)
-        SetTheme(videoThemeDict["FAVOURITE"][1])
-        SetImageTag(videoThemeDict["FAVOURITE"][0])
+        SetTheme(videoThemeDict["FAVOURITE"])
+        SetImageTag(videoThemeDict["FAVOURITE"]["icon"])
       }
     });
   };
