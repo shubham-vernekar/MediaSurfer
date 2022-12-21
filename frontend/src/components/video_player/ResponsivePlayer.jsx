@@ -128,7 +128,7 @@ function ResponsivePlayer(props) {
       if (sprite_pos) {
         sprite_pos = sprite_pos.split("=");
         if (sprite_pos[1]) {
-          sprite_pos = sprite_pos[1].split(",");
+          sprite_pos = sprite_pos[1].split(",").filter(Boolean);
           if (sprite_pos[1]) {
             previewImgRef.current.style.backgroundPosition =
               "-" + sprite_pos[0] + "px -" + sprite_pos[1] + "px";

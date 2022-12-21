@@ -11,7 +11,7 @@ function VideoBanner(props) {
 
   let category = []
   if (props.categories){
-    props.categories.split(",");
+    props.categories.split(",").filter(Boolean);
   }
   
   useEffect(() => {

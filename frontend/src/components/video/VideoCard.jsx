@@ -27,8 +27,8 @@ function VideoCard(props) {
       "border": "#fff",
       "theme": "#fff",
       "glow": false,
-      "background": "linear-gradient(to bottom, #323232 0%, #343434 40%, #000000 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%)",
-      "animate": false,
+      "background": "radial-gradient(circle, rgba(48,48,48,1) 0%, rgba(0,0,0,1) 100%)",
+      "animate": true,
     },
     "WATCHED" : {
       "icon" : "/static/images/Watched.png",
@@ -48,7 +48,7 @@ function VideoCard(props) {
       "glow": false,
       "background": "radial-gradient(circle, rgba(236,20,20,1) 0%, rgba(65,12,12,1) 100%)",
       // "background": "linear-gradient(90deg, rgba(58,134,255,1) 0%, rgba(255,0,110,1) 35%, rgba(255,190,11,1) 100%)",
-      "animate": false,
+      "animate": true,
     },
     "FAVOURITE" : {
       "icon" : "/static/images/Favorite Icon.png",
@@ -113,11 +113,11 @@ function VideoCard(props) {
     }
 
     if (props.categories){
-      SetCategories(props.categories.split(","));
+      SetCategories(props.categories.split(",").filter(Boolean));
     }
     
     if (props.cast){
-      SetCast(props.cast.split(","));
+      SetCast(props.cast.split(",").filter(Boolean));
     }
 
   }, [props]);
@@ -238,16 +238,17 @@ function VideoCard(props) {
     });
   };
 
-  const handleOnClickCastRandomButton = (e) => {
+  const handleOnClickCastRandomButton = (clickedCast) => {
     axios({
       method: "get",
       url: "/api/videos",
       params: {
-        cast: e.target.getAttribute("cast") || "empty",
+        cast: clickedCast.castName,
         sort_by: "?",
         limit: 1
       },
     }).then((response) => {
+      console.log(response.data.results);
       if (response.data.results.length > 0){
         window.open("/player/"+response.data.results[0].id, '_blank');
       }
@@ -303,10 +304,13 @@ function VideoCard(props) {
         </div>
         <div className="cast-container" >
           {cast.map((castName, i) => (
-            <div key={i} className="cast-block" >
+            <div key={i} className="cast-block">
               {/* eslint-disable-next-line  */}
               <a href={"/search?cast=" + castName} target="_blank">{castName}</a>
-              <img src="/static/images/play-small.png" alt="" cast={castName} onClick={handleOnClickCastRandomButton}/>
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16" onClick={() => handleOnClickCastRandomButton({castName})}>
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/> 
+              </svg>
             </div>
           ))}
         </div>
