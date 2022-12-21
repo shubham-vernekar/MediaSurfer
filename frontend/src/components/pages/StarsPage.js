@@ -6,39 +6,13 @@ import { clearChildren } from '../utils'
 
 function StarAdvert() {
 
-  const alphabetsLineOne = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
+  const alphabetsLineOne = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", 
+    "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
   ];
-
-  // -----------------------------------
 
   const [alphabetsLineTwo, SetAlphabetsLineTwo] = useState([]);
   const [alphabetsLineThree, SetAlphabetsLineThree] = useState([]);
+  const [allStars, SetAllStars] = useState([]);
 
   const [alphabetOne, SetAlphabetOne] = useState("A");
   const [alphabetTwo, SetAlphabetTwo] = useState("");
@@ -57,6 +31,14 @@ function StarAdvert() {
   const starsSort = useRef(null);
 
   useEffect(() => {
+    let completeQuery = searchQuery + filterQuery + alphabetOne + alphabetTwo + alphabetThree
+    let alphabetOneValue = ""
+    if (completeQuery.trim() == "") {
+      alphabetOneValue = "A"
+      starAdvertIndexOne.current.children[0].classList.add("selected-filter");
+    }else{
+      alphabetOneValue = alphabetOne
+    }
     axios({
       method: "get",
       url: "/api/stars",
@@ -64,7 +46,7 @@ function StarAdvert() {
         query: searchQuery,
         filter: filterQuery,
         sort_by: sortQuery,
-        prefix: alphabetOne + alphabetTwo + alphabetThree
+        prefix: alphabetOneValue + alphabetTwo + alphabetThree
       },
     }).then((response) => {
       SetStarData(response.data);
@@ -98,6 +80,17 @@ function StarAdvert() {
     }
   }, [alphabetTwo]);
 
+  useEffect(() => {
+    starAdvertIndexOne.current.children[0].classList.add("selected-filter");
+    axios({
+      method: "get",
+      url: "/api/stars/names"
+    }).then((response) => {
+      SetAllStars(response.data);
+    });
+
+  }, []);
+
   const handleAlphabetOnClick = (e) => {
     let clickedAlphabet = e.currentTarget;
     let clickedSiblings = clickedAlphabet.parentElement.children;
@@ -115,13 +108,13 @@ function StarAdvert() {
       SetAlphabetTwo("");
       SetAlphabetThree("");
       SetAlphabetOne(alphabetText);
-      SetAlphabetsLineTwo(getValidAlphabets(starData, alphabetText));
+      console.log("alphabetText", alphabetText);
+      console.log(getValidAlphabets(allStars, alphabetText));
+      SetAlphabetsLineTwo(getValidAlphabets(allStars, alphabetText));
     } else if (clickedAlphabet.parentElement.classList.contains("index-2")) {
       SetAlphabetTwo(alphabetText);
       SetAlphabetThree("");
-      SetAlphabetsLineThree(
-        getValidAlphabets(starData, alphabetOne + alphabetText)
-      );
+      SetAlphabetsLineThree(getValidAlphabets(allStars, alphabetOne + alphabetText));
     } else if (clickedAlphabet.parentElement.classList.contains("index-3")) {
       SetAlphabetThree(alphabetText);
     }
@@ -130,7 +123,7 @@ function StarAdvert() {
   const getValidAlphabets = (data, matchkey) => {
     let matches = new Set();
     Object.entries(data).forEach(([k, v]) => {
-      let castName = v.name.toLowerCase();
+      let castName = v.toLowerCase();
       if (castName.startsWith(matchkey.toLowerCase())) {
         matches.add(castName.substring(matchkey.length, matchkey.length + 1));
       }
@@ -193,24 +186,21 @@ function StarAdvert() {
         <div className="star-advert-index index-1" ref={starAdvertIndexOne}>
           {alphabetsLineOne.map((alphabet, i) => (
             <div className="alphabet" key={i} onClick={handleAlphabetOnClick}>
-              {" "}
-              {alphabet}{" "}
+              {alphabet}
             </div>
           ))}
         </div>
         <div className="star-advert-index index-2" ref={starAdvertIndexTwo}>
           {alphabetsLineTwo.map((alphabet, i) => (
             <div className="alphabet" key={i} onClick={handleAlphabetOnClick}>
-              {" "}
-              {alphabet}{" "}
+              {alphabet}
             </div>
           ))}
         </div>
         <div className="star-advert-index index-3" ref={starAdvertIndexThree}>
           {alphabetsLineThree.map((alphabet, i) => (
             <div className="alphabet" key={i} onClick={handleAlphabetOnClick}>
-              {" "}
-              {alphabet}{" "}
+              {alphabet}
             </div>
           ))}
         </div>

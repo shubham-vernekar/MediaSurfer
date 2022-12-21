@@ -69,13 +69,22 @@ function VideoPlayerPage() {
 
   useEffect(() => {
     if (isFavourite){
-      VideoDetailsRef.current.style.color = "#ff6b87"
-      VideoDetailsRef.current.style.textShadow = "0px 0px 60px #ff6b87"
+      VideoDetailsRef.current.classList.add("fav-text");
     }else{
-      VideoDetailsRef.current.style.color = "#f8f9fa"
-      VideoDetailsRef.current.style.textShadow = "none"
+      VideoDetailsRef.current.classList.remove("fav-text");
     }
   }, [isFavourite]);
+
+  useEffect(() => {
+    console.log(specialTag);
+    if (specialTag == "NEW") {
+      VideoDetailsRef.current.classList.add("new-text");
+    } else if (specialTag == "RECOMMENDED") {
+      VideoDetailsRef.current.classList.add("recommended-text");
+    } else if (specialTag == "WATCHED") {
+      VideoDetailsRef.current.classList.add("watched-text");
+    } 
+  }, [specialTag]);
 
   const GetOtherVideos = (videoID, type, count) => {
     axios({
@@ -213,7 +222,7 @@ function VideoPlayerPage() {
           updateProgressCallback={updateProgress}
         />
         <div className="video-player-details" >
-          <div className="video-player-title" ref={VideoDetailsRef}><h1>{videoData.title}</h1></div>
+          <div className="video-player-title" ><h1 ref={VideoDetailsRef} className="fav-text">{videoData.title}</h1></div>
           <div className="video-player-details-pane">
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

@@ -43,7 +43,32 @@
 
 .video-player-title h1{
     margin: 0;
+}
+
+.fav-text {
     background: linear-gradient(90deg,#2ca2b4,#5598de 24%,#7f87ff 45%,#f65aad 76%,#ec3d43);
+    background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.new-text {
+    background: radial-gradient(circle, rgba(255,0,0,1) 0%, rgba(255,45,71,1) 100%);
+    background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.recommended-text {
+    background: radial-gradient(circle, rgba(251,133,0,1) 0%, rgba(255,183,3,1) 100%);
+    background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.watched-text {
+    background: radial-gradient(circle, rgba(48,217,233,1) 0%, rgba(0,194,255,1) 100%);
+    background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
