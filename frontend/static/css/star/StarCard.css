@@ -58,14 +58,6 @@
     border-radius: 9px;
 }
 
-.star-play{
-    display: none;
-    grid-column: 1/-1;
-    align-content: center;
-    justify-content: center;
-    user-select: none; 
-}
-
 .star-play-button:hover {background-color: var(--star-card-theme);
 color: black;}
 
@@ -93,7 +85,7 @@ color: black;}
     margin-bottom: 0px;
 }
 
-.star-card:hover .star-play{
+.star-card:hover .star-buttons-container{
     display: flex;
 }
 
@@ -132,3 +124,23 @@ color: black;}
     display: flex;
 }
 
+.star-buttons-container{
+    display: none;
+    grid-column: 1/-1;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.star-button{
+    width: 27px;
+    height: 27px;
+    cursor: pointer;
+}
+
+.star-button:hover{
+    transform:scale(1.2);
+}
+
+.star-button:active{
+    transform:scale(1.3);
+}

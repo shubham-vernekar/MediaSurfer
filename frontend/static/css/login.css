@@ -1,8 +1,31 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-    background-color: #141414; 
+    margin: 0;
+    background-size: cover;
+    background: linear-gradient(60deg, rgba(255,0,0,1) 0%, rgba(0,0,0,1) 23%, rgba(0,0,0,1) 41%, rgba(0,0,0,1) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 52%, rgba(0,0,0,1) 77%, rgb(255, 0, 243) 100%); 
+    background-attachment: fixed;
     color: #f8f9fa;
     font-family: 'Calibri', sans-serif;
+    /* animation: animatedgradient 5s ease alternate infinite; */
+    /* background-size: 300% 300%; */
 }
+
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}  
 
 .pin-container {
     display: grid;
@@ -20,7 +43,8 @@ body {
 
 .pin-title{
     font-size: 45px;
-    color: #3ae23a;
+    color: #ff4646; 
+    /* #3ae23a; */
     vertical-align:middle;
 }
 
@@ -44,15 +68,15 @@ button{
     align-items: center;
     background-color: #141414; 
     color: #f8f9fa;
-    border: 2px solid #3ae23a;
+    border: 2px solid #ff4646;
     transition: 0.2s ease-in-out;
 }
 
 button:hover {
     cursor: pointer;
-    color: #3ae23a;
-    background-color: #092309; 
-    border: 3px solid #8ca78c;
+    color: red;
+    background-color: #230909; 
+    border: 3px solid #a78c8c;
     transform:scale(1.1)
 }
 

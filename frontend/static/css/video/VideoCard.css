@@ -220,7 +220,7 @@
   line-height: 15px;
 }
 
-.cast-block {
+.cast-block, .category-block {
   display: flex;
   align-content: center;
   transform: 0.5s ease-in;
@@ -228,27 +228,23 @@
   column-gap: 10px;
 }
 
-.cast-block svg {
+.cast-block svg, .category-block svg {
   cursor: pointer;
   transition: width 0.3s ease-in;
   overflow: hidden;
   width: 0px;
 }
 
-.cast-block svg:hover {
+.cast-block svg:hover, .category-block svg:hover {
   transform:scale(1.2);
 }
 
-.cast-block:hover svg {
+.cast-block:hover svg, .category-block:hover svg {
   width: 15px;
   margin-right: 10px;
 }
 
-.cast-block:hover a {
-  transform:scale(1.1);
-}
-
-.category-block:hover{
+.cast-block:hover a, .category-block:hover a {
   transform:scale(1.1);
 }
 
@@ -287,6 +283,7 @@
   white-space: nowrap;
   user-select: none;
   transition: 0.4s ease-in-out;
+  text-align: left;
 }
 
 .video-advert-button:hover .video-advert-button-text{

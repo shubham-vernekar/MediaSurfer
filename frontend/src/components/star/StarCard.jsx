@@ -80,8 +80,36 @@ function StarCard(props) {
               </svg>
               <span> {props.views} </span>
             </div>
-            <div className="star-play">
-              <div className="star-play-button" onClick={handleOnClickCastRandomButton} cast={props.name}>PLAY</div>
+            <div className="star-buttons-container">
+
+              {!superStar && (
+                <div className="star-superstar-button star-button">
+                  <img src="https://www.svgrepo.com/show/190889/burn-fire.svg" alt="" /> 
+                </div>
+              )}
+
+              {superStar && (
+                <div className="star-superstar-button star-button">
+                  <img src="https://www.svgrepo.com/show/288941/fire.svg" alt="" />
+                </div>
+              )}
+
+              <div className="star-play">
+                <div className="star-play-button" onClick={handleOnClickCastRandomButton} cast={props.name}>PLAY</div>
+              </div>
+
+              {!favorite && (
+                <div className="star-favourite-button star-button">
+                  <img src="/static/images/like-add.svg" alt="" /> 
+                </div>
+              )}
+
+              {favorite && (
+                <div className="star-favourite-button star-button">
+                  <img src="/static/images/like-remove.svg" alt="" />
+                </div>
+              )}
+              
             </div>
         </div>
         

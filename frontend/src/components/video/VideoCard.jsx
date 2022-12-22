@@ -205,19 +205,20 @@ function VideoCard(props) {
     });
   };
 
-  const addFavoriteButton = (e) => {
+  const addFavoriteButton = (vidID, vidTitle, vidFavourite) => {
     axios({
       method: "put",
-      url: "/api/videos/" + e.target.getAttribute("vidid") + "/update",
+      url: "/api/videos/" + vidID + "/update",
       data: {
-        id: e.target.getAttribute("vidid"),
-        title: e.target.getAttribute("vidtitle"),
-        favourite: !favorite,
+        id: vidID,
+        title: vidTitle,
+        favourite: vidFavourite,
       }
     }).then((response) => {
-      if (favorite){
+      let favStatus = Boolean(response.data.favourite)
+      SetFavorite(favStatus)
+      if (!favStatus){
         let videoTheme = videoThemeDict[response.data.special_tag] || "";
-        SetFavorite(false)
         if (videoTheme) {
           SetImageTag(videoTheme["icon"])
           SetTheme(videoTheme)
@@ -230,7 +231,6 @@ function VideoCard(props) {
           SetTheme(videoThemeDict["DEFAULT"])
         }
       }else{
-        SetFavorite(true)
         SetGlow(true)
         SetTheme(videoThemeDict["FAVOURITE"])
         SetImageTag(videoThemeDict["FAVOURITE"]["icon"])
@@ -248,7 +248,22 @@ function VideoCard(props) {
         limit: 1
       },
     }).then((response) => {
-      console.log(response.data.results);
+      if (response.data.results.length > 0){
+        window.open("/player/"+response.data.results[0].id, '_blank');
+      }
+    });
+  };
+
+  const handleOnClickCategoryRandomButton = (clickedCategory) => {
+    axios({
+      method: "get",
+      url: "/api/videos",
+      params: {
+        categories: clickedCategory.categoryName,
+        sort_by: "?",
+        limit: 1
+      },
+    }).then((response) => {
       if (response.data.results.length > 0){
         window.open("/player/"+response.data.results[0].id, '_blank');
       }
@@ -305,7 +320,6 @@ function VideoCard(props) {
         <div className="cast-container" >
           {cast.map((castName, i) => (
             <div key={i} className="cast-block">
-              {/* eslint-disable-next-line  */}
               <a href={"/search?cast=" + castName} target="_blank">{castName}</a>
               <svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16" onClick={() => handleOnClickCastRandomButton({castName})}>
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -313,12 +327,15 @@ function VideoCard(props) {
               </svg>
             </div>
           ))}
-        </div>
+        </div> 
         <div className="category-container">
           {categories.map((categoryName, i) => (
-            // eslint-disable-next-line 
             <div key={i} className="category-block">
               <a href={"/search?category=" + categoryName} target="_blank">{categoryName}</a>
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16" onClick={() => handleOnClickCategoryRandomButton({categoryName})}>
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/> 
+              </svg>
             </div>
           ))}
         </div>
@@ -342,15 +359,15 @@ function VideoCard(props) {
             </svg>
             <span className='video-advert-button-text' onClick={handleOnClickFolderButton} vidid={props.vidid}>Open Folder</span>
           </div>
-          <div className='video-advert-button'> 
+          <div className='video-advert-button' onClick={() => {addFavoriteButton(props.vidid, props.title, !favorite)}}> 
             {favorite && (<svg width="16" height="16" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
               <path d="M8.931.586 7 3l1.5 4-2 3L8 15C22.534 5.396 13.757-2.21 8.931.586ZM7.358.77 5.5 3 7 7l-1.5 3 1.815 4.537C-6.533 4.96 2.685-2.467 7.358.77Z"/>
             </svg>)}
-            {!favorite && (<svg className='video-advert-button-text-svg' width="16" height="16" fill="currentColor" viewBox="0 0 16 16" onClick={addFavoriteButton} vidid={props.vidid} vidtitle={props.title}>
+            {!favorite && (<svg width="16" height="16" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
               <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
             </svg>)}
-            {favorite && (<span className='video-advert-button-text' onClick={addFavoriteButton} vidid={props.vidid} vidtitle={props.title}>Del Favorite</span>)}
-            {!favorite && (<span className='video-advert-button-text' onClick={addFavoriteButton} vidid={props.vidid} vidtitle={props.title}>Add Favorite</span>)}
+            {favorite && (<span className='video-advert-button-text'>Del Favorite</span>)}
+            {!favorite && (<span className='video-advert-button-text'>Add Favorite</span>)}
           </div>
         </div>
         {progress > 0 && (
