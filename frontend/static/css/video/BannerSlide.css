@@ -15,23 +15,37 @@
   margin-top: 15px;
 }
 
+.video-banner-toggle-mute-container{
+  width: 43vw;
+  height: 5vw;
+  position: absolute;
+  top: 541px;
+  right: 7.5vw;
+}
+
+.video-banner-toggle-mute-container:hover .video-banner-toggle-mute {
+  opacity: 1;
+}
+
 .video-banner-toggle-mute {
   padding: 10px;
   position: absolute;
-  right: 8.3vw;
   cursor: pointer;
-  top: 591px;
   background: rgb(20 20 20 / 30%);
   border-radius: 50%;
   border: 2px solid;
+  bottom: 0.4vw;
+  right: 1vw;
+  opacity: 0; 
 }
 
 .video-banner-toggle-mute:hover {
-  transform: scale(1.2);
   background: rgb(20 20 20 / 60%);
+  transform: scale(1.1);
+ 
 }
 .video-banner-toggle-mute:active {
-  transform: scale(1.3);
+  transform: scale(1.2);
 }
 
 .video-banner-slide-left {
