@@ -1,4 +1,4 @@
-.video-advert-box{
+.video-advert-box {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -8,45 +8,49 @@
   row-gap: 40px;
 }
 
-.video-advert-box-container{
-    display: grid;
-    margin: 0 2%;
-    margin-top: 25px;
-    padding-bottom: 1.7%;
-    row-gap: 22px;
+.video-advert-box-container {
+  display: grid;
+  margin: 0 2%;
+  margin-top: 25px;
+  padding-bottom: 1.7%;
+  row-gap: 22px;
 }
 
 .video-advert-box-title {
-    display: flex;
-    column-gap: 30px;
-    flex-direction: row;
-    align-content: center;
-    align-items: baseline;
-    justify-content: flex-start;
-    margin-left: 7%;
-  }
-  
-  .video-advert-box-title-name {
-    font-size: 32px;
-    font-weight: 700;
-    text-transform: capitalize;
-    font-family: 'Nexa', sans-serif;
-  }
-  
-  .video-advert-box-refresh {
-    font-size: 19px;
-    font-weight: 600;
-    color: #c55454;
-    opacity: 0;
-    transition: 0.5s ease-in-out;
-  }
+  display: flex;
+  column-gap: 30px;
+  flex-direction: row;
+  align-content: center;
+  align-items: baseline;
+  justify-content: flex-start;
+  margin-left: 7%;
+}
 
-  .video-advert-box-title:hover .video-advert-box-refresh {
-    width: auto;
-    opacity: 1;
-    transition: 0.5s ease-in-out;
-  }
+.video-advert-box-title-name {
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: capitalize;
+  font-family: "Nexa", sans-serif;
+}
 
-  .video-advert-box-refresh:hover {
-    color: #eb3232;
-  }
+.video-advert-box-refresh {
+  font-size: 19px;
+  font-weight: 600;
+  color: #c55454;
+  opacity: 0;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-box-title:hover .video-advert-box-refresh {
+  width: auto;
+  opacity: 1;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-box-refresh:hover {
+  color: #eb3232;
+}
+
+.video-advert-box-refresh{
+  cursor: pointer;
+}

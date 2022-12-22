@@ -8,6 +8,7 @@ import subprocess
 from rest_framework.response import Response
 import os
 from send2trash import send2trash
+from django.utils import timezone
 
 class VideoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
@@ -146,6 +147,7 @@ class VideoIncrementView(generics.GenericAPIView):
             })
 
         video.views = video.views + 1
+        video.last_viewed = timezone.now()
         video.save()
 
         cast = [x for x in video.cast.split(",") if x]

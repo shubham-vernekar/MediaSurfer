@@ -57,9 +57,12 @@ function VideoAdvertSlide(props) {
         <div className="video-advert-slide-title-name">
             {props.title}
         </div>
-        <div className="video-advert-slide-explore">
+        {props.onRefresh && (<div className="video-advert-slide-explore" onClick={props.onRefresh}>
+            Refresh
+        </div>)}
+        {props.explore && (<a className="video-advert-slide-explore" href={props.explore} target="_blank">
             Explore More {">"}
-        </div>
+        </a>)}
       </div>
       <div className="video-advert-slide" ref={advertSlideRef}>
         {props.videoData.map((data, i) => (

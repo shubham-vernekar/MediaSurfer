@@ -38,6 +38,7 @@
   color: #c55454;
   opacity: 0;
   transition: 0.5s ease-in-out;
+  cursor: pointer;
 }
 
 .video-advert-slide-explore:hover {

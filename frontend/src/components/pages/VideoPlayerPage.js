@@ -76,7 +76,6 @@ function VideoPlayerPage() {
   }, [isFavourite]);
 
   useEffect(() => {
-    console.log(specialTag);
     if (specialTag == "NEW") {
       VideoDetailsRef.current.classList.add("new-text");
     } else if (specialTag == "RECOMMENDED") {
@@ -207,6 +206,10 @@ function VideoPlayerPage() {
       SetWatchTime(response.data.watch_time)
     });
   }
+
+  const RefreshSimilarVideos = () => {
+    GetOtherVideos(videoData.id, "similar", 20)
+  };
 
   return (
     <div className="video-player-container">
@@ -345,7 +348,7 @@ function VideoPlayerPage() {
         <VideoAdvertSlide videoData={watchNextVideos} title={(videoData.series && videoData.series.name) || "Continue Watching"} />
       </div>
       <div className="discover-container">
-        <VideoAdvertBox videoData={similarVideos}  title="Discover" />
+        <VideoAdvertBox videoData={similarVideos}  title="Discover" onRefresh={RefreshSimilarVideos}/>
       </div>
     </div>
   );

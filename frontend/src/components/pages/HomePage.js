@@ -58,31 +58,46 @@ function HomePage() {
     });
   };
 
+  const RefreshDiscoverVideos = () => {
+    GetVideos("discover", 25)
+  };
+
+  const RefreshRecommendedVideos = () => {
+    GetVideos("recommended", 15)
+  };
+
+  const RefreshFavoriteVideos = () => {
+    GetVideos("favourites", 15)
+  };
+
   return (
     <div>
       <div>
         <BannerSlide videoData={bannerVideos} />
       </div>
       <div>
-        <VideoAdvertBox videoData={discoverPaneVideos} title="Discover" />
+        <VideoAdvertBox videoData={discoverPaneVideos} title="Discover" onRefresh={RefreshDiscoverVideos}/>
       </div>
       {continuePaneVideos.length>0 &&(<div>
         <VideoAdvertSlide
           videoData={continuePaneVideos}
           title="Continue Watching"
+          explore={"/search?sort_by=-last_viewed"}
         />
       </div>)}
       {recommendedPaneVideos.length>0 &&(<div>
         <VideoAdvertSlide
           videoData={recommendedPaneVideos}
           title="Recommended"
+          onRefresh={RefreshRecommendedVideos}
+          explore={"/search?filter=recommended"}
         />
       </div>)}
       {newVideos.length>0 &&(<div>
-        <VideoAdvertSlide videoData={newVideos} title="Newly Added" />
+        <VideoAdvertSlide videoData={newVideos} title="Newly Added" explore={"/search?filter=new"}/>
       </div>)}
       {favoriteVideos.length>0 &&(<div>
-        <VideoAdvertSlide videoData={favoriteVideos} title="Favourites" />
+        <VideoAdvertSlide videoData={favoriteVideos} title="Favourites" onRefresh={RefreshFavoriteVideos} explore={"/search?filter=favourites"}/>
       </div>)}
     </div>
   );

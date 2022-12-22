@@ -6,7 +6,7 @@ function VideoAdvertBox(props) {
     <div className="video-advert-box-container">
       <div className="video-advert-box-title">
         <div className="video-advert-box-title-name">{props.title}</div>
-        <div className="video-advert-box-refresh">Refresh {">"}</div>
+        <div className="video-advert-box-refresh" onClick={props.onRefresh}>Refresh {">"}</div>
       </div>
       <div className="video-advert-box">
         {props.videoData.map((data, i) => (

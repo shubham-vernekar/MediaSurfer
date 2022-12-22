@@ -14,7 +14,6 @@ from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
 import difflib
 import urllib.parse
 import re
-from collections import defaultdict
 
 def text2int (textnum, numwords={}):
     if not numwords:
@@ -199,6 +198,9 @@ class VideoQuerySet(models.QuerySet):
                 qs = self.none()
 
         if sort_by:
+            if "last_viewed" in sort_by:
+                qs = qs.filter(Q(progress__gte = 1) & Q(last_viewed__isnull = False))
+
             try:
                 qs = qs.order_by(sort_by)
             except (FieldError):
@@ -274,7 +276,7 @@ class VideoQuerySet(models.QuerySet):
             return qs.filter().order_by("?")[:limit]
         
         if recommendation_type == "continue":
-            return qs.filter(Q(progress__gte = 1)).order_by("-last_viewed")[:limit]
+            return qs.filter(Q(progress__gte = 1) & Q(last_viewed__isnull = False)).order_by("-last_viewed")[:limit]
         
         if recommendation_type == "recommended":
             return query_special_tag(qs, "?", ["RECOMMENDED"], limit, [])
