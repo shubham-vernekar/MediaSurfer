@@ -36,8 +36,8 @@ function VideoPlayerPage() {
       url: "/api/videos/" + videoID,
     }).then((response) => {
       SetVideoData(response.data);
-      SetCategories(response.data.categories.split(",").filter(Boolean)) 
-      SetCast(response.data.cast.split(",").filter(Boolean)) 
+      SetCategories(response.data.categories && response.data.categories.split(",").filter(Boolean)) 
+      SetCast(response.data.cast && response.data.cast.split(",").filter(Boolean)) 
       getCastData(response.data.cast) 
       GetOtherVideos(videoID, "similar", 20)
       GetOtherVideos(videoID, "watch next", 15)
@@ -216,6 +216,7 @@ function VideoPlayerPage() {
       <div className="video-player-box">
         <ResponsivePlayer
           url={videoData.video_url}
+          title={videoData.title}
           subtitle={videoData.subtitle}
           poster={videoData.poster}
           sprite={videoData.scrubber_sprite}

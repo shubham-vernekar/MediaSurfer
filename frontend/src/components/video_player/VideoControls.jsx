@@ -49,6 +49,10 @@ function VideoControls(props) {
           /<div className="total-time" ref={props.totalTimeRef}></div>
         </div>
 
+        <div className="video-title">
+          {props.title}
+        </div>
+
         <button
           className="captions-btn"
           onClick={props.toggleCaptions}

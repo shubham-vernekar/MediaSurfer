@@ -19,6 +19,7 @@ function SearchPage() {
   const durationRangeRef = useRef(null);
   const searchPageFilterBoxRef = useRef(null);
   const searchPageSortBoxRef = useRef(null);
+  const durationQueryRef = useRef(null);
 
   let page_no = searchParams.get("page") || 1;
   if (page_no < 1) {
@@ -57,6 +58,7 @@ function SearchPage() {
   const [minDurationBar, SetMinDurationBar] = useState(0);
   const [videoCount, SetVideoCount] = useState(0);
   const [numberOfPages, SetNumberOfPages] = useState(0);
+  const [durationQueryText, SetDurationQueryText] = useState("");
 
   useEffect(() => {
     axios({
@@ -190,8 +192,10 @@ function SearchPage() {
   };
 
   const sliderValueChange = (min, max) => {
-    SetMaxDuration(max);
-    SetMinDuration(min);
+    if(durationQueryText.trim()==""){
+      SetMaxDuration(max);
+      SetMinDuration(min);
+    }
   };
 
   const openRandomSearchVideo = (e) => {
@@ -223,6 +227,8 @@ function SearchPage() {
     SetSearchQuery("");
     SetCastQuery("");
     SetCategoryQuery("");
+    durationQueryRef.current.value = ""
+    SetDurationQueryText("")
     SetMaxDuration(minDurationBar);
     SetMinDuration(maxDurationBar);
     clearChildren(castBlockContainerRef.current);
@@ -235,6 +241,32 @@ function SearchPage() {
     SetVideosPageNumber(val)
   };
 
+  const handleDurationInput = (e) => {
+    SetDurationQueryText(e.currentTarget.value)
+  };
+
+  useEffect(() => {
+    let hh=0, mm=0, ss=0;
+    let durationQuery = durationQueryText.replace(/\D+/, '-');
+    durationQuery = durationQuery.split(/\D/);
+    if (durationQuery[2]){
+      hh = parseInt(durationQuery[0])
+      mm = parseInt(durationQuery[1])
+      ss = parseInt(durationQuery[2])
+    }else if (durationQuery[1]){
+      mm = parseInt(durationQuery[0])
+      ss = parseInt(durationQuery[1])
+    }else if (durationQuery[0]){
+      ss = parseInt(durationQuery[0])
+    }
+
+    let maxDurationSecs = hh*3600 + mm*60 + ss
+    if (maxDurationSecs>120){
+      SetMaxDuration(maxDurationSecs)
+    }
+  }, [durationQueryText]);
+
+  
   return (
     <div className="search-page-container">
       <div className="search-page-filters-container">
@@ -242,6 +274,16 @@ function SearchPage() {
           {videoCount || "No"} videos found
         </div>
         <div className="search-page-filters-right">
+          <div className="search-page-duration-query-box-container">
+            <input
+              type="text"
+              name="duration-box"
+              className="search-page-duration-query-box"
+              placeholder="HH:MM"
+              onChange={handleDurationInput}
+              ref={durationQueryRef}
+            />
+          </div>
           <div className="search-page-filter-box" ref={searchPageFilterBoxRef}>
             <div
               className="search-page-sort selected-filter"
@@ -306,7 +348,7 @@ function SearchPage() {
               onClick={openRandomSearchVideo}
             />
           </div>
-          {maxDurationBar > 0 && (
+          {maxDurationBar > 0 && videoData.length>1 && durationQueryText.trim()=="" && (
             <MultiRangeSlider
               min={minDurationBar}
               max={maxDurationBar}

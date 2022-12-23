@@ -4,14 +4,46 @@
 }
 
 .volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
   width: 0;
   transform-origin: left;
+  outline: none; 
   transform: scaleX(0);
+  height: 7px;
+  border-radius: 5px;
+  margin-left: 5px;
   transition: width 150ms ease-in-out, transform 150ms ease-in-out;
+  background: linear-gradient(90deg, #3ae23a 100%, #fff 100%);
 }
 
 .volume-container:hover .volume-slider,
 .volume-slider:focus-within {
   width: 100px;
   transform: scaleX(1);
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; 
+  appearance: none;
+  width: 20px; 
+  height: 20px; 
+  border-radius: 50%;
+  background: #3ae23a; 
+  cursor: pointer; 
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 20px; 
+  height: 20px; 
+  border-radius: 50%;
+  background: #3ae23a; 
+  cursor: pointer; 
+}
+
+.volume-slider-container{
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
 }

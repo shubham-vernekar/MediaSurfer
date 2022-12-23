@@ -59,7 +59,7 @@
   display: flex;
   align-items: center;
   gap: .25rem;
-  flex-grow: 1;
+  
 }
 
 .video-controls-container .controls button.wide-btn {
@@ -70,4 +70,9 @@
   width: 28px;
   opacity: 0.85;
   cursor: pointer;
+}
+
+.video-title{
+  flex-grow: 1;
+  margin-left: 15px;
 }

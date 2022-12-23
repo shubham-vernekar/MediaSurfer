@@ -150,15 +150,17 @@ class VideoIncrementView(generics.GenericAPIView):
         video.last_viewed = timezone.now()
         video.save()
 
-        cast = [x for x in video.cast.split(",") if x]
-        for star in Star.objects.filter(name__in = cast):
-            star.views = star.views + 1
-            star.save()
+        if video.cast:
+            cast = [x for x in video.cast.split(",") if x]
+            for star in Star.objects.filter(name__in = cast):
+                star.views = star.views + 1
+                star.save()
 
-        categories = [x for x in video.categories.split(",") if x]
-        for category in Category.objects.filter(title__in = categories):
-            category.views = category.views + 1
-            category.save()
+        if video.categories:
+            categories = [x for x in video.categories.split(",") if x]
+            for category in Category.objects.filter(title__in = categories):
+                category.views = category.views + 1
+                category.save()
         
         if video.series:
             video.series.views = video.series.views + 1

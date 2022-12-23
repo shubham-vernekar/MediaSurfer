@@ -451,6 +451,7 @@ function ResponsivePlayer(props) {
   };
 
   const volumeInput = (e) => {
+    volumeSliderRef.current.style.background = "linear-gradient(90deg, #3ae23a "+e.target.value*100+"%, #fff "+e.target.value*100+"%)"
     videoRef.current.volume = e.target.value;
     videoRef.current.muted = e.target.value === 0;
   };
@@ -502,6 +503,7 @@ function ResponsivePlayer(props) {
       <VideoControls
         sprite={props.sprite}
         pauseVideo={pauseVideo}
+        title={props.title}
         videoControlsRef={videoControlsRef}
         toggleFullScreenMode={toggleFullScreenMode}
         fullScreenMode={fullScreenMode}

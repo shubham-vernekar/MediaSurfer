@@ -30,16 +30,19 @@ function VolumeSlider(props) {
             </svg>
           )}
         </button>
-
-        <input
-          className="volume-slider"
-          type="range"
-          min="0"
-          max="1"
-          step="any"
-          ref={props.volumeSliderRef}
-          onInput={props.volumeInput}
-        ></input>
+        
+        <div className="volume-slider-container">
+          <input
+            className="volume-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="any"
+            ref={props.volumeSliderRef}
+            onInput={props.volumeInput}
+          ></input>
+        </div>
+        
       </div>
     );
   }
