@@ -102,7 +102,7 @@ function VideoBanner(props) {
                 name={data["name"]}
                 videos={data["videos"]}
                 views={data["views"]}
-                favorite={data["favourite"]}
+                liked={data["liked"]}
                 superstar={data["superstar"]}
               />
               </div>

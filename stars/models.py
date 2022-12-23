@@ -6,7 +6,7 @@ from django.core.exceptions import FieldError, ValidationError
 class StarQuerySet(models.QuerySet):
     def search(self, parameters):
         query = parameters.get("query", None)
-        favourite = parameters.get("favourite", None)
+        liked = parameters.get("liked", None)
         superstar = parameters.get("superstar", None)
         min_videos = parameters.get("min_videos", None)
         min_views = parameters.get("min_views", None)
@@ -21,8 +21,8 @@ class StarQuerySet(models.QuerySet):
             qs = qs.filter(Q(name__in=cast))
             return qs
 
-        if filter=="favourites":
-            favourite = True
+        if filter=="liked":
+            liked = True
         elif filter=="superstars":
             superstar = True
 
@@ -32,9 +32,9 @@ class StarQuerySet(models.QuerySet):
         if prefix:
             qs = qs.filter(Q(name__istartswith=prefix))
 
-        if favourite is not None:
+        if liked is not None:
             try:
-                qs = qs.filter(Q(favourite=favourite))
+                qs = qs.filter(Q(liked=liked))
             except ValidationError:
                 qs = self.none()
 
@@ -85,7 +85,7 @@ class Star(models.Model):
     ''' Model to store actor details '''
     id = models.CharField(max_length=15, primary_key=True)
     name = models.CharField(max_length=64, unique=True)
-    favourite = models.BooleanField(default=False)
+    liked = models.BooleanField(default=False)
     superstar = models.BooleanField(default=False)
     bio = models.CharField(max_length=1024, blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)

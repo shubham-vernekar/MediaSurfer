@@ -13,7 +13,7 @@ function StarCard(props) {
   const [theme, SetTheme] = useState("");
   const [bannerImg, SetBannerImg] = useState("");
   const [showGlow, SetShowGlow] = useState(false);
-  const [favorite, SetFavorite] = useState(false);
+  const [liked, SetLiked] = useState(false);
   const [superStar, SetSuperStar] = useState(false);
 
   const videoThemeDict = {
@@ -25,7 +25,7 @@ function StarCard(props) {
       "textcolor": "#f8f9fa",
       "border": "#f8f9fa",
     },
-    "FAVOURITE" : {
+    "LIKED" : {
       "icon" : "/static/images/fire.png",
       "theme": "#fbbf00",
       "background": "linear-gradient(to top, rgb(209 192 0) 0%, rgb(255 161 45) 100%)",
@@ -36,15 +36,15 @@ function StarCard(props) {
     "SUPERSTAR" : {
       "icon" : "/static/images/heart.png",
       "theme": "#fe475c",
-      "background": true,
+      "background": "linear-gradient(to top, rgb(150 14 14) 0%, rgb(255 0 0) 100%)",
       "glow": true,
-      "textcolor": "#fe475c",
-      "border": "#fe475c",
+      "textcolor": "#f8f9fa",
+      "border": "#000000",
     },
     "BOTH" : {
       "icon" : "/static/images/heart.png",
       "theme": "#fe475c",
-      "background": "linear-gradient(to top, rgb(150 14 14) 0%, rgb(255 0 0) 100%)",
+      "background": "linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #FFF800 100%)", 
       "glow": true,
       "textcolor": "#f8f9fa",
       "border": "#000000",
@@ -52,16 +52,16 @@ function StarCard(props) {
   }
 
   useEffect(() => {
-    SetFavorite(props.favorite);
+    SetLiked(props.liked);
     SetSuperStar(props.superstar);
   }, [props]);
 
   useEffect(() => {
     let key = "DEFAULT"
-    if (favorite && superStar) {
+    if (liked && superStar) {
       key = "BOTH"
-    } else if (favorite) {
-      key = "FAVOURITE"
+    } else if (liked) {
+      key = "LIKED"
     } else if (superStar) {
       key = "SUPERSTAR"
     }
@@ -77,7 +77,7 @@ function StarCard(props) {
     if (videoThemeDict[key]["animate"]){
       starDetailsRef.current.classList.add("animate-background");
     }
-  }, [favorite, superStar]);
+  }, [liked, superStar]);
 
   const handleOnClickCastRandomButton = (e) => {
     axios({
@@ -120,13 +120,13 @@ function StarCard(props) {
             </div>
             <div className="star-buttons-container">
 
-              {!favorite && (
+              {!liked && (
                 <div className="star-superstar-button star-button">
                   <img src="/static/images/burn-fire.svg" alt="" /> 
                 </div>
               )}
 
-              {favorite && (
+              {liked && (
                 <div className="star-superstar-button star-button">
                   <img src="/static/images/no-fire.svg" alt="" />
                 </div>
@@ -137,13 +137,13 @@ function StarCard(props) {
               </div>
 
               {!superStar && (
-                <div className="star-favourite-button star-button">
+                <div className="star-liked-button star-button">
                   <img src="/static/images/like-add.svg" alt="" /> 
                 </div>
               )}
 
               {superStar && (
-                <div className="star-favourite-button star-button">
+                <div className="star-liked-button star-button">
                   <img src="/static/images/like-remove.svg" alt="" />
                 </div>
               )}

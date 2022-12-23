@@ -214,7 +214,7 @@ function StarAdvert() {
               name={data["name"]}
               videos={data["videos"]}
               views={data["views"]}
-              favorite={data["favourite"]}
+              liked={data["liked"]}
               superstar={data["superstar"]}
             />
           ))}
@@ -233,7 +233,7 @@ function StarAdvert() {
           <div className="star-advert-filter-container" ref={starsFilter}>
             <div className="star-advert-filter-title">FILTER</div>
             <div className="star-advert-filter" onClick={handleFilterOnClick}>
-              Only favourites
+              Only Liked
             </div>
             <div className="star-advert-filter" onClick={handleFilterOnClick}>
               Only Superstars

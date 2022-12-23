@@ -238,7 +238,7 @@ function Navbar(props) {
                 name={previewStar["name"]}
                 videos={previewStar["videos"]}
                 views={previewStar["views"]}
-                favorite={previewStar["favourite"]}
+                liked={previewStar["liked"]}
                 superstar={previewStar["superstar"]}
               />
             </div>

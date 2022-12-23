@@ -379,7 +379,7 @@ class Video(models.Model):
         if self.cast:
             for cast in self.cast.split(","):
                 star_object = Star.objects.get(name = cast)
-                if star_object.favourite:
+                if star_object.liked:
                     special_tag = "RECOMMENDED"
 
         if self.categories:
