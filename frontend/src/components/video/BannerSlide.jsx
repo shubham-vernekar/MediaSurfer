@@ -23,15 +23,18 @@ function BannerSlide(props) {
   }, [props.videoData]);
 
   const moveBanner = (direction) => {
+    
     let newPosition = 0;
     if (direction === "right") {
       newPosition = bannerSlideRef.current.currentBanner + 1;
     } else {
       newPosition = bannerSlideRef.current.currentBanner - 1;
     }
-    if (newPosition >= props.videoData.length) {
+
+    if (newPosition >= props.videoData.length || newPosition<0) {
       newPosition = 0;
     }
+    
     bannerSlideRef.current.currentBanner = newPosition;
     bannerSlideRef.current.style.transform =
       "translate3d(-" +
@@ -114,8 +117,8 @@ function BannerSlide(props) {
           )}
         </div>
       </div>
-      <div className="video-banner-slide-right" onClick={moveBannerRight}></div>
-      <div className="video-banner-slide-left" onClick={moveBannerLeft}></div>
+      <div className="video-banner-slide-right video-banner-slide-button" onClick={moveBannerRight}></div>
+      <div className="video-banner-slide-left video-banner-slide-button" onClick={moveBannerLeft}></div>
     </div>
   );
 }

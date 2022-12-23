@@ -290,19 +290,18 @@ function VideoPlayerPage() {
             </div>
             
             <div className="player-categories-buttons-container">
-
               <div className="player-buttons-add-container">
                 {showCategoriesAdd && (<img src="/static/images/unchecked.svg" alt="" onClick={() => {SetShowCategoriesAdd(false); SetShowCategoriesDelete(false)}}/>)}
                 {!showCategoriesAdd && (<img src="/static/images/plus.svg" alt="" onClick={() => {SetShowCategoriesAdd(true); SetShowCategoriesDelete(false)}}/>)}
                 {showCategoriesAdd && (<OptionsSearchBox options={allCategories} callbackFunction={addCategory} placeholder={"Add Star"}> 
                 </OptionsSearchBox>)}
               </div>
-              <div className="player-buttons-add-container">
+              {categories.length>0 && (<div className="player-buttons-add-container">
                 {showCategoriesDelete && (<img src="/static/images/unchecked.svg" alt="" onClick={() => {SetShowCategoriesDelete(false); SetShowCategoriesAdd(false)}}/>)}
                 {!showCategoriesDelete && (<img src="/static/images/trash.svg" alt="" onClick={() => {SetShowCategoriesDelete(true); SetShowCategoriesAdd(false)}}/>)}
                 {showCategoriesDelete && (<OptionsSearchBox options={categories} callbackFunction={deleteCategory} placeholder={"Delete Star"}> 
                 </OptionsSearchBox>)}
-              </div>
+              </div>)}
             </div>
 
           </div>
@@ -312,10 +311,11 @@ function VideoPlayerPage() {
             </div>
           )}
           <div className="video-player-cast-pane">
-            <div className="video-player-cast-box">
+            {starData.length>0 && (<div className="video-player-cast-box">
               {starData.map((data, i) => (
                 <StarCard
                   key={i}
+                  id={data["id"]}
                   poster={data["poster"]}
                   name={data["name"]}
                   videos={data["videos"]}
@@ -324,7 +324,7 @@ function VideoPlayerPage() {
                   favourite={data["favourite"]}
                 />
               ))}
-            </div>
+            </div>)}
 
             <div className="player-cast-buttons-container">
               <div className="player-buttons-add-container">
@@ -333,12 +333,12 @@ function VideoPlayerPage() {
                 {showCastAdd && (<OptionsSearchBox options={allStars} callbackFunction={addStar} placeholder={"Add Star"}> 
                 </OptionsSearchBox>)}
               </div>
-              <div className="player-buttons-add-container">
+              {starData.length>0 && (<div className="player-buttons-add-container">
                 {showCastDelete && (<img src="/static/images/unchecked.svg" alt="" onClick={() => {SetShowCastDelete(false); SetShowCastAdd(false)}}/>)}
                 {!showCastDelete && (<img src="/static/images/trash.svg" alt="" onClick={() => {SetShowCastDelete(true); SetShowCastAdd(false)}}/>)}
                 {showCastDelete && (<OptionsSearchBox options={cast} callbackFunction={deleteStar} placeholder={"Delete Star"}> 
                 </OptionsSearchBox>)}
-              </div>
+              </div>)}
             </div>
             
           </div>

@@ -234,6 +234,7 @@ function Navbar(props) {
           {previewStar && (
             <div ref={previewVideoRef}>
               <StarCard
+                id={previewStar["id"]}
                 poster={previewStar["poster"]}
                 name={previewStar["name"]}
                 videos={previewStar["videos"]}

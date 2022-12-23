@@ -27,7 +27,7 @@
   align-items: center;
   justify-items: start;
   row-gap: 25px;
-  padding: 0px 65px;
+  padding: 0px 55px;
 }
 
 .banner-video-title {
@@ -36,15 +36,23 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-family: 'Nexa', sans-serif;
+  font-family: "Nexa", sans-serif;
 }
 
 .banner-cast-container {
+  position: relative;
   display: flex;
   min-width: 0;
   flex: 1;
   gap: 20px;
-  font-size: 22px;
+  width: 37vw;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.banner-cast-container::-webkit-scrollbar {
+  display: none;
 }
 
 .banner-category-container {
@@ -64,7 +72,7 @@
   column-gap: 35px;
 }
 
-.banner-details-container div{
+.banner-details-container div {
   display: flex;
   column-gap: 10px;
   align-items: center;
@@ -76,11 +84,11 @@
 }
 
 .banner-cast-block .star-title {
-  font-size: 16px!important;
+  font-size: 16px !important;
 }
 
 .banner-cast-block {
-  position:sticky;  
+  position: sticky;
   flex-direction: row;
   flex-wrap: nowrap;
   align-content: center;
@@ -95,7 +103,41 @@
 }
 
 .banner-cast-block .star-card:hover {
-    width: 170px;
-    height: 304px;
-    overflow: hidden;
-  }
+  width: 170px;
+  height: 304px;
+  overflow: hidden;
+}
+
+.star-banner-slide-button {
+  background-repeat: no-repeat;
+  background-size: 30px 30px;
+  background-position: 50%;
+  height: 250px;
+  width: 50px;
+  position: absolute;
+  z-index: 20;
+  opacity: 0;
+}
+
+.star-banner-slide-left {
+  background-image: url("/static/images/left.png");
+  left: -5%;
+}
+
+.star-banner-slide-right {
+  background-image: url("/static/images/right.png");
+  right: -5%;
+}
+
+.banner-cast-box{
+  position: relative;
+}
+
+.star-banner-slide-right:hover {
+  opacity: 1;
+}
+
+.star-banner-slide-left:hover {
+  opacity: 1;
+}
+

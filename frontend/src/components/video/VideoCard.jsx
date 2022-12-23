@@ -53,7 +53,7 @@ function VideoCard(props) {
     "FAVOURITE" : {
       "icon" : "/static/images/Favorite Icon.png",
       "text": "#fff",
-      "border": "#933595",
+      "border": "#59005b",
       "theme": "#c5b8f8",
       "glow": "#bb3eff",
       "background": "linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%)",
@@ -69,13 +69,6 @@ function VideoCard(props) {
       "animate": true,
     }
   }
-
-  // const videoThemeDict = {
-  //   "WATCHED" : ["/static/images/Watched.png", "#99d3ff"],
-  //   "NEW" : ["/static/images/new_video.png", "#ebc2ac"],
-  //   "FAVOURITE" : ["/static/images/Favorite Icon.png", "#ff6b87"],
-  //   "RECOMMENDED" : ["/static/images/Recommended.png", "#f2c73d"],
-  // }
 
   const created = new Date(props.created);
 

@@ -7,6 +7,10 @@ import { getDurationText, getCreatedDate, secondsToHHMMSS } from '../utils'
 function VideoBanner(props) {
   const bannerVideoRef = useRef(null);
   const bannerRef = useRef(null);
+  const slideLeftRef = useRef(null);
+  const slideRightRef = useRef(null);
+  const bannerCastContainerRef = useRef(null);
+
   const [starData, SetStarData] = useState([]);
 
   let category = []
@@ -20,7 +24,38 @@ function VideoBanner(props) {
     window.addEventListener("resize", (e) => {
         bannerRef.current.style.width = window.innerWidth +"px";
       });
-  }, []);
+    
+    if (slideRightRef.current){
+      let intervalRight = null;
+      let intervalLeft = null;
+      slideRightRef.current.addEventListener('mouseover', function () {
+        moveSlideLeft()
+        intervalRight = setInterval(moveSlideLeft, 20);
+      });
+
+      slideRightRef.current.addEventListener('mouseout', function () {
+          clearInterval(intervalRight);
+      });
+
+      slideLeftRef.current.addEventListener('mouseover', function () {
+        moveSlideRight()
+        intervalLeft = setInterval(moveSlideRight, 20);
+      });
+
+      slideLeftRef.current.addEventListener('mouseout', function () {
+          clearInterval(intervalLeft);
+      });
+    }
+
+  }, [props]);
+
+  const moveSlideLeft = () => {
+    bannerCastContainerRef.current.scrollLeft += 6;
+  };
+
+  const moveSlideRight = () => {
+    bannerCastContainerRef.current.scrollLeft -= 6;
+  };
 
   useEffect(() => {
     getCastData(props.cast)
@@ -34,9 +69,6 @@ function VideoBanner(props) {
         cast: cast || "empty"
       },
     }).then((response) => {
-      if (response.data.length > 5) {
-        response.data = response.data.slice(0, 5);
-      }
       SetStarData(response.data);
     });
   };
@@ -93,20 +125,26 @@ function VideoBanner(props) {
             ))}
           </div>
 
-          <div className="banner-cast-container">
-            {starData.map((data, i) => (
-              <div key={i} className="banner-cast-block">
-                <StarCard
-                key={i}
-                poster={data["poster"]}
-                name={data["name"]}
-                videos={data["videos"]}
-                views={data["views"]}
-                liked={data["liked"]}
-                favourite={data["favourite"]}
-              />
-              </div>
-            ))}
+          <div className="banner-cast-box">
+            {starData.length>2 && (<div className="star-banner-slide-right star-banner-slide-button" ref={slideRightRef}></div>)}
+            {starData.length>2 && (<div className="star-banner-slide-left star-banner-slide-button" ref={slideLeftRef}></div>)}
+          
+            {starData.length>0 && (<div className="banner-cast-container"  ref={bannerCastContainerRef}>
+              {starData.map((data, i) => (
+                <div key={i} className="banner-cast-block">
+                  <StarCard
+                  key={i}
+                  id={data["id"]}
+                  poster={data["poster"]}
+                  name={data["name"]}
+                  videos={data["videos"]}
+                  views={data["views"]}
+                  liked={data["liked"]}
+                  favourite={data["favourite"]}
+                />
+                </div>
+              ))}
+            </div>)}
           </div>
         </div>
         <div className="banner-video-container">

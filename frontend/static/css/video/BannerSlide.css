@@ -48,32 +48,27 @@
   transform: scale(1.2);
 }
 
-.video-banner-slide-left {
-  background-image: url("/static/images/left.png");
+.video-banner-slide-button {
   background-repeat: no-repeat;
   background-size: 40px 40px;
   background-position: 50%;
   height: 500px;
   width: 100px;
   position: absolute;
-  left: 1%;
   z-index: 20;
-  top: 12vh;
   opacity: 0;
+}
+
+.video-banner-slide-left {
+  background-image: url("/static/images/left.png");
+  left: 1%;
+  top: 12vh;
 }
 
 .video-banner-slide-right {
   background-image: url("/static/images/right.png");
-  background-repeat: no-repeat;
-  background-size: 40px 40px;
-  background-position: 50%;
-  height: 500px;
-  width: 100px;
-  position: absolute;
   right: 1%;
-  z-index: 20;
   top: 12vh;
-  opacity: 0;
 }
 
 .video-banner-slide-right:hover {

@@ -14,7 +14,7 @@ function StarAdvert() {
   const [alphabetsLineThree, SetAlphabetsLineThree] = useState([]);
   const [allStars, SetAllStars] = useState([]);
 
-  const [alphabetOne, SetAlphabetOne] = useState("A");
+  const [alphabetOne, SetAlphabetOne] = useState("");
   const [alphabetTwo, SetAlphabetTwo] = useState("");
   const [alphabetThree, SetAlphabetThree] = useState("");
   const [sortQuery, SetSortQuery] = useState("");
@@ -56,9 +56,22 @@ function StarAdvert() {
     alphabetTwo,
     alphabetThree,
     sortQuery,
-    filterQuery,
-    searchQuery,
+    filterQuery
   ]);
+
+  useEffect(() => {
+    if(searchQuery){
+      axios({
+        method: "get",
+        url: "/api/stars",
+        params: {
+          query: searchQuery
+        },
+      }).then((response) => {
+        SetStarData(response.data);
+      });
+    }
+  }, [searchQuery]);
 
   useEffect(() => {
     clearChildren(starAdvertIndexTwo.current);
@@ -210,6 +223,7 @@ function StarAdvert() {
           {starData.map((data, i) => (
             <StarCard
               key={i}
+              id={data["id"]}
               poster={data["poster"]}
               name={data["name"]}
               videos={data["videos"]}
