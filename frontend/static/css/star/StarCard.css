@@ -16,7 +16,7 @@
     width: 200px;
     height: 320px;
     border-radius: 8px;
-    border-color: var(--star-card-theme);
+    border-color: var(--star-card-border-color);
     border-style: solid;
     border-width: 1px;
     transition: 0.6s ease-in-out;
@@ -31,7 +31,7 @@
     border-radius: 0px 0px 8px 8px;
     align-items: center;
     justify-content: center;
-    color: var(--star-card-theme);
+    color: var(--star-card-text-color);
 }
 
 .star-title{
@@ -51,20 +51,20 @@
 .star-play-button{
     display: none;
     cursor: pointer;
-    padding: 6px 24px;
+    padding: 6px 20px;
     text-align: center;
     text-decoration: none;
-    border: 1px solid var(--star-card-theme);
+    border: 1px solid var(--star-card-text-color);
     border-radius: 9px;
 }
 
-.star-play-button:hover {background-color: var(--star-card-theme);
-color: black;}
+.star-play-button:hover {
+    transform:scale(1.05)
+}
 
 .star-play-button:active {
   transform:scale(1.1)
 }
-
 
 .star-card:hover{
     height: 405px;
@@ -144,3 +144,20 @@ color: black;}
 .star-button:active{
     transform:scale(1.3);
 }
+
+.animate-background:hover{
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}  
