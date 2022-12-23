@@ -14,7 +14,7 @@ function StarCard(props) {
   const [bannerImg, SetBannerImg] = useState("");
   const [showGlow, SetShowGlow] = useState(false);
   const [liked, SetLiked] = useState(false);
-  const [superStar, SetSuperStar] = useState(false);
+  const [favourite, SetFavourite] = useState(false);
 
   const videoThemeDict = {
     "DEFAULT" : {
@@ -33,7 +33,7 @@ function StarCard(props) {
       "textcolor": "#000",
       "border": "#000000",
     },
-    "SUPERSTAR" : {
+    "FAVOURITE" : {
       "icon" : "/static/images/heart.png",
       "theme": "#fe475c",
       "background": "linear-gradient(to top, rgb(150 14 14) 0%, rgb(255 0 0) 100%)",
@@ -53,17 +53,17 @@ function StarCard(props) {
 
   useEffect(() => {
     SetLiked(props.liked);
-    SetSuperStar(props.superstar);
+    SetFavourite(props.favourite);
   }, [props]);
 
   useEffect(() => {
     let key = "DEFAULT"
-    if (liked && superStar) {
+    if (liked && favourite) {
       key = "BOTH"
     } else if (liked) {
       key = "LIKED"
-    } else if (superStar) {
-      key = "SUPERSTAR"
+    } else if (favourite) {
+      key = "FAVOURITE"
     }
     SetBannerImg(videoThemeDict[key]["icon"])
     starCardRef.current.style.setProperty("--star-card-text-color", videoThemeDict[key]["textcolor"]);
@@ -77,7 +77,7 @@ function StarCard(props) {
     if (videoThemeDict[key]["animate"]){
       starDetailsRef.current.classList.add("animate-background");
     }
-  }, [liked, superStar]);
+  }, [liked, favourite]);
 
   const handleOnClickCastRandomButton = (e) => {
     axios({
@@ -121,13 +121,13 @@ function StarCard(props) {
             <div className="star-buttons-container">
 
               {!liked && (
-                <div className="star-superstar-button star-button">
+                <div className="star-favourite-button star-button">
                   <img src="/static/images/burn-fire.svg" alt="" /> 
                 </div>
               )}
 
               {liked && (
-                <div className="star-superstar-button star-button">
+                <div className="star-favourite-button star-button">
                   <img src="/static/images/no-fire.svg" alt="" />
                 </div>
               )}
@@ -136,13 +136,13 @@ function StarCard(props) {
                 <div className="star-play-button" onClick={handleOnClickCastRandomButton} cast={props.name}>PLAY</div>
               </div>
 
-              {!superStar && (
+              {!favourite && (
                 <div className="star-liked-button star-button">
                   <img src="/static/images/like-add.svg" alt="" /> 
                 </div>
               )}
 
-              {superStar && (
+              {favourite && (
                 <div className="star-liked-button star-button">
                   <img src="/static/images/like-remove.svg" alt="" />
                 </div>

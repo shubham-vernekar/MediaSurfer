@@ -321,7 +321,7 @@ function VideoPlayerPage() {
                   videos={data["videos"]}
                   views={data["views"]}
                   liked={data["liked"]}
-                  superstar={data["superstar"]}
+                  favourite={data["favourite"]}
                 />
               ))}
             </div>

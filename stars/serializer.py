@@ -8,7 +8,7 @@ class StarSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'liked',
-            'superstar',
+            'favourite',
             'views',
             'videos',
             'poster',

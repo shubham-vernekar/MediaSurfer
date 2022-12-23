@@ -239,7 +239,7 @@ function Navbar(props) {
                 videos={previewStar["videos"]}
                 views={previewStar["views"]}
                 liked={previewStar["liked"]}
-                superstar={previewStar["superstar"]}
+                favourite={previewStar["favourite"]}
               />
             </div>
           )}

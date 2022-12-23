@@ -7,7 +7,7 @@ class StarQuerySet(models.QuerySet):
     def search(self, parameters):
         query = parameters.get("query", None)
         liked = parameters.get("liked", None)
-        superstar = parameters.get("superstar", None)
+        favourite = parameters.get("favourite", None)
         min_videos = parameters.get("min_videos", None)
         min_views = parameters.get("min_views", None)
         sort_by = parameters.get("sort_by", None)
@@ -23,8 +23,8 @@ class StarQuerySet(models.QuerySet):
 
         if filter=="liked":
             liked = True
-        elif filter=="superstars":
-            superstar = True
+        elif filter=="favourites":
+            favourite = True
 
         if query:
             qs = qs.filter(Q(name__icontains=query))
@@ -38,9 +38,9 @@ class StarQuerySet(models.QuerySet):
             except ValidationError:
                 qs = self.none()
 
-        if superstar is not None:
+        if favourite is not None:
             try:
-                qs = qs.filter(Q(superstar=superstar))
+                qs = qs.filter(Q(favourite=favourite))
             except ValidationError:
                 qs = self.none()
 
@@ -86,7 +86,7 @@ class Star(models.Model):
     id = models.CharField(max_length=15, primary_key=True)
     name = models.CharField(max_length=64, unique=True)
     liked = models.BooleanField(default=False)
-    superstar = models.BooleanField(default=False)
+    favourite = models.BooleanField(default=False)
     bio = models.CharField(max_length=1024, blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)
