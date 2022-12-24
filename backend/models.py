@@ -56,3 +56,14 @@ class DashboardHistory(models.Model):
 
     def __str__(self):
         return self.time.strftime("%m/%d/%Y, %H:%M:%S")
+
+class UserLevelData(models.Model):
+    ''' Model to store site level data '''
+    pending_videos = models.IntegerField(default=0, blank=True, null=True)
+    unsupported_videos = models.IntegerField(default=0, blank=True, null=True)
+    update_timestamp = models.DateTimeField(default=timezone.now)
+    scan_timestamp = models.DateTimeField(blank=True, null=True)
+    volume_level = models.FloatField(blank=True, null=True)
+
+    def __str__(self):
+        return self.update_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

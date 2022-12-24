@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Navbar, Category, DashboardHistory, Series
+from .models import Navbar, Category, DashboardHistory, Series, UserLevelData
 # Register your models here.
 
 class NavbarAdmin(admin.ModelAdmin):
@@ -18,3 +18,5 @@ class SeriesAdmin(admin.ModelAdmin):
 admin.site.register(Series, SeriesAdmin) 
 
 admin.site.register(DashboardHistory) 
+
+admin.site.register(UserLevelData)

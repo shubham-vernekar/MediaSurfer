@@ -16,6 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DISABLE_LOGIN = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -53,8 +54,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pin_passcode.middleware.PinPasscodeMiddleware',
 ]
+
+if not DISABLE_LOGIN:
+    MIDDLEWARE.append('pin_passcode.middleware.PinPasscodeMiddleware')
 
 # TODO move pin to more secure location
 PIN_PASSCODE_PIN = 1234

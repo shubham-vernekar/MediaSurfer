@@ -1,5 +1,7 @@
-from .models import Category, Navbar, Series
+from .models import Category, Navbar, Series, UserLevelData
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
+from .utils import get_pending_videos
+from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -179,3 +181,43 @@ class CategoryNamesListAPIView(generics.GenericAPIView):
             qs = qs.filter(title__icontains=query)
         
         return Response(qs.values_list('title', flat=True))
+
+class FindPending(generics.GenericAPIView):
+
+    def get(self, request):
+        get_data = request.GET.get("get_data", False)
+
+        if get_data == "true":
+            pending_videos, unsupported_videos = get_pending_videos()
+            return Response({
+                "pending" : len(pending_videos),
+                "pending_videos" : pending_videos,
+                "unsupported" : len(unsupported_videos),
+                "unsupported_videos" : unsupported_videos
+            })
+        else:
+            try:
+                user_data_object = UserLevelData.objects.latest('update_timestamp')
+            except UserLevelData.DoesNotExist:
+                user_data_object = UserLevelData()
+
+            if user_data_object.scan_timestamp:
+                time_delta = timezone.now() - user_data_object.scan_timestamp
+                time_delta_minutes = (time_delta.days*3600*24 + time_delta.seconds)/60
+                if time_delta_minutes<60:
+                    return Response({
+                        "pending" : user_data_object.pending_videos,
+                        "unsupported" : user_data_object.unsupported_videos
+                    })
+
+            pending_videos, unsupported_videos = get_pending_videos()
+            user_data_object.pending_videos = len(pending_videos)
+            user_data_object.unsupported_videos = len(unsupported_videos)
+            user_data_object.scan_timestamp = timezone.now()
+            user_data_object.update_timestamp = timezone.now()
+            user_data_object.save()
+            return Response({
+                "pending" : len(pending_videos),
+                "unsupported" : len(unsupported_videos)
+            })
+

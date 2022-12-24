@@ -12,4 +12,5 @@ urlpatterns = [
     path('mastersearch', views.MasterSearchView.as_view(), name='master-search'),
     path('scan', views.RunScanView.as_view(), name='scan-videos'),
     path('json', views.UpdateJson.as_view(), name='update-json'),
+    path('pending', views.FindPending.as_view(), name='find-pending'),
 ]
