@@ -12,6 +12,16 @@ function UpdatePage() {
   const labelsResultRef = useRef(null);
 
   useEffect(() => {
+
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.key === 's') {
+        if (document.activeElement.name == "directories" || document.activeElement.name == "labels"){
+          e.preventDefault();
+          saveText(document.activeElement.name)
+        }
+      }
+    });
+
     axios({
       method: "get",
       url: "api/json",
@@ -55,7 +65,13 @@ function UpdatePage() {
         } else {
           textRef.current.style.setProperty("color", "#d1d1d1");
           resultRef.current.style.setProperty("color", "#33cd08");
+          setTimeout(
+            function() {
+              resultRef.current.innerText = "";
+              resultRef.current.style.setProperty("color", "#d1d1d1");
+            }, 10000);
         }
+
         resultRef.current.innerText = response.data.message;
       });
     }
