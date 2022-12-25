@@ -13,4 +13,5 @@ urlpatterns = [
     path('scan', views.RunScanView.as_view(), name='scan-videos'),
     path('json', views.UpdateJson.as_view(), name='update-json'),
     path('pending', views.FindPending.as_view(), name='find-pending'),
+    path('openfolder', views.OpenFileFolderView.as_view(), name='open-file-folder'),
 ]

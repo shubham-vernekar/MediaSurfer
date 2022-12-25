@@ -231,6 +231,10 @@ a{
 	cursor: pointer;
 }
 
+.alert-msg-box-container{
+	position: relative;
+}
+
 .alert-msg-text, .scan-msg-text{
 	user-select: none;
 	max-width: 0;
@@ -243,9 +247,9 @@ a{
 	margin-left: 7px;
 }
 
-.alert-msg-box:hover .alert-msg-text{
+/* .alert-msg-box:hover .alert-msg-text{
 	max-width: 600px;
-}
+} */
 
 .navbar-populate:hover .scan-msg-text{
 	max-width: 600px;

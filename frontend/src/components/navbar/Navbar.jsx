@@ -1,21 +1,26 @@
 import "../../../static/css/navbar/Navbar.css";
 import SearchRecommendations from "./SearchRecommendations";
+import AlertResults from "./AlertResults";
 import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 function Navbar(props) {
-  const [navbarData, setNavbarData] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [alertMsg, setAlertMsg] = useState(false);
-  const [scanMsg, setScanMsg] = useState(false);
+  const [navbarData, SetNavbarData] = useState([]);
+  const [searchText, SetSearchText] = useState("");
+  const [alertMsg, SetAlertMsg] = useState(false);
+  const [scanMsg, SetScanMsg] = useState(false);
+  const [showAlertMsg, SetShowAlertMsg] = useState(false);
+  const [showAlertDetails, SetShowAlertDetails] = useState(false);
+
   const searchInputRef = useRef(null);
+  const alertMsgTextRef = useRef(null);
 
   useEffect(() => {
     axios({
       method: "get",
       url: "/api/navbar",
     }).then((response) => {
-      setNavbarData(response.data["results"]);
+      SetNavbarData(response.data["results"]);
     });
 
     getPending();
@@ -27,22 +32,39 @@ function Navbar(props) {
 
   }, []);
 
+  useEffect(() => {
+    if (alertMsgTextRef.current){
+      if (showAlertMsg) {
+        alertMsgTextRef.current.style.maxWidth = "600px"
+      }else{
+        if (!showAlertDetails){
+          alertMsgTextRef.current.style.maxWidth = "0px"
+        }
+      }
+    }
+  }, [showAlertMsg]);
+
+  const closeAlertResultsCallback = () => {
+    alertMsgTextRef.current.style.maxWidth = "0px"
+    SetShowAlertMsg(false)
+  };
+
   const getPending = () => {
     axios({
       method: "get",
       url: "/api/pending",
     }).then((response) => {
       if (parseInt(response.data.pending)>0){
-        setScanMsg(response.data.pending + " new videos");
+        SetScanMsg(response.data.pending + " new videos");
       }
       if (parseInt(response.data.unsupported)>0){
-        setAlertMsg(response.data.unsupported + " unsupported videos");
+        SetAlertMsg(response.data.unsupported + " unsupported videos");
       }
     });
   };
 
   const onSearchTextChange = (e) => {
-    setSearchText(e.currentTarget.value);
+    SetSearchText(e.currentTarget.value);
   };
 
   const searchSubmit = (e) => {
@@ -91,12 +113,21 @@ function Navbar(props) {
             </div>)}
           </div>
 
-          {alertMsg && (<div className="alert-msg-box">
-            <img className="alert-msg-icon" src="/static/images/alert.svg" alt="" />
-            <div className="alert-msg-text">
-              {alertMsg}
+          {alertMsg && (
+          <div className="alert-msg-box-container">
+            <div className="alert-msg-box" onMouseEnter={() => {SetShowAlertMsg(true)}} onMouseLeave={() => {SetShowAlertMsg(false)}} onClick={() => {SetShowAlertDetails(!showAlertDetails)}} >
+              <img className="alert-msg-icon" src="/static/images/alert.svg" alt="" />
+              <div className="alert-msg-text" ref={alertMsgTextRef}>
+                {alertMsg}
+              </div>
             </div>
-          </div>)}
+            <AlertResults
+                query = {"unsupported_videos"}
+                showAlertDetails = {showAlertDetails}
+                closeAlertResultsCallback = {closeAlertResultsCallback}
+              />
+          </div>
+          )}
 
         </div>
 

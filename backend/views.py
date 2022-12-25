@@ -191,9 +191,9 @@ class FindPending(generics.GenericAPIView):
             pending_videos, unsupported_videos = get_pending_videos()
             return Response({
                 "pending" : len(pending_videos),
-                "pending_videos" : pending_videos,
+                "pending_videos" : unsupported_videos *10, # TODO Remove after testing # pending_videos,
                 "unsupported" : len(unsupported_videos),
-                "unsupported_videos" : unsupported_videos
+                "unsupported_videos" : unsupported_videos *10 # TODO Remove after testing
             })
         else:
             try:
@@ -219,5 +219,15 @@ class FindPending(generics.GenericAPIView):
             return Response({
                 "pending" : len(pending_videos),
                 "unsupported" : len(unsupported_videos)
+            })
+
+class OpenFileFolderView(generics.GenericAPIView):
+    def post(self, request):
+        file_path = request.data.get('file', '') 
+        if file_path:
+            os.system('start %windir%\explorer.exe /select, "{}"'.format(file_path.replace("/", "\\")))
+
+        return Response({
+                "Status": "Success"
             })
 
