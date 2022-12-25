@@ -191,9 +191,9 @@ class FindPending(generics.GenericAPIView):
             pending_videos, unsupported_videos = get_pending_videos()
             return Response({
                 "pending" : len(pending_videos),
-                "pending_videos" : unsupported_videos *10, # TODO Remove after testing # pending_videos,
+                "pending_videos" : pending_videos,
                 "unsupported" : len(unsupported_videos),
-                "unsupported_videos" : unsupported_videos *10 # TODO Remove after testing
+                "unsupported_videos" : unsupported_videos
             })
         else:
             try:
