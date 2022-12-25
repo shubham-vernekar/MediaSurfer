@@ -6,7 +6,7 @@ import VideoAdvert from "./pages/VideoAdvert";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import SeriesPage from "./pages/SeriesPage";
-import Navbar from "./Navbar"
+import Navbar from "./navbar/Navbar"
 import UpdatePage from "./pages/UpdatePage";
 
 function App() {

@@ -176,67 +176,11 @@
 /* `````````````````````````SEARCH BOX ENDS`````````````````````````*/
 
 
-.navbar-search-results{
-	display: grid;
-    position: absolute;
-    top: 60px;
-    right: 78px;
-    background: #292929;
-    width: 81%;
-    row-gap: 10px;
-    padding: 2%;
-    border-radius: 8px;
-}
+
 
 a{
 	text-decoration: none;
 	color: inherit;
-}
-
-.search-results{
-	list-style-type: none;
-}
-
-.search-results-link:hover .search-results{
-	background: rgba(0,0,0,0.5);
-	cursor: pointer;
-	color: #6f6;
-	border-radius: 10px;
-}
-
-.search-results-title{
-	text-transform: uppercase;
-}
-
-.search-results-box{
-	display: flex;
-    flex-direction: column;
-}
-
-.search-results{
-	height: 30px;
-    display: flex;
-    align-items: center;
-	text-transform: capitalize;
-	padding: 0 0.7vw;
-	overflow: hidden;
-	display: -webkit-box;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	line-height: 30px;
-}
-
-.search-results-title{
-	height: 30px;
-	display: flex;
-    align-items: center;
-	padding: 0 0.7vw;
-}
-
-.navbar-search-poster{
-    position: absolute;
-    top: 75px;
-    right: 665px;
 }
 
 .navbar-populate{

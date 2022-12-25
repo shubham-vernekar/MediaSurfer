@@ -116,6 +116,10 @@
     column-gap: 12px;
 }
 
+.star-videos{
+    cursor: pointer;
+}
+
 .star-card:hover .star-videos{
     display: flex;
 }
