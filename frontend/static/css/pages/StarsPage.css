@@ -58,6 +58,7 @@
 }
 
 .star-advert-filter:hover,
+.star-advert-tag:hover,
 .star-advert-sort:hover,
 .star-advert-clear-button:hover {
   color: red;
@@ -65,13 +66,16 @@
 }
 
 .star-advert-filter,
+.star-advert-tag,
 .star-advert-sort {
   text-align: right;
   padding-bottom: 5px;
+  text-transform: capitalize;
 }
 
 .star-advert-filter-title,
-.star-advert-sort-title {
+.star-advert-sort-title,
+.star-advert-tag-title{
   text-align: right;
   font-size: large;
   padding-bottom: 7px;

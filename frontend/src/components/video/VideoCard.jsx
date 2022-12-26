@@ -1,6 +1,6 @@
 import '../../../static/css/video/VideoCard.css';
 import { React, useEffect, useRef, useState } from "react";
-import { dateToTimestamp, secondsToHHMMSS } from '../utils'
+import { dateToTimestamp, secondsToHHMMSS, getSize } from '../utils'
 import axios from "axios";
 
 function VideoCard(props) {
@@ -304,8 +304,13 @@ function VideoCard(props) {
             </svg>
             {secondsToHHMMSS(props.watchTime)} 
           </div>
-          <div>{props.badge}</div>
-          <div>{props.specialTag}</div>
+          {props.badge && (<div>{props.badge}</div>)}
+          <div className='advert-views-box'> 
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.5 0H5.914a1.5 1.5 0 0 0-1.06.44L2.439 2.853A1.5 1.5 0 0 0 2 3.914V14.5A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 12.5 0Zm-7 2.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2 0a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2.75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 1.5 0Zm1.25-.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Z"/>
+            </svg>
+            {getSize(props.size)} 
+          </div>
         </div>
         <div className="advert-details-title">
           <span>{props.title}</span>

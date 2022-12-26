@@ -64,6 +64,7 @@ class UserLevelData(models.Model):
     update_timestamp = models.DateTimeField(default=timezone.now)
     scan_timestamp = models.DateTimeField(blank=True, null=True)
     volume_level = models.FloatField(blank=True, null=True)
+    scanning = models.BooleanField(default=False)
 
     def __str__(self):
         return self.update_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

@@ -173,6 +173,7 @@
 .search-page-filter-box,
 .search-page-sort-box {
   display: flex;
+  user-select: none;
   column-gap: 30px;
 }
 

@@ -13,6 +13,7 @@ from rest_framework.response import Response
 import os
 from django.conf import settings
 import json
+from django.core.management import call_command
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -130,11 +131,19 @@ class MasterSearchView(generics.GenericAPIView):
 
 class RunScanView(generics.GenericAPIView):
     def post(self, request):
-        cmd = "start /B start cmd.exe @cmd /c " + '"{}" {} scan'.format(settings.PYTHON_EXE, os.path.join(settings.BASE_DIR, 'manage.py'))
-        os.system(cmd)
-        return Response({
-                "Status": "Success"
-            })
+        try:
+            user_data_object = UserLevelData.objects.latest('update_timestamp')
+        except UserLevelData.DoesNotExist:
+            user_data_object = UserLevelData()
+
+        time_delta = timezone.now() - user_data_object.scan_timestamp
+        time_delta_minutes = (time_delta.days*3600*24 + time_delta.seconds)/60
+
+        if not user_data_object.scanning or time_delta_minutes>10:
+            call_command('scan')
+            return Response({"Status": "Scanning Started"})
+        else:
+            return Response({"Status": "Scanning already in progress"})
 
 
 class UpdateJson(generics.GenericAPIView):
@@ -204,10 +213,19 @@ class FindPending(generics.GenericAPIView):
             if user_data_object.scan_timestamp:
                 time_delta = timezone.now() - user_data_object.scan_timestamp
                 time_delta_minutes = (time_delta.days*3600*24 + time_delta.seconds)/60
+
+                if time_delta_minutes>10:
+                    user_data_object.scanning = False
+                    user_data_object.save()
+
                 if time_delta_minutes<60:
+                    scan_text = "Scanning, " if user_data_object.scanning else ""
                     return Response({
-                        "pending" : user_data_object.pending_videos,
-                        "unsupported" : user_data_object.unsupported_videos
+                        "pending" : f"{scan_text}{user_data_object.pending_videos} videos pending",
+                        "pending_count" : user_data_object.pending_videos,
+                        "unsupported" : f"{user_data_object.unsupported_videos} unsupported videos",
+                        "unsupported_count" : user_data_object.unsupported_videos,
+                        "scanning" : user_data_object.scanning
                     })
 
             pending_videos, unsupported_videos = get_pending_videos()
@@ -216,9 +234,13 @@ class FindPending(generics.GenericAPIView):
             user_data_object.scan_timestamp = timezone.now()
             user_data_object.update_timestamp = timezone.now()
             user_data_object.save()
+            scan_text = "Scanning, " if user_data_object.scanning else ""
             return Response({
-                "pending" : len(pending_videos),
-                "unsupported" : len(unsupported_videos)
+                "pending" : f"{scan_text}{len(pending_videos)} videos pending", 
+                "pending_count" : len(pending_videos),
+                "unsupported" : f"{len(unsupported_videos)} unsupported videos",
+                "unsupported_count" : len(unsupported_videos),
+                "scanning" : user_data_object.scanning
             })
 
 class OpenFileFolderView(generics.GenericAPIView):
@@ -229,5 +251,38 @@ class OpenFileFolderView(generics.GenericAPIView):
 
         return Response({
                 "Status": "Success"
+            })
+
+class UpdateVolume(generics.GenericAPIView):
+
+    def get(self, request):
+        try:
+            user_data_object = UserLevelData.objects.latest('update_timestamp')
+        except UserLevelData.DoesNotExist:
+            user_data_object = UserLevelData()
+
+        return Response({
+                "volume_level" : user_data_object.volume_level
+            })
+
+    def post(self, request):
+        volume = request.data.get('volume', False)
+
+        try:
+            user_data_object = UserLevelData.objects.latest('update_timestamp')
+        except UserLevelData.DoesNotExist:
+            user_data_object = UserLevelData()
+
+        if volume:
+            try:
+                volume = float(volume)
+                if volume>=0 and volume<=1:
+                    user_data_object.volume_level = float(volume)
+                    user_data_object.save()
+            except ValueError:
+                pass
+
+        return Response({
+                "volume_level" : user_data_object.volume_level
             })
 

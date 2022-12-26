@@ -158,6 +158,9 @@ class VideoQuerySet(models.QuerySet):
         sort_by = parameters.get("sort_by", None)
         filter = parameters.get("filter", "").lower()
 
+        if not sort_by:
+            sort_by = "-created"
+
         qs = self
 
         if filter=="favourites":
@@ -378,15 +381,21 @@ class Video(models.Model):
         special_tag = ""
         if self.cast:
             for cast in self.cast.split(","):
-                star_object = Star.objects.get(name = cast)
-                if star_object.liked:
-                    special_tag = "RECOMMENDED"
+                try:
+                    star_object = Star.objects.get(name = cast)
+                    if star_object.liked:
+                        special_tag = "RECOMMENDED"
+                except Star.DoesNotExist:
+                    pass
 
         if self.categories:
             for category in [x for x in self.categories.split(",") if x]:
-                category_object = Category.objects.get(title = category)
-                if category_object.favourite:
-                    special_tag = "RECOMMENDED"
+                try:
+                    category_object = Category.objects.get(title = category)
+                    if category_object.favourite:
+                        special_tag = "RECOMMENDED"
+                except Category.DoesNotExist:
+                    pass
 
         if (timezone.now()-self.created).days <15:
             special_tag = "NEW"

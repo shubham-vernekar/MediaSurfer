@@ -7,7 +7,7 @@ import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
-import { getDurationText, getCreatedDate, secondsToHHMMSS } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize } from '../utils'
 
 function VideoPlayerPage() {
   const params = useParams();
@@ -27,6 +27,7 @@ function VideoPlayerPage() {
   const [showCategoriesDelete, SetShowCategoriesDelete] = useState(false);
   const [specialTag, SetSpecialTag] = useState("");
   const [watchTime, SetWatchTime] = useState(0);
+  const [volume, SetVolume] = useState(0);
 
   const VideoDetailsRef = useRef(null);
 
@@ -62,7 +63,14 @@ function VideoPlayerPage() {
         method: "get",
         url: "/api/stars/names",
       }).then((response) => {
-        SetAllStars(response.data);
+        SetAllStars(response.data.names);
+    });
+
+    axios({
+        method: "get",
+        url: "/api/volume",
+      }).then((response) => {
+        SetVolume(response.data.volume_level);
     });
   
   }, []);
@@ -119,14 +127,6 @@ function VideoPlayerPage() {
       SetStarData([]);
     }
   };
-
-  const getSize = (size) => {
-    if (size<1024){
-      return parseFloat(size).toFixed(2) + " Mb"
-    }else{
-      return parseFloat(parseFloat(size)/parseFloat(1024)).toFixed(2) + " Gb"
-    }
-  }
 
   const updateVideoCast = (id, title, newCast) => {
     axios({
@@ -192,7 +192,19 @@ function VideoPlayerPage() {
     });
   }
 
-  const updateProgress = (progress, watchTime) => {
+  const updateProgress = (progress, watchTime, currentVolume) => {
+    
+    if (volume!=currentVolume){
+      SetVolume(currentVolume)
+      axios({
+        method: "post",
+        url: "/api/volume",
+        data: {
+          volume: currentVolume
+        }
+      });
+    }
+
     axios({
       method: "put",
       url: "/api/videos/" + videoData.id + "/update",
@@ -224,6 +236,7 @@ function VideoPlayerPage() {
           progress={videoData.progress}
           watchTime={videoData.watch_time}
           updateProgressCallback={updateProgress}
+          initialVolume={volume}
         />
         <div className="video-player-details" >
           <div className="video-player-title" ><h1 ref={VideoDetailsRef} className="fav-text">{videoData.title}</h1></div>
@@ -244,7 +257,8 @@ function VideoPlayerPage() {
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M12.5 0H5.914a1.5 1.5 0 0 0-1.06.44L2.439 2.853A1.5 1.5 0 0 0 2 3.914V14.5A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 12.5 0Zm-7 2.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2 0a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2.75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 1.5 0Zm1.25-.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Z"/>
               </svg>
-              {getSize(videoData.size)} </div>
+              {getSize(videoData.size)} 
+            </div>
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>

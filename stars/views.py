@@ -37,8 +37,20 @@ class StarDeleteAPIView(generics.DestroyAPIView):
 class StarNamesListAPIView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
+        get_tags = request.GET.get("tags", False)
+
         qs = Star.objects.all()
         if query:
             qs = qs.filter(name__icontains=query)
         
-        return Response(qs.values_list('name', flat=True))
+        if get_tags == "true":
+            tags = [x.split(",") for x in qs.values_list('tags', flat=True) if x]
+            tags = sorted([x for x in set([item for sublist in tags for item in sublist]) if x])
+            return Response({
+                "names": qs.values_list('name', flat=True),
+                "tags": tags
+            })
+        
+        return Response({
+            "names": qs.values_list('name', flat=True)
+        })

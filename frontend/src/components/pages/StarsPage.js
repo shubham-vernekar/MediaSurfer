@@ -13,6 +13,7 @@ function StarAdvert() {
   const [alphabetsLineTwo, SetAlphabetsLineTwo] = useState([]);
   const [alphabetsLineThree, SetAlphabetsLineThree] = useState([]);
   const [allStars, SetAllStars] = useState([]);
+  const [allTags, SetAllTags] = useState([]);
 
   const [alphabetOne, SetAlphabetOne] = useState("");
   const [alphabetTwo, SetAlphabetTwo] = useState("");
@@ -20,6 +21,7 @@ function StarAdvert() {
   const [sortQuery, SetSortQuery] = useState("");
   const [filterQuery, SetFilterQuery] = useState("");
   const [searchQuery, SetSearchQuery] = useState("");
+  const [tagQuery, SetTagQuery] = useState("");
 
   const [starData, SetStarData] = useState([]);
 
@@ -31,7 +33,7 @@ function StarAdvert() {
   const starsSort = useRef(null);
 
   useEffect(() => {
-    let completeQuery = searchQuery + filterQuery + alphabetOne + alphabetTwo + alphabetThree
+    let completeQuery = searchQuery + filterQuery + alphabetOne + alphabetTwo + alphabetThree + tagQuery
     let alphabetOneValue = ""
     if (completeQuery.trim() == "") {
       alphabetOneValue = "A"
@@ -46,7 +48,8 @@ function StarAdvert() {
         query: searchQuery,
         filter: filterQuery,
         sort_by: sortQuery,
-        prefix: alphabetOneValue + alphabetTwo + alphabetThree
+        prefix: alphabetOneValue + alphabetTwo + alphabetThree,
+        tag: tagQuery,
       },
     }).then((response) => {
       SetStarData(response.data);
@@ -56,7 +59,8 @@ function StarAdvert() {
     alphabetTwo,
     alphabetThree,
     sortQuery,
-    filterQuery
+    filterQuery,
+    tagQuery
   ]);
 
   useEffect(() => {
@@ -97,9 +101,13 @@ function StarAdvert() {
     starAdvertIndexOne.current.children[0].classList.add("selected-filter");
     axios({
       method: "get",
-      url: "/api/stars/names"
+      url: "/api/stars/names",
+      params: {
+        tags: "true"
+      },
     }).then((response) => {
-      SetAllStars(response.data);
+      SetAllStars(response.data.names);
+      SetAllTags(response.data.tags);
     });
 
   }, []);
@@ -121,8 +129,6 @@ function StarAdvert() {
       SetAlphabetTwo("");
       SetAlphabetThree("");
       SetAlphabetOne(alphabetText);
-      console.log("alphabetText", alphabetText);
-      console.log(getValidAlphabets(allStars, alphabetText));
       SetAlphabetsLineTwo(getValidAlphabets(allStars, alphabetText));
     } else if (clickedAlphabet.parentElement.classList.contains("index-2")) {
       SetAlphabetTwo(alphabetText);
@@ -176,6 +182,22 @@ function StarAdvert() {
 
   const handleSearchTextChange = (e) => {
     SetSearchQuery(e.currentTarget.value);
+  };
+
+  const handleTagOnClick = (e) => {
+    let clickedFilter = e.currentTarget;
+    let clickedSiblings = clickedFilter.parentElement.children;
+    let sameButton = [...clickedFilter.classList].includes("selected-filter");
+    [...clickedSiblings].forEach((sib) =>
+      sib.classList.remove("selected-filter")
+    );
+    let filterText = "";
+    if (!sameButton) {
+      clickedFilter.classList.add("selected-filter");
+      filterText = clickedFilter.innerText.replace("Only ", "").trim();
+    }
+
+    SetTagQuery(filterText);
   };
 
   const clearAllFilters = (e) => {
@@ -267,6 +289,17 @@ function StarAdvert() {
             <div className="star-advert-sort" onClick={handleSortOnClick}>
               Sort by Name
             </div>
+          </div>
+
+          <div className="star-advert-tag-container" ref={starsFilter}>
+            <div className="star-advert-tag-title">TAGS</div>
+            {allTags.map((data, i) => (
+              <div key={i} className="star-advert-tag" onClick={handleTagOnClick}>
+              {data}
+            </div>
+
+            ))}
+            
           </div>
         </div>
       </div>

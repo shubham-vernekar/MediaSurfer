@@ -323,6 +323,23 @@ function SearchPage() {
               )}
             </div>
             <div className="search-page-sort" onClick={handleSortOnClick}>
+              <span>Size</span>
+              {sortQuery === "-size" && (
+                <img
+                  src="static/images/down.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+              {sortQuery === "size" && (
+                <img
+                  src="static/images/up.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+            </div>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
               <span>Surprise</span>
             </div>
           </div>
@@ -388,6 +405,7 @@ function SearchPage() {
                 specialTag={data["special_tag"]}
                 watchTime={data["watch_time"]}
                 subtitleBadge={data["subtitle_badge"]}
+                size={data["size"]}
               />
             ))}
           </div>

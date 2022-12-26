@@ -231,7 +231,7 @@ function ResponsivePlayer(props) {
     if ((currentTime - lastTimeUpdate)>1){
       SetWatchTime(watchTime + 1)
       SetLastTimeUpdate(currentTime) 
-      props.updateProgressCallback(Math.round(currentTime), watchTime);
+      props.updateProgressCallback(Math.round(currentTime), watchTime, videoRef.current.volume);
     }
 
     if (videoRef.current.reverseDuration) {
@@ -263,6 +263,9 @@ function ResponsivePlayer(props) {
   };
 
   const loadedData = () => {
+    videoRef.current.volume = props.initialVolume;
+    volumeSliderRef.current.style.background = "linear-gradient(90deg, #3ae23a "+props.initialVolume*100+"%, #fff "+props.initialVolume*100+"%)"
+
     videoRef.current.reverseDuration = false;
     totalTimeRef.current.textContent = formatDuration(
       videoRef.current.duration

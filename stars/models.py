@@ -13,6 +13,7 @@ class StarQuerySet(models.QuerySet):
         sort_by = parameters.get("sort_by", None)
         filter = parameters.get("filter", "").lower()
         prefix = parameters.get("prefix", None)
+        tag = parameters.get("tag", None)
         cast = [x for x in parameters.get("cast", "").lower().split(",") if x]
 
         qs = self
@@ -31,6 +32,9 @@ class StarQuerySet(models.QuerySet):
 
         if prefix:
             qs = qs.filter(Q(name__istartswith=prefix))
+
+        if tag:
+            qs = qs.filter(Q(tags__icontains=tag))
 
         if liked is not None:
             try:

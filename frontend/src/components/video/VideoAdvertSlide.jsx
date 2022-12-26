@@ -83,6 +83,7 @@ function VideoAdvertSlide(props) {
             specialTag={data["special_tag"]}
             watchTime={data["watch_time"]}
             subtitleBadge={data["subtitle_badge"]}
+            size={data["size"]}
           />
         ))}
       </div>

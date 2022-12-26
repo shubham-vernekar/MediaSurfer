@@ -176,6 +176,7 @@ const SearchRecommendations = (props) => {
               specialTag={previewVideo["special_tag"]}
               watchTime={previewVideo["watch_time"]}
               subtitleBadge={previewVideo["subtitle_badge"]}
+              size={previewVideo["size"]}
             />
           </div>
         )}

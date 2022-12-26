@@ -59,4 +59,12 @@ const toggleDisplay = (target) => {
   }
 };
 
-export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay, secondsToHHMMSS}
+const getSize = (size) => {
+  if (size<1024){
+    return parseFloat(size).toFixed(2) + " Mb"
+  }else{
+    return parseFloat(parseFloat(size)/parseFloat(1024)).toFixed(2) + " Gb"
+  }
+}
+
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay, secondsToHHMMSS, getSize}
