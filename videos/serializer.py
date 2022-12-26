@@ -88,6 +88,7 @@ class VideoSerializer(serializers.ModelSerializer):
             'last_viewed',
             'badge',
             'special_tag',
+            'reviewed'
         ]
 
     def get_video_url(self, obj):
