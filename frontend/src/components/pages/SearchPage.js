@@ -285,10 +285,7 @@ function SearchPage() {
             />
           </div>
           <div className="search-page-filter-box" ref={searchPageFilterBoxRef}>
-            <div
-              className="search-page-sort selected-filter"
-              onClick={handleSortOnClick}
-            >
+            <div className="search-page-sort selected-filter" onClick={handleSortOnClick}>
               <span>Latest</span>
               {sortQuery === "-created" && (
                 <img
@@ -352,6 +349,9 @@ function SearchPage() {
             </div>
             <div className="search-page-filter" onClick={handleFilterOnClick}>
               <span>New</span>
+            </div>
+            <div className="search-page-filter" onClick={handleFilterOnClick}>
+              <span>Unverfied</span>
             </div>
           </div>
           <div className="search-page-clear-filter" onClick={clearAllFilters}>

@@ -112,7 +112,7 @@
     cursor: pointer;
 }
 
-.player-review-button img{
+.player-verify-button img{
     width: 31px;
     height: 31px;
 }
@@ -122,17 +122,17 @@
     height: 30px;
 }
 
-.player-favourite-button, .player-review-button{
+.player-favourite-button, .player-verify-button{
     cursor: pointer;
     position: relative;
     column-gap: 0!important;
 }
 
-.player-cast-buttons-container img:hover, .player-categories-buttons-container img:hover, .player-favourite-button:hover, .player-review-button:hover img{
+.player-cast-buttons-container img:hover, .player-categories-buttons-container img:hover, .player-favourite-button:hover, .player-verify-button:hover img{
     transform:scale(1.15)
 }
 
-.player-cast-buttons-container img:active, .player-categories-buttons-container img:active, .player-favourite-button:active, .player-review-button:active{
+.player-cast-buttons-container img:active, .player-categories-buttons-container img:active, .player-favourite-button:active, .player-verify-button:active{
     transform:scale(1.25)
 }
 
@@ -143,7 +143,7 @@
     position: relative;
   }
   
-.favourites-text, .review-text{
+.favourites-text, .verify-text{
     max-width: 0;
     overflow: hidden;
     text-transform: uppercase;
@@ -158,7 +158,7 @@
     margin-left: 10px;
 }
 
-.player-review-button:hover .review-text{
+.player-verify-button:hover .verify-text{
     max-width: 200px;
     margin-left: 15px;
 }   

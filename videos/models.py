@@ -165,6 +165,9 @@ class VideoQuerySet(models.QuerySet):
 
         if filter=="favourites":
             favourite = True
+
+        if filter=="unverfied":
+            qs = qs.filter(Q(verfied=False))
         
         if query:
             qs = qs.filter(Q(search_text__icontains=query))
@@ -334,6 +337,7 @@ class Video(models.Model):
     movie_id = models.CharField(max_length=25, blank=True, null=True)
     search_text = models.CharField(max_length=2048, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
+    verfied = models.BooleanField(default=False)
     tags = models.CharField(max_length=512, blank=True, null=True)
     series = models.ForeignKey(
         Series, on_delete=models.SET_NULL, related_name="episodes", blank=True, null=True)
