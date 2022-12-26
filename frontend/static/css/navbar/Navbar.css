@@ -246,16 +246,16 @@ a{
 	margin-left: 7px;
 }
 
-.alert-text-color{
-	color: #ff6359;
+.scan-alert-container:active {
+	transform:scale(1.025);
 }
 
-/* .alert-msg-box:hover .alert-msg-text{
-	max-width: 600px;
-} */
+.scan-msg-text:hover{
+	margin-right: 1px;
+}
 
-.navbar-populate:hover .scan-msg-text{
-	max-width: 600px;
+.alert-text-color{
+	color: #ff6359;
 }
 
 .scan-alert-icon{

@@ -1,0 +1,44 @@
+.logs-results-container {
+  position: absolute;
+  border-radius: 10px;
+  right: -325px;
+  top: 50px;
+}
+
+.logs-results-box {
+  position: relative;
+}
+
+.logs-results-data::-webkit-scrollbar {
+  display: none;
+}
+
+.logs-results-data {
+  padding: 15px;
+  width: 800px;
+  height: 60vh;
+  background-color: #000000;
+  border-radius: 10px;
+  color: #21b00a;
+  border: 2px solid #6a6a6a;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  outline: none;
+}
+
+.scan-logs-close {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: -13px;
+  right: -10px;
+  cursor: pointer;
+}
+
+.scan-logs-close:hover {
+  transform: scale(1.1);
+}
+
+.scan-logs-close:active {
+  transform: scale(1.2);
+}

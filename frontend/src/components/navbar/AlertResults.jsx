@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from "react";
+import { React, useState, useEffect } from "react";
 import "../../../static/css/navbar/AlertResults.css";
 import axios from "axios";
 import PacmanLoader from "react-spinners/PacmanLoader";
@@ -36,6 +36,11 @@ const AlertResults = (props) => {
     });
   };
 
+  const closeAlertResults = () => {
+    SetShowResults(false)
+    props.closeAlertResultsCallback()
+  };
+
   return (
     <div>
       {showResults && alertResultsData.length>0 && (<div className="alert-results-container">
@@ -51,6 +56,7 @@ const AlertResults = (props) => {
             </div>
           ))}
         </div>
+        <img src="/static/images/close.svg" alt="" className="alert-results-close" onClick={closeAlertResults}/> 
       </div>)}
       {alertResultsData.length<1 && (
         <div className="alert-results-loader">

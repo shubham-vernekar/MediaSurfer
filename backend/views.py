@@ -288,7 +288,7 @@ class UpdateVolume(generics.GenericAPIView):
             })
 
 class GetScanLogs(generics.GenericAPIView):
-    log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\logs\scan.log")
+    log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"..\logs\scan.log")
     
     def get(self, request):
         max_lines = request.GET.get("lines", False)
@@ -316,6 +316,6 @@ class GetScanLogs(generics.GenericAPIView):
 
         log_lines.reverse()                 
         return Response({
-            "data" : "".join(log_lines)
+            "data" : "\n".join(log_lines)
         })
 
