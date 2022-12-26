@@ -198,11 +198,11 @@ a{
 	width: 25px;
 }
 
-.navbar-populate:hover{
+.navbar-populate svg:hover{
 	transform:scale(1.05)
 }
   
-.navbar-populate:active{
+.navbar-populate svg:active{
 	transform:scale(1.1)
 }
 
@@ -239,12 +239,15 @@ a{
 	user-select: none;
 	max-width: 0;
   	transition: max-width 0.5s ease-in;
-	color: #ff6359;
 	text-transform: capitalize;
 }
 
 .scan-msg-text{
 	margin-left: 7px;
+}
+
+.alert-text-color{
+	color: #ff6359;
 }
 
 /* .alert-msg-box:hover .alert-msg-text{

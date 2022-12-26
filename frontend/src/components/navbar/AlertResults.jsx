@@ -36,11 +36,6 @@ const AlertResults = (props) => {
     });
   };
 
-  const closeAlertResults = () => {
-    SetShowResults(false)
-    props.closeAlertResultsCallback()
-  };
-
   return (
     <div>
       {showResults && alertResultsData.length>0 && (<div className="alert-results-container">
@@ -56,7 +51,6 @@ const AlertResults = (props) => {
             </div>
           ))}
         </div>
-        <img src="/static/images/close.svg" alt="" className="alert-results-close" onClick={closeAlertResults}/> 
       </div>)}
       {alertResultsData.length<1 && (
         <div className="alert-results-loader">

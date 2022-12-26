@@ -15,4 +15,5 @@ urlpatterns = [
     path('pending', views.FindPending.as_view(), name='find-pending'),
     path('openfolder', views.OpenFileFolderView.as_view(), name='open-file-folder'),
     path('volume', views.UpdateVolume.as_view(), name='volume'),
+    path('scan/logs', views.GetScanLogs.as_view(), name='get-scan-logs'),
 ]

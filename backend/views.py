@@ -14,6 +14,7 @@ import os
 from django.conf import settings
 import json
 from django.core.management import call_command
+from file_read_backwards import FileReadBackwards
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -141,7 +142,7 @@ class RunScanView(generics.GenericAPIView):
 
         if not user_data_object.scanning or time_delta_minutes>10:
             call_command('scan')
-            return Response({"Status": "Scanning Started"})
+            return Response({"Status": "Scanning Complete"})
         else:
             return Response({"Status": "Scanning already in progress"})
 
@@ -285,4 +286,36 @@ class UpdateVolume(generics.GenericAPIView):
         return Response({
                 "volume_level" : user_data_object.volume_level
             })
+
+class GetScanLogs(generics.GenericAPIView):
+    log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\logs\scan.log")
+    
+    def get(self, request):
+        max_lines = request.GET.get("lines", False)
+        if max_lines:
+            max_lines = int(max_lines)
+
+        log_lines=[]
+        with FileReadBackwards(self.log_file) as frb:
+            while True:
+                try:
+                    log_line = frb.readline()
+                except UnicodeDecodeError:
+                    continue
+
+                if not log_line:
+                    break
+
+                log_lines.append(log_line)
+
+                if max_lines and len(log_lines) > max_lines:
+                    break
+
+                if "Starting processing ..." in log_line:
+                    break
+
+        log_lines.reverse()                 
+        return Response({
+            "data" : "".join(log_lines)
+        })
 

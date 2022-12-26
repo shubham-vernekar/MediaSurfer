@@ -16,6 +16,7 @@ function Navbar(props) {
 
   const searchInputRef = useRef(null);
   const alertMsgTextRef = useRef(null);
+  const scanMsgTextRef = useRef(null);
   const populateButtonRef = useRef(null);
 
   useEffect(() => {
@@ -50,12 +51,6 @@ function Navbar(props) {
   useEffect(() => {
     if (isScanning){
       SetScanMsg("Scanning")
-    }else{
-      if (scanMsg === "Scanning"){
-        SetScanMsg("Scanning Complete")
-      }else{
-        SetScanMsg("")
-      }
     }
   }, [isScanning]);
 
@@ -72,6 +67,10 @@ function Navbar(props) {
     }).then((response) => {
       if (parseInt(response.data.pending_count)>0){
         SetScanMsg(response.data.pending)
+        scanMsgTextRef.current.classList.add("alert-text-color")
+      }else if (parseInt(response.data.pending_count)===0){
+        SetScanMsg("No videos pending")
+        scanMsgTextRef.current.classList.remove("alert-text-color")
       }
       if (parseInt(response.data.unsupported_count)>0){
         SetAlertMsg(response.data.unsupported)
@@ -93,11 +92,16 @@ function Navbar(props) {
 
   const scanLocalVideos = (e) => {
     SetIsScanning(true)
+    scanMsgTextRef.current.classList.add("alert-text-color")
     axios({
       method: "post",
       url: "/api/scan",
     }).then((response) => {
+      if(response.data.Status == "Scanning Complete"){
+        SetIsScanning(false)
+      }
       SetScanMsg(response.data.Status);
+      scanMsgTextRef.current.classList.remove("alert-text-color")
     }).catch((error) => {
       populateButtonRef.current.style.color = "red"
       SetScanMsg(error.response.data.detail);
@@ -123,8 +127,8 @@ function Navbar(props) {
       <div className="navbar-right">
         <div className="scanner-container">
 
-          <div className="navbar-populate" onClick={scanLocalVideos} ref={populateButtonRef}>
-            {!isScanning && (<svg fill="currentColor" viewBox="0 0 16 16">
+          <div className="navbar-populate" ref={populateButtonRef}>
+            {!isScanning && (<svg fill="currentColor" viewBox="0 0 16 16" onClick={scanLocalVideos}>
               <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
               <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
             </svg>)}
@@ -133,19 +137,22 @@ function Navbar(props) {
               <HashLoader color="#f8f9fa" loading={isScanning} size={20}/>
             </div>)}
 
-            {scanMsg && (<div className="scan-alert-container">
-              {!isScanning && (<div className="scan-alert-icon"></div>)}
-              <div className="scan-msg-text">
+            <div className="scan-alert-container">
+              {!isScanning && scanMsg && scanMsg!= "No videos pending" && scanMsg!= "Scanning Complete" && (
+                <div className="scan-alert-icon"></div>
+              )}
+              <div className="scan-msg-text alert-text-color" ref={scanMsgTextRef}>
                 {scanMsg}
               </div>
-            </div>)}
+            </div>
+
           </div>
 
           {alertMsg && (
           <div className="alert-msg-box-container">
             <div className="alert-msg-box" onMouseEnter={() => {SetShowAlertMsg(true)}} onMouseLeave={() => {SetShowAlertMsg(false)}} onClick={() => {SetShowAlertDetails(!showAlertDetails)}} >
               <img className="alert-msg-icon" src="/static/images/alert.svg" alt="" />
-              <div className="alert-msg-text" ref={alertMsgTextRef}>
+              <div className="alert-msg-text alert-text-color" ref={alertMsgTextRef}>
                 {alertMsg}
               </div>
             </div>
