@@ -78,7 +78,6 @@ function VideoPlayerPage() {
   }, []);
 
   useEffect(() => {
-    console.log(specialTag);
     if (specialTag == "FAVOURITE") {
       VideoDetailsRef.current.classList.add("fav-text");
       VideoDetailsRef.current.classList.remove("new-text");

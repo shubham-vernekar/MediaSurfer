@@ -12,12 +12,15 @@ const OptionsSearchBox = ({ options, callbackFunction, placeholder }) => {
   const handleSearchTextChange = (e) => {
     let searchText = e.target.value.toLowerCase();
     let matches = []
+    let startswith = []
     options.forEach((x, i) => {
-        if (x.toLowerCase().includes(searchText)) {
-            matches.push(x);
+        if (x.toLowerCase().startsWith(searchText)) {
+          startswith.push(x);
+        } else if (x.toLowerCase().includes(searchText)) {
+          matches.push(x);
         } 
     });
-    SetCurrentOptions(matches)
+    SetCurrentOptions(startswith.concat(matches))
   };
 
   return (
