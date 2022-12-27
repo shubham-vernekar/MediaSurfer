@@ -2,9 +2,12 @@ from django.db import models
 from django.utils import timezone
 import json
 import os
-from django.db.models import Q
+from django.db.models import Q, F
 import datetime
 from django.core.exceptions import FieldError, ValidationError
+from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchVectorField  
+from django.contrib.postgres.indexes import GinIndex
 from backend.models import Series
 from stars.models import Star
 from backend.models import Category
@@ -73,7 +76,6 @@ def text2int (textnum, numwords={}):
 
     return curstring
 
-
 def sort_related_videos(vids):
     episodes_found = []
     episodes_not_found = []
@@ -88,7 +90,6 @@ def sort_related_videos(vids):
     episodes_found.sort(key=lambda x: x[0])
     episodes_found = [x[1] for x in episodes_found]
     return episodes_found + episodes_not_found
-
 
 def convert_url(file_path):
 
@@ -107,7 +108,6 @@ def convert_url(file_path):
 
     return file_path
 
-
 def query_special_tag(qs, order_by, query, limit, vids_to_exclude):
     ids_to_exclude = [x.id for x in vids_to_exclude]
     result = []
@@ -120,7 +120,6 @@ def query_special_tag(qs, order_by, query, limit, vids_to_exclude):
 
     return result
 
-
 def get_cast_videos(qs, video, limit, order_by, vids_to_exclude):
     ids_to_exclude = [x.id for x in vids_to_exclude]
     cast = []
@@ -132,7 +131,6 @@ def get_cast_videos(qs, video, limit, order_by, vids_to_exclude):
         return list(qs.filter(~Q(id__in = ids_to_exclude)).filter(reduce(operator.or_, (Q(cast__contains=x) for x in cast))).order_by(order_by)[:limit])
     else:
         return []
-
 
 def get_categories_videos(qs, video, limit, order_by, vids_to_exclude):
     ids_to_exclude = [x.id for x in vids_to_exclude]
@@ -170,7 +168,9 @@ class VideoQuerySet(models.QuerySet):
             qs = qs.filter(Q(verfied=False))
         
         if query:
-            qs = qs.filter(Q(search_text__icontains=query))
+            search_query = SearchQuery(query)
+            search_rank = SearchRank(F("search_vector"), search_query)
+            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank")  
 
         if cast:
             qs = qs.filter(Q(cast__icontains=cast))
@@ -344,6 +344,12 @@ class Video(models.Model):
     progress = models.IntegerField(default=0, blank=True, null=True)
     watch_time = models.IntegerField(default=0, blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
+    search_vector = SearchVectorField(null=True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
 
     objects = VideoManager()
 

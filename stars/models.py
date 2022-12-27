@@ -16,7 +16,7 @@ class StarQuerySet(models.QuerySet):
         tag = parameters.get("tag", None)
         cast = [x for x in parameters.get("cast", "").lower().split(",") if x]
 
-        qs = self
+        qs = self.order_by('name')
 
         if cast:
             qs = qs.filter(Q(name__in=cast))

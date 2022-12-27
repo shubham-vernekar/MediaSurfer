@@ -4,7 +4,7 @@ from .utils import get_pending_videos
 from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
-from django.db.models import Q
+from django.db.models import Q, F
 from videos.models import Video
 from stars.models import Star
 from videos.serializer import VideoListSerializer
@@ -15,6 +15,7 @@ from django.conf import settings
 import json
 from django.core.management import call_command
 from file_read_backwards import FileReadBackwards
+from django.contrib.postgres.search import SearchQuery, SearchRank
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -120,7 +121,11 @@ class MasterSearchView(generics.GenericAPIView):
         videos, cast, categories = [], [], []
 
         if query:
-            videos = VideoListSerializer(Video.objects.filter(Q(search_text__icontains=query))[:8], many=True).data 
+            search_query = SearchQuery(query)
+            search_rank = SearchRank(F("search_vector"), search_query)
+            videos = VideoListSerializer(Video.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank")[:8], many=True).data 
+
+            # videos = VideoListSerializer(Video.objects.filter(Q(search_text__icontains=query))[:8], many=True).data 
             cast = StarSerializer(Star.objects.filter(Q(name__icontains=query))[:5], many=True).data 
             categories = CategorySerializer(Category.objects.filter(Q(title__icontains=query))[:5], many=True).data 
 
