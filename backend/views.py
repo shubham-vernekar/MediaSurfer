@@ -27,7 +27,9 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
         sort_by = self.request.GET.get("sort_by", None)
 
         if query:
-            qs = qs.filter(Q(title__icontains=query))
+            search_query = SearchQuery(query)
+            search_rank = SearchRank(F("search_vector"), search_query)
+            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank") 
 
         if sort_by:
             try:
@@ -124,10 +126,8 @@ class MasterSearchView(generics.GenericAPIView):
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
             videos = VideoListSerializer(Video.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank")[:8], many=True).data 
-
-            # videos = VideoListSerializer(Video.objects.filter(Q(search_text__icontains=query))[:8], many=True).data 
-            cast = StarSerializer(Star.objects.filter(Q(name__icontains=query))[:5], many=True).data 
-            categories = CategorySerializer(Category.objects.filter(Q(title__icontains=query))[:5], many=True).data 
+            cast = StarSerializer(Star.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank")[:5], many=True).data
+            categories = CategorySerializer(Category.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank")[:5], many=True).data
 
         return Response({
             "videos": videos,
@@ -191,9 +191,11 @@ class UpdateJson(generics.GenericAPIView):
 class CategoryNamesListAPIView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
-        qs = Category.objects.all()
+        qs = Category.objects.all().order_by("title") 
         if query:
-            qs = qs.filter(title__icontains=query)
+            search_query = SearchQuery(query)
+            search_rank = SearchRank(F("search_vector"), search_query)
+            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank") 
         
         return Response(qs.values_list('title', flat=True))
 

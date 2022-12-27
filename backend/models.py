@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField
 
 def upload_category_poster(instance, filename):
     return f'MediaSurf/media/categorydata/{instance.id}/{instance.id}_banner.jpg'
@@ -41,6 +42,12 @@ class Category(models.Model):
     videos = models.IntegerField(default=0, blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
     favourite = models.BooleanField(default=False)
+    search_vector = SearchVectorField(null=True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
 
     def __str__(self):
         return self.title

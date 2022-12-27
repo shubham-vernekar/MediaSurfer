@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, F
 from django.core.exceptions import FieldError, ValidationError
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 
 class StarQuerySet(models.QuerySet):
     def search(self, parameters):
@@ -28,7 +30,9 @@ class StarQuerySet(models.QuerySet):
             favourite = True
 
         if query:
-            qs = qs.filter(Q(name__icontains=query))
+            search_query = SearchQuery(query)
+            search_rank = SearchRank(F("search_vector"), search_query)
+            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank") 
 
         if prefix:
             qs = qs.filter(Q(name__istartswith=prefix))
@@ -100,6 +104,13 @@ class Star(models.Model):
     banner = models.ImageField(
         upload_to=upload_star_banner, blank=True, null=True)
     tags = models.CharField(max_length=512, blank=True, null=True)
+    search_vector = SearchVectorField(null=True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
+
 
     objects = StarManager()
 

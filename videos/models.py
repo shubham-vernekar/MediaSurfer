@@ -5,8 +5,7 @@ import os
 from django.db.models import Q, F
 import datetime
 from django.core.exceptions import FieldError, ValidationError
-from django.contrib.postgres.search import SearchQuery, SearchRank
-from django.contrib.postgres.search import SearchVectorField  
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from backend.models import Series
 from stars.models import Star
