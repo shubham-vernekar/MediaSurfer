@@ -106,11 +106,11 @@ function VideoCard(props) {
     }
 
     if (props.categories){
-      SetCategories(props.categories.split(",").filter(Boolean));
+      SetCategories(props.categories.split(",").filter(Boolean).slice(0, 4));
     }
     
     if (props.cast){
-      SetCast(props.cast.split(",").filter(Boolean));
+      SetCast(props.cast.split(",").filter(Boolean).slice(0, 4));
     }
 
   }, [props]);

@@ -1,5 +1,6 @@
 .video-player-container{
     display: grid;
+    background: #141414; 
 }
 
 .video-player-categories-pane{
