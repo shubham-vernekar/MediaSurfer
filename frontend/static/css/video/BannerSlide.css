@@ -1,5 +1,5 @@
 .video-banner-slide {
-  background: linear-gradient(#2a2a2a, #141414);
+  /* background: linear-gradient(#2a2a2a, #141414); */
   position: relative;
   display: flex;
   transition: 0.8s ease-in-out;

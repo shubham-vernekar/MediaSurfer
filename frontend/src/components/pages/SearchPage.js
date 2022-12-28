@@ -29,7 +29,7 @@ function SearchPage() {
   const [allStars, SetAllStars] = useState([]);
   const [allCategories, SetAllCategories] = useState([]);
   const [sortQuery, SetSortQuery] = useState(
-    searchParams.get("sort_by") || "-created"
+    searchParams.get("sort_by") || ""
   );
   const [filterQuery, SetFilterQuery] = useState(
     searchParams.get("filter") || ""
@@ -93,8 +93,8 @@ function SearchPage() {
         cast: castQuery,
         sort_by: sortQuery,
         filter: filterQuery,
-        duration_max: maxDuration,
-        duration_min: minDuration,
+        duration_max: maxDurationBar == maxDuration ? 0 : maxDuration,
+        duration_min: minDurationBar == minDuration ? 0 : minDuration,
         categories: categoryQuery,
         series: seriesQuery,
       },
@@ -246,23 +246,29 @@ function SearchPage() {
   };
 
   useEffect(() => {
-    let hh=0, mm=0, ss=0;
-    let durationQuery = durationQueryText.replace(/\D+/, '-');
-    durationQuery = durationQuery.split(/\D/);
-    if (durationQuery[2]){
-      hh = parseInt(durationQuery[0])
-      mm = parseInt(durationQuery[1])
-      ss = parseInt(durationQuery[2])
-    }else if (durationQuery[1]){
-      mm = parseInt(durationQuery[0])
-      ss = parseInt(durationQuery[1])
-    }else if (durationQuery[0]){
-      ss = parseInt(durationQuery[0])
-    }
+    if (durationQueryText == ""){
+      if (maxDurationBar>0){
+        SetMaxDuration(maxDurationBar)
+      }
+    }else{
+      let hh=0, mm=0, ss=0;
+      let durationQuery = durationQueryText.replace(/\D+/, '-');
+      durationQuery = durationQuery.split(/\D/);
+      if (durationQuery[2]){
+        hh = parseInt(durationQuery[0])
+        mm = parseInt(durationQuery[1])
+        ss = parseInt(durationQuery[2])
+      }else if (durationQuery[1]){
+        mm = parseInt(durationQuery[0])
+        ss = parseInt(durationQuery[1])
+      }else if (durationQuery[0]){
+        mm = parseInt(durationQuery[0])
+      }
 
-    let maxDurationSecs = hh*3600 + mm*60 + ss
-    if (maxDurationSecs>120){
-      SetMaxDuration(maxDurationSecs)
+      let maxDurationSecs = hh*3600 + mm*60 + ss
+      if (maxDurationSecs>120){
+        SetMaxDuration(maxDurationSecs)
+      }
     }
   }, [durationQueryText]);
 

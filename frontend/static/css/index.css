@@ -10,7 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #141414; 
+  background: linear-gradient(60deg, rgba(255,0,0,1) 0%, rgba(0,0,0,1) 23%, rgba(0,0,0,1) 41%, rgba(0,0,0,1) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 52%, rgba(0,0,0,1) 77%, rgb(255, 0, 243) 100%); 
+  background-attachment: fixed;
   color: #f8f9fa;
   font-family: 'Calibri', sans-serif;
   overflow-x: hidden;

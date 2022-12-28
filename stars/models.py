@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, BooleanField
 from django.core.exceptions import FieldError, ValidationError
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
@@ -32,7 +32,8 @@ class StarQuerySet(models.QuerySet):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank") 
+            name_match = ExpressionWrapper(Q(name__istartswith=query), output_field=BooleanField())
+            qs = qs.annotate(rank=search_rank, starts_with=name_match).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank").order_by('-starts_with')  
 
         if prefix:
             qs = qs.filter(Q(name__istartswith=prefix))

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 import json
 import os
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, BooleanField
 import datetime
 from django.core.exceptions import FieldError, ValidationError
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
@@ -155,10 +155,7 @@ class VideoQuerySet(models.QuerySet):
         sort_by = parameters.get("sort_by", None)
         filter = parameters.get("filter", "").lower()
 
-        if not sort_by:
-            sort_by = "-created"
-
-        qs = self
+        qs = self.order_by('-created')
 
         if filter=="favourites":
             favourite = True
@@ -169,7 +166,8 @@ class VideoQuerySet(models.QuerySet):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank")  
+            title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+            qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
 
         if cast:
             qs = qs.filter(Q(cast__icontains=cast))
@@ -197,8 +195,9 @@ class VideoQuerySet(models.QuerySet):
 
         if duration_min is not None:
             try:
-                qs = qs.filter(duration__gte=datetime.timedelta(
-                    seconds=int(duration_min)-1)).order_by('-duration')
+                if int(duration_min)>1:
+                    qs = qs.filter(duration__gte=datetime.timedelta(
+                        seconds=int(duration_min)-1)).order_by('-duration')
             except (ValueError, ValidationError):
                 qs = self.none()
 

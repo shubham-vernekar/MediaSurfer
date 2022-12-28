@@ -4,7 +4,7 @@ from .utils import get_pending_videos
 from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, BooleanField
 from videos.models import Video
 from stars.models import Star
 from videos.serializer import VideoListSerializer
@@ -29,7 +29,8 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank") 
+            title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+            qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank").order_by('-starts_with') 
 
         if sort_by:
             try:
@@ -125,9 +126,12 @@ class MasterSearchView(generics.GenericAPIView):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            videos = VideoListSerializer(Video.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank")[:8], many=True).data 
-            cast = StarSerializer(Star.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank")[:5], many=True).data
-            categories = CategorySerializer(Category.objects.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank")[:5], many=True).data
+            title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+            name_match = ExpressionWrapper(Q(name__istartswith=query), output_field=BooleanField())
+
+            videos = VideoListSerializer(Video.objects.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')[:8], many=True).data 
+            categories = CategorySerializer(Category.objects.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank").order_by('-starts_with')[:5], many=True).data
+            cast = StarSerializer(Star.objects.annotate(rank=search_rank, starts_with=name_match).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank").order_by('-starts_with')[:5], many=True).data
 
         return Response({
             "videos": videos,
@@ -195,7 +199,8 @@ class CategoryNamesListAPIView(generics.GenericAPIView):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank") 
+            title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+            qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank").order_by('-starts_with') 
         
         return Response(qs.values_list('title', flat=True))
 

@@ -52,10 +52,12 @@ const clearChildren = (target) => {
 };
 
 const toggleDisplay = (target) => {
-  if (target.style.display === "") {
-    target.style.display = "flex";
-  } else {
-    target.style.display = "";
+  if (target){
+    if (target.style.display === "") {
+      target.style.display = "flex";
+    } else {
+      target.style.display = "";
+    }
   }
 };
 

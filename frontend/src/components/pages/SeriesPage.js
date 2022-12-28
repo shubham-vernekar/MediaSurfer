@@ -76,10 +76,6 @@ function SeriesPage() {
     SetNumberOfPages(Math.ceil(seriesCount / seriesPageLimit));
   }, [seriesCount]);
 
-  useEffect(() => {
-    console.log(castQuery);
-  }, [castQuery]);
-
   const handleSortOnClick = (e) => {
     let clickedSort = e.currentTarget;
     let clickedText = clickedSort.innerText

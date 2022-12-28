@@ -44,14 +44,10 @@ var isNumeric = function(str) {
 var attempt_auth = function() {
     $.post("/login/pin/auth", {"pin": current_pin})
         .success(function() {
-            // $('body').css('background-color', '#ffffff')
             $('.welcome-image').css('visibility', 'visible')
             setTimeout(start_website, 1000);
             
         })
-        .error(function(){
-            console.log('error');
-        });
 };
 
 var flashkey = function(id) {

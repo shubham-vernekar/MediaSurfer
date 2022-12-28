@@ -3,7 +3,7 @@ from .models import Star
 from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.postgres.search import SearchQuery, SearchRank
-from django.db.models import Q, F
+from django.db.models import Q, F, ExpressionWrapper, BooleanField
 
 class StarListCreateAPIView(generics.ListCreateAPIView):
     queryset = Star.objects.all()
@@ -45,7 +45,8 @@ class StarNamesListAPIView(generics.GenericAPIView):
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)
-            qs = qs.annotate(rank=search_rank).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank") 
+            name_match = ExpressionWrapper(Q(name__istartswith=query), output_field=BooleanField())
+            qs = qs.annotate(rank=search_rank, starts_with=name_match).filter(Q(search_vector=search_query)|Q(name__icontains=query)).order_by("-rank").order_by('-starts_with') 
         
         if get_tags == "true":
             tags = [x.split(",") for x in qs.values_list('tags', flat=True) if x]
