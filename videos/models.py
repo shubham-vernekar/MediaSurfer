@@ -389,11 +389,11 @@ class Video(models.Model):
     def get_special_tag(self):
         special_tag = ""
 
-        if self.recommended:
-            special_tag = "FAVOURITE"
-
         if (timezone.now()-self.created).days <15:
             special_tag = "NEW"
+
+        if self.recommended:
+            special_tag = "RECOMMENDED"
 
         if self.progress:
             if self.progress > self.duration.seconds * 0.9 or self.watch_time > 600:
