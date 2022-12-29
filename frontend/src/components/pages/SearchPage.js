@@ -1,7 +1,7 @@
 import { React, useRef, useEffect, useState } from "react";
 import VideoCard from "../video/VideoCard";
 import MultiRangeSlider from "../utils/MultiRangeSlider";
-import Paginator from "../paginator/Paginator"; 
+import Paginator from "../utils/Paginator"; 
 import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 import { useSearchParams } from "react-router-dom";

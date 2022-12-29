@@ -1,5 +1,5 @@
 import { React, useRef, useEffect, useState } from "react";
-import "../../../static/css/paginator/Paginator.css";
+import "../../../static/css/utils/Paginator.css";
 
 const Paginator = ({  pageNo, numberOfPages, paginatorCallback }) => {
   const laneLength = 3;

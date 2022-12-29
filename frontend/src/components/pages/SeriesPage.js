@@ -4,7 +4,7 @@ import "../../../static/css/pages/SeriesPage.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { clearSiblingSelection, clearChildren, toggleDisplay } from '../utils'
-import Paginator from "../paginator/Paginator"; 
+import Paginator from "../utils/Paginator"; 
 
 function SeriesPage() {
   let [searchParams, setSearchParams] = useSearchParams();
