@@ -175,7 +175,7 @@ function StarAdvert() {
     let sortText = "";
     if (!sameButton) {
       clickedSort.classList.add("selected-filter");
-      sortText = clickedSort.innerText.replace("Sort by ", "").trim();
+      sortText = "-" + clickedSort.innerText.replace("Sort By ", "").trim().toLowerCase();
     }
     SetSortQuery(sortText);
   };
