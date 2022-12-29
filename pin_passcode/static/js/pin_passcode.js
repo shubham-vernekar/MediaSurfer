@@ -51,15 +51,15 @@ var attempt_auth = function() {
 };
 
 var flashkey = function(id) {
-    $('#'+id).css('background-color', '#092309')
-    $('#'+id).css('color', '#3ae23a')
+    $('#'+id).css('background-color', '#230909')
+    $('#'+id).css('color', '#ff4646')
     $('#'+id).css('transform', 'scale(1.2)')
-    $('#'+id).css('border', '3px solid #8ca78c')
+    $('#'+id).css('border', '3px solid #a78c8c')
     setTimeout(function(){
         $('#'+id).css('background-color', '#141414')
         $('#'+id).css('color', '#f8f9fa')
         $('#'+id).css('transform', 'scale(1)')
-        $('#'+id).css('border', '2px solid #3ae23a')
+        $('#'+id).css('border', '2px solid #ff4646')
     }, 200)
   }
 
