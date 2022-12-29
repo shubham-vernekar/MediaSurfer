@@ -11,8 +11,8 @@ body {
     background-attachment: fixed;
     color: #f8f9fa;
     font-family: 'Calibri', sans-serif;
-    /* animation: animatedgradient 5s ease alternate infinite; */
-    /* background-size: 300% 300%; */
+    animation: animatedgradient 5s ease alternate infinite; 
+    background-size: 300% 300%; 
 }
 
 @keyframes animatedgradient {

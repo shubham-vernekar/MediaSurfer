@@ -24,6 +24,7 @@
 
 .star-advert-index-container {
   display: grid;
+  user-select: none;
 }
 
 .index-2,

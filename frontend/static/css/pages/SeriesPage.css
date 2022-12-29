@@ -75,11 +75,11 @@
     right: 3vw;
     row-gap: 12px;
     flex-direction: column;
-    margin-top: 45px;
+    margin-top: 30px;
     z-index: 50;
-    background-color: #141414;
+    background-color: #0000005e;
     border-radius: 16px;
-    padding: 0 1vw;
+    padding: 20px 1vw;
 }
 
 .series-labels-cast-data::-webkit-scrollbar {
@@ -94,7 +94,7 @@
     overflow-y: auto;
     -ms-overflow-style: none; 
     scrollbar-width: none;
-    height: 79.4vh;
+    max-height: 79.4vh;
   }
 
 .series-labels-cast-box {

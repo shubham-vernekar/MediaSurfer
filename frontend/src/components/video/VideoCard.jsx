@@ -19,6 +19,7 @@ function VideoCard(props) {
   const videoRef = useRef(null);
   const videoSourceRef = useRef(null);
   const progressBarRef = useRef(null);
+  const videoDetailsRef = useRef(null);
 
   const videoThemeDict = {
     "DEFAULT" : {
@@ -53,7 +54,7 @@ function VideoCard(props) {
     "FAVOURITE" : {
       "icon" : "/static/images/Favorite Icon.png",
       "text": "#fff",
-      "border": "#fff",
+      "border": "#000",
       "theme": "#c5b8f8",
       "glow": "#bb3eff",
       "background": "linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%)",
@@ -143,8 +144,18 @@ function VideoCard(props) {
       theme["glow"]
     );
 
+    if (favorite){
+      videoDetailsRef.current.style.backgroundImage = "var(--video-card-background)"
+      videoCardRef.current.style.background = "none"
+    }
+
     if (theme["animate"]){
-      videoCardRef.current.classList.add("animate-background");
+      if (favorite){
+        videoDetailsRef.current.classList.add("animate-background");
+        videoCardRef.current.classList.remove("animate-background");
+      }else{
+        videoCardRef.current.classList.add("animate-background");
+      }
     }
 
     if (glow){
@@ -307,7 +318,7 @@ function VideoCard(props) {
           {props.subtitleBadge && (<div className="subtitle-tag">SRT</div>)}
       </div>
         
-      <div className="advert-details">
+      <div className="advert-details" ref={videoDetailsRef}>
         
         <div className="advert-details-heading">
           <div>

@@ -1,23 +1,28 @@
 
 .paginator-container{
+    user-select: none;
     display: flex;
     column-gap: 16px;
     font-size: 18px;
     justify-content: center;
-    /* border-style: solid;
-    border-width: 1px 0; */
     padding: 12px 35px;
 }
 
 .current-page{
     font-weight: 600;
-    background-color: #2d4848;
-}   
+    border: 2px solid #4c4c4c;
+}
+
+.current-page:hover{
+    background-color: #191919;
+    transform:scale(1.025);
+}  
 
 .paginator-item:hover{
     cursor: pointer;
-    color: #8bd8d8e1;
     font-weight: 600;
+    transform:scale(1.025);
+    border: 2px solid #4c4c4c;
 }
 
 .paginator-item{
