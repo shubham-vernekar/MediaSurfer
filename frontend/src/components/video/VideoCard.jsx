@@ -53,7 +53,7 @@ function VideoCard(props) {
     "FAVOURITE" : {
       "icon" : "/static/images/Favorite Icon.png",
       "text": "#fff",
-      "border": "#59005b",
+      "border": "#fff",
       "theme": "#c5b8f8",
       "glow": "#bb3eff",
       "background": "linear-gradient(-225deg, #FF3CAC 0%, #562B7C 52%, #2B86C5 100%)",
