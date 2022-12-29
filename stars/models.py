@@ -83,11 +83,11 @@ class StarManager(models.Manager):
 
 
 def upload_star_poster(instance, filename):
-    return f'MediaSurf/media/stardata/{instance.id}/{instance.id}_poster.jpg'
+    return f'MediaSurfer/media/stardata/{instance.id}/{instance.id}_poster.jpg'
 
 
 def upload_star_banner(instance, filename):
-    return f'MediaSurf/media/stardata/{instance.id}/{instance.id}_banner.jpg'
+    return f'MediaSurfer/media/stardata/{instance.id}/{instance.id}_banner.jpg'
 
 
 class Star(models.Model):
