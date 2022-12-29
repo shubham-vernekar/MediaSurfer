@@ -335,6 +335,7 @@ class Video(models.Model):
     movie_id = models.CharField(max_length=25, blank=True, null=True)
     search_text = models.CharField(max_length=2048, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
+    recommended = models.BooleanField(default=False)
     verfied = models.BooleanField(default=False)
     tags = models.CharField(max_length=512, blank=True, null=True)
     series = models.ForeignKey(
@@ -387,23 +388,9 @@ class Video(models.Model):
 
     def get_special_tag(self):
         special_tag = ""
-        if self.cast:
-            for cast in self.cast.split(","):
-                try:
-                    star_object = Star.objects.get(name = cast)
-                    if star_object.liked:
-                        special_tag = "RECOMMENDED"
-                except Star.DoesNotExist:
-                    pass
 
-        if self.categories:
-            for category in [x for x in self.categories.split(",") if x]:
-                try:
-                    category_object = Category.objects.get(title = category)
-                    if category_object.favourite:
-                        special_tag = "RECOMMENDED"
-                except Category.DoesNotExist:
-                    pass
+        if self.recommended:
+            special_tag = "FAVOURITE"
 
         if (timezone.now()-self.created).days <15:
             special_tag = "NEW"
