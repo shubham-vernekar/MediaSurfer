@@ -7,7 +7,7 @@ import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
-import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, getCookie } from '../utils'
 
 function VideoPlayerPage() {
   const params = useParams();
@@ -52,11 +52,22 @@ function VideoPlayerPage() {
     axios({
       method: "post",
       url: "/api/videos/" + videoID + "/viewincr",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+
     });
 
     axios({
         method: "get",
         url: "/api/categories/names",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
       }).then((response) => {
         SetAllCategories(response.data);
     });
@@ -144,7 +155,12 @@ function VideoPlayerPage() {
         id: id,
         title: title,
         cast: newCast,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
         getCastData(response.data.cast);
         SetCast(response.data.cast.split(",").filter(Boolean));
@@ -159,7 +175,12 @@ function VideoPlayerPage() {
         id: id,
         title: title,
         categories: newCategories,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
         SetCategories(response.data.categories.split(",").filter(Boolean));
     });
@@ -193,7 +214,12 @@ function VideoPlayerPage() {
         id: videoData.id,
         title: videoData.title,
         favourite: fav,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
         SetSpecialTag(response.data.special_tag);
         SetIsFavourite(response.data.favourite);
@@ -208,7 +234,12 @@ function VideoPlayerPage() {
         id: videoData.id,
         title: videoData.title,
         verfied: verfied,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
         SetIsVerfied(response.data.verfied);
     });
@@ -235,7 +266,12 @@ function VideoPlayerPage() {
         title: videoData.title,
         progress: progress,
         watch_time: watchTime,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
       SetWatchTime(response.data.watch_time)
     });

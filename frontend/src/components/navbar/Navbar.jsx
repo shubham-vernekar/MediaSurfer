@@ -5,6 +5,7 @@ import LogsPanel from "./LogsPanel";
 import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
+import { getCookie } from "../utils";
 
 function Navbar(props) {
   const [navbarData, SetNavbarData] = useState([]);
@@ -118,6 +119,11 @@ function Navbar(props) {
     axios({
       method: "post",
       url: "/api/scan",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
       if(response.data.Status == "Scanning Complete"){
         SetIsScanning(false)

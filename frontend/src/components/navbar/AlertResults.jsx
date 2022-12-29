@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import "../../../static/css/navbar/AlertResults.css";
 import axios from "axios";
 import PacmanLoader from "react-spinners/PacmanLoader";
+import { getCookie } from "../utils";
 
 const AlertResults = (props) => {
   const [alertResultsData, SetAlertResultsData] = useState([]);
@@ -32,7 +33,12 @@ const AlertResults = (props) => {
       url: "/api/openfolder",
       data: {
         file: data,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     });
   };
 

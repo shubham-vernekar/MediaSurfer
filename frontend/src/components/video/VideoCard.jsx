@@ -1,6 +1,6 @@
 import '../../../static/css/video/VideoCard.css';
 import { React, useEffect, useRef, useState } from "react";
-import { dateToTimestamp, secondsToHHMMSS, getSize } from '../utils'
+import { dateToTimestamp, secondsToHHMMSS, getSize, getCookie } from '../utils'
 import axios from "axios";
 
 function VideoCard(props) {
@@ -170,6 +170,11 @@ function VideoCard(props) {
     axios({
       method: "post",
       url: "/api/videos/" + e.target.getAttribute("vidid") + "/open",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     });
   };
 
@@ -177,6 +182,11 @@ function VideoCard(props) {
     axios({
       method: "post",
       url: "/api/videos/" + e.target.getAttribute("vidid") + "/folder",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     });
   };
 
@@ -184,6 +194,11 @@ function VideoCard(props) {
     axios({
       method: "post",
       url: "/api/videos/" + e.target.getAttribute("vidid") + "/localdelete",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
       if (response.data["Status"]=="Success"){
         let target = e.target
@@ -206,7 +221,12 @@ function VideoCard(props) {
         id: vidID,
         title: vidTitle,
         favourite: vidFavourite,
-      }
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
       let favStatus = Boolean(response.data.favourite)
       SetFavorite(favStatus)

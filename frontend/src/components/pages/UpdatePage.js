@@ -1,6 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import "../../../static/css/pages/UpdatePage.css";
 import axios from "axios";
+import { getCookie } from "../utils";
 
 function UpdatePage() {
   const [seedsData, SetSeedsData] = useState("");
@@ -46,6 +47,11 @@ function UpdatePage() {
         data: {
           filename: filename,
           data: data,
+        },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
         },
       }).then((response) => {
         let textRef = "";

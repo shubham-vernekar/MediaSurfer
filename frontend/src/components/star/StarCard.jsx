@@ -1,6 +1,7 @@
 import '../../../static/css/star/StarCard.css';
 import { React, useRef, useEffect, useState } from "react";
 import axios from "axios";
+import { getCookie } from '../utils'
 
 // ebc2ac - rose gold
 // ffd700 -  gold
@@ -94,8 +95,13 @@ function StarCard(props) {
         id: id,
         name: name,
         favourite: isFavourite,
-        liked: isLiked,
-      }
+        liked: isLiked
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
     }).then((response) => {
       SetLiked(response.data.liked);
       SetFavourite(response.data.favourite);
