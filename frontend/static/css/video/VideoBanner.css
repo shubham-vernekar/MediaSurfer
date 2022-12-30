@@ -8,7 +8,6 @@
 
 .banner-video-container {
   width: 100%;
-  height: 590px;
   border-radius: 18px;
   cursor: pointer;
 }
@@ -79,8 +78,12 @@
 }
 
 .banner-cast-block .star-card {
-  width: 170px;
-  height: 255px;
+  width: 6.5vw; 
+  height: 9.75vw;
+}
+
+.banner-cast-block .star-button {
+  width: 1vw;
 }
 
 .banner-cast-block .star-title {
@@ -97,14 +100,18 @@
 }
 
 .banner-cast-block .star-play-button {
-  height: 30px;
-  padding: 3px 24px;
-  font-size: 17px;
+  padding: 2px 12px;
+  font-size: 15px;
+}
+
+.banner-cast-block .star-details {
+  row-gap: 3px;
+  padding: 4px 0!important;
 }
 
 .banner-cast-block .star-card:hover {
-  width: 170px;
-  height: 304px;
+  width: 6.5vw; 
+  height: 11.62vw; 
   overflow: hidden;
 }
 

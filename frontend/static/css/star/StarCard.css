@@ -128,6 +128,12 @@
     display: flex;
 }
 
+.star-card:hover .star-title{
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+
 .star-buttons-container{
     display: none;
     grid-column: 1/-1;
@@ -142,7 +148,6 @@
 
 .star-button{
     width: 27px;
-    height: 27px;
     cursor: pointer;
     opacity: 0;
     transition: 0.3s ease-in-out;
