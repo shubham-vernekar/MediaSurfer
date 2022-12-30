@@ -63,12 +63,14 @@
   background-image: url("/static/images/left.png");
   left: 1%;
   top: 12vh;
+  cursor: pointer;
 }
 
 .video-banner-slide-right {
   background-image: url("/static/images/right.png");
   right: 1%;
   top: 12vh;
+  cursor: pointer;
 }
 
 .video-banner-slide-right:hover {

@@ -122,11 +122,13 @@
 .star-banner-slide-left {
   background-image: url("/static/images/left.png");
   left: -5%;
+  cursor: pointer;
 }
 
 .star-banner-slide-right {
   background-image: url("/static/images/right.png");
   right: -5%;
+  cursor: pointer;
 }
 
 .banner-cast-box{

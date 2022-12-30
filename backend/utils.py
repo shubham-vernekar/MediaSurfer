@@ -14,7 +14,7 @@ def get_pending_videos():
                      ".m4p", ".m4v", ".avi", ".wmv", ".mov", ".qt", ".mp4",
                      ".flv", ".swf", ".ts", ".mkv"]
 
-    directories = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/test_directories.json"), 'r'))
+    directories = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/directories.json"), 'r'))
 
     all_videos = [x.lower() for x in Video.objects.all().values_list('file_path', flat=True)]
     for directory in directories:
