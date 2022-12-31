@@ -10,7 +10,7 @@ function VideoAdvert() {
       favorite: false,
       preview:
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      preview_thumbnail:
+      preview_poster:
         "https://www.fotoaparat.cz/storage/a/26/2639/tg17d5xl-rosta.jpg",
       progress: 2132,
       resolution: "HD",
@@ -27,7 +27,7 @@ function VideoAdvert() {
       favorite: false,
       preview:
         "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-      preview_thumbnail:
+      preview_poster:
         "https://www.sulasula.com/wp-content/uploads/cr_em13_14.jpg",
       progress: 0,
       resolution: "4K UHD",
@@ -43,7 +43,7 @@ function VideoAdvert() {
       views: 33,
       favorite: true,
       preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-      preview_thumbnail: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
+      preview_poster: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
       progress: 0,
       resolution: "2K QHD",
       duration: "00:32:48",
@@ -58,7 +58,7 @@ function VideoAdvert() {
       views: 19,
       favorite: false,
       preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-      preview_thumbnail: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+      preview_poster: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
       progress: 3321,
       resolution: "4K UHD",
       duration: "03:08:46",
@@ -73,7 +73,7 @@ function VideoAdvert() {
       views: 76,
       favorite: true,
       preview: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-      preview_thumbnail: "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
+      preview_poster: "https://cdn.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1520x800.png",
       progress: 2132,
       resolution: "720p",
       duration: "00:56:57",
@@ -112,7 +112,7 @@ function VideoAdvert() {
           views={data["views"]}
           favorite={data["favorite"]}
           preview={data["preview"]}
-          previewThumbnail={data["preview_thumbnail"]}
+          previewThumbnail={data["preview_poster"]}
           progress={data["progress"]}
           duration={data["duration"]}
           created={data["created"]}

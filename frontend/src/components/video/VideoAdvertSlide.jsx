@@ -75,7 +75,7 @@ function VideoAdvertSlide(props) {
             views={data["views"]}
             favorite={data["favourite"]}
             preview={data["preview"]}
-            previewThumbnail={data["preview_thumbnail"]}
+            previewThumbnail={data["preview_poster"]}
             progress={data["progress"]}
             duration={data["duration"]}
             created={data["created"]}

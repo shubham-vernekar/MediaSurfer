@@ -168,7 +168,7 @@ const SearchRecommendations = (props) => {
               views={previewVideo["views"]}
               favorite={previewVideo["favourite"]}
               preview={previewVideo["preview"]}
-              previewThumbnail={previewVideo["preview_thumbnail"]}
+              previewThumbnail={previewVideo["preview_poster"]}
               progress={previewVideo["progress"]}
               duration={previewVideo["duration"]}
               created={previewVideo["created"]}
