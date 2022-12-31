@@ -277,17 +277,18 @@ a{
 	column-gap: 13px;
 }
 
-.navbar-update-btn img{
+.navbar-btn img{
 	width: 23px;
 	cursor: pointer;
 	margin-left: 2px;
+	margin-left: 13px;
 }
 
-.navbar-update-btn:hover{
+.navbar-btn:hover{
 	transform:scale(1.1);
 }
 
-.navbar-update-btn:active {
+.navbar-btn:active {
 	transform:scale(1.2);
 }
 

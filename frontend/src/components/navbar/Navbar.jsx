@@ -194,8 +194,11 @@ function Navbar(props) {
               />
           </div>
           )}
-          <a href="/update" target="_blank" className="navbar-update-btn">
+          <a href="/update" target="_blank" className="navbar-btn">
             <img src="/static/images/update.svg" alt="" />
+          </a>
+          <a href="/admin" target="_blank" className="navbar-btn">
+            <img src="/static/images/admin.svg" alt="" />
           </a>
         </div>
 
