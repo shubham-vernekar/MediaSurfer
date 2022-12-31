@@ -253,6 +253,7 @@ a{
 
 .scan-msg-text:hover{
 	margin-right: 1px;
+	margin-left: 7px;
 }
 
 .alert-text-color{
@@ -275,3 +276,18 @@ a{
 	margin-right: 30px;
 	column-gap: 13px;
 }
+
+.navbar-update-btn img{
+	width: 23px;
+	cursor: pointer;
+	margin-left: 2px;
+}
+
+.navbar-update-btn:hover{
+	transform:scale(1.1);
+}
+
+.navbar-update-btn:active {
+	transform:scale(1.2);
+}
+

@@ -174,10 +174,10 @@ function Navbar(props) {
             </div>
             
           </div>
-          <LogsPanel
+          {showLogs && (<LogsPanel
             showLogs = {showLogs}
             closeLogResultsCallback = {closeLogResultsCallback}
-          />
+          />)}
 
           {alertMsg && (
           <div className="alert-msg-box-container">
@@ -194,6 +194,9 @@ function Navbar(props) {
               />
           </div>
           )}
+          <a href="/update" target="_blank" className="navbar-update-btn">
+            <img src="/static/images/update.svg" alt="" />
+          </a>
         </div>
 
         <div className="navbar-search-box">
