@@ -287,7 +287,7 @@ function VideoPlayerPage() {
         <ResponsivePlayer
           url={videoData.video_url}
           title={videoData.title}
-          subtitle={videoData.subtitle}
+          subtitle={videoData.subtitle_url}
           poster={videoData.poster}
           sprite={videoData.scrubber_sprite}
           sprite_pos_file={videoData.scrubber_vtt}
@@ -337,8 +337,8 @@ function VideoPlayerPage() {
               </svg>
               {secondsToHHMMSS(watchTime)} 
             </div>
-            <div> {videoData.badge} </div>
-            <div> {specialTag} </div>
+            {videoData.badge && (<div> {videoData.badge} </div>)}
+            {specialTag && (<div> {specialTag} </div>)}
 
             {!isFavourite && (
               <div className="player-favourite-button" onClick={() => {updateVideoFavourite(true)}}>
