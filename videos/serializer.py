@@ -54,10 +54,7 @@ class VideoListSerializer(serializers.ModelSerializer):
         return obj.get_subtitle_badge()
 
     def get_preview_poster(self, obj):
-        if obj.poster:
-            return obj.poster.url
-        else:
-            return obj.preview_thumbnail.url
+        return obj.get_preview_poster()
 
 class VideoSerializer(serializers.ModelSerializer):
 

@@ -359,6 +359,12 @@ class Video(models.Model):
     def get_subtitle_url(self):
         return convert_url(self.subtitle)
 
+    def get_preview_poster(self):
+        if self.poster:
+            return self.poster.url
+        else:
+            return self.preview_thumbnail.url
+
     def get_subtitle_badge(self):
         if self.subtitle or "subbed" in self.categories:
             return True
