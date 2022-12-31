@@ -16,7 +16,8 @@ frontend/static/frontend
 node_modules
 *main.js*
 *main.css*
-
+welcome_img.jpg
+no-profile-pic.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

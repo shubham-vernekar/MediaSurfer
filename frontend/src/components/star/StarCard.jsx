@@ -114,7 +114,7 @@ function StarCard(props) {
             <img src={bannerImg} alt="" width="45"/>
         </div>
         <div className="star-poster">
-          <a href={"/search?cast=" + props.name}><img src={props.poster || "http://127.0.0.1:9002/Trailers/20889796.jpg"} alt=""/></a>
+          <a href={"/search?cast=" + props.name}><img src={props.poster} alt=""/></a>
         </div>
         <div className="star-details">
             <span className="star-title"> {props.name} </span>

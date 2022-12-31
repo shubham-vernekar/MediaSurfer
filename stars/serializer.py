@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Star
 
 class StarSerializer(serializers.ModelSerializer):
+    
+    poster = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Star
         fields = [
@@ -15,3 +18,9 @@ class StarSerializer(serializers.ModelSerializer):
             'banner',
             'tags'
         ]
+
+    def get_poster(self, obj):
+        if obj.poster:
+            obj.poster
+        else:
+            return "/static/images/no-profile-pic.jpg"
