@@ -185,3 +185,33 @@ body {
 body::-webkit-scrollbar {
     width: 0;
 }
+
+.video-player-button{
+    display: flex;
+    cursor: pointer;
+    column-gap: 9px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.video-player-button:hover {
+    transform:scale(1.1)
+}
+
+.video-player-button:active {
+    transform:scale(1.2)
+}
+
+.video-player-button-text{
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    transition: 0.4s ease-in-out;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.video-player-button:hover .video-player-button-text{
+    max-width: 200px;
+}

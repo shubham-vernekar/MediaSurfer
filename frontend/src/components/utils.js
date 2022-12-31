@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const getDurationText = (duration) => {
     if (duration){
       duration = duration.split(":");
@@ -85,4 +87,30 @@ function getCookie(name) {
   return cookieValue;
 }
 
-export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, toggleDisplay, secondsToHHMMSS, getSize, getCookie}
+const OpenLocalPlayer = (vidid) => {
+  axios({
+    method: "post",
+    url: "/api/videos/" + vidid + "/open",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+  });
+};
+
+const OpenFolder = (vidid) => {
+  axios({
+    method: "post",
+    url: "/api/videos/" + vidid + "/folder",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+  });
+};
+
+
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, 
+  toggleDisplay, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayer, OpenFolder}

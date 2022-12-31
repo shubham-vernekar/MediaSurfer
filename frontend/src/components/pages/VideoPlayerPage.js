@@ -7,7 +7,7 @@ import "../../../static/css/pages/VideoPlayerPage.css";
 import StarCard from "../star/StarCard";
 import VideoAdvertSlide from "../video/VideoAdvertSlide";
 import VideoAdvertBox from "../video/VideoAdvertBox";
-import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, getCookie } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, OpenLocalPlayer, OpenFolder, getCookie } from '../utils'
 
 function VideoPlayerPage() {
   const params = useParams();
@@ -41,8 +41,8 @@ function VideoPlayerPage() {
       SetCategories(response.data.categories && response.data.categories.split(",").filter(Boolean)) 
       SetCast(response.data.cast && response.data.cast.split(",").filter(Boolean)) 
       getCastData(response.data.cast) 
-      GetOtherVideos(videoID, "similar", 20)
-      GetOtherVideos(videoID, "watch next", 15)
+      getOtherVideos(videoID, "similar", 20)
+      getOtherVideos(videoID, "watch next", 15)
       SetIsFavourite(response.data.favourite)
       SetIsVerfied(response.data.verfied)
       SetSpecialTag(response.data.special_tag)
@@ -94,7 +94,7 @@ function VideoPlayerPage() {
       VideoDetailsRef.current.classList.remove("new-text");
       VideoDetailsRef.current.classList.remove("recommended-text");
       VideoDetailsRef.current.classList.remove("watched-text");
-    } if (specialTag == "NEW") {
+    } else if (specialTag == "NEW") {
       VideoDetailsRef.current.classList.add("new-text");
       VideoDetailsRef.current.classList.remove("recommended-text");
       VideoDetailsRef.current.classList.remove("watched-text");
@@ -109,10 +109,15 @@ function VideoPlayerPage() {
       VideoDetailsRef.current.classList.remove("new-text");
       VideoDetailsRef.current.classList.remove("recommended-text");
       VideoDetailsRef.current.classList.remove("fav-text");
-    } 
+    } else {
+      VideoDetailsRef.current.classList.remove("watched-text");
+      VideoDetailsRef.current.classList.remove("new-text");
+      VideoDetailsRef.current.classList.remove("recommended-text");
+      VideoDetailsRef.current.classList.remove("fav-text");
+    }
   }, [specialTag]);
 
-  const GetOtherVideos = (videoID, type, count) => {
+  const getOtherVideos = (videoID, type, count) => {
     axios({
       method: "get",
       url: "/api/videos/related",
@@ -277,9 +282,23 @@ function VideoPlayerPage() {
     });
   }
 
-  const RefreshSimilarVideos = () => {
-    GetOtherVideos(videoData.id, "similar", 20)
+  const refreshSimilarVideos = () => {
+    getOtherVideos(videoData.id, "similar", 20)
   };
+
+  const DeleteVideo = (vidid) => {
+    axios({
+      method: "post",
+      url: "/api/videos/" + vidid + "/localdelete",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+    }).then((response) => {
+    });
+  };
+  
 
   return (
     <div className="video-player-container">
@@ -297,9 +316,9 @@ function VideoPlayerPage() {
           initialVolume={volume}
         />
         <div className="video-player-details" >
-          <div className="video-player-title" ><h1 ref={VideoDetailsRef} className="fav-text">{videoData.title}</h1></div>
+          <div className="video-player-title" ><h1 ref={VideoDetailsRef}>{videoData.title}</h1></div>
           <div className="video-player-details-pane">
-            <div> 
+            <div style={{"cursor": "pointer"}} onClick={() => window.open("/admin/videos/video/"+ videoData.id +"/change/", '_blank').focus()}> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
               </svg>
@@ -330,7 +349,7 @@ function VideoPlayerPage() {
               </svg>
               {videoData.height} x {videoData.width} </div>
 
-            <div style={{"cursor": "pointer"}} onClick={() => window.open("/admin/videos/video/"+ videoData.id +"/change/", '_blank').focus()}> 
+            <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M9 5a.5.5 0 0 0-1 0v3H6a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 .5-.5V5z"/>
                 <path d="M4 1.667v.383A2.5 2.5 0 0 0 2 4.5v7a2.5 2.5 0 0 0 2 2.45v.383C4 15.253 4.746 16 5.667 16h4.666c.92 0 1.667-.746 1.667-1.667v-.383a2.5 2.5 0 0 0 2-2.45V8h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H14v-.5a2.5 2.5 0 0 0-2-2.45v-.383C12 .747 11.254 0 10.333 0H5.667C4.747 0 4 .746 4 1.667zM4.5 3h7A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3z"/>
@@ -339,25 +358,35 @@ function VideoPlayerPage() {
             </div>
             {videoData.badge && (<div> {videoData.badge} </div>)}
             {specialTag && (<div> {specialTag} </div>)}
+            {videoData.subtitle_badge && (<div>SRT</div>)}
 
-            {!isFavourite && (
-              <div className="player-favourite-button" onClick={() => {updateVideoFavourite(true)}}>
-                <img src="/static/images/like-add.svg" alt="" /> 
-                <div className="favourites-text">Add to favourites</div>
-              </div>
-            )}
+            <div className='video-player-button' onClick={() => OpenLocalPlayer(videoData.id)}>  
+              <img src="/static/images/play-red.svg"  width="30px" height="30px" ></img>
+              <span className='video-player-button-text'>Open Player</span>
+            </div>
+            <div className='video-player-button' onClick={() => OpenFolder(videoData.id)}> 
+              <img src="/static/images/folder.svg"  width="30px" height="30px" ></img>
+              <span className='video-player-button-text'>Open Folder</span>
+            </div>
+            <div className='video-player-button' onClick={() => DeleteVideo(videoData.id)}>
+              <img src="/static/images/trash.svg"  width="30px" height="30px" ></img>
+              <span className='video-player-button-text'>Delete Video</span>
+            </div>
 
-            {isFavourite && (
-              <div className="player-favourite-button" onClick={() => {updateVideoFavourite(false)}}>
-                <img src="/static/images/like-remove.svg" alt="" />
-                <div className="favourites-text">Remove from favourites</div>
-              </div>
-            )}
+            {!isFavourite && (<div className='video-player-button' onClick={() => {updateVideoFavourite(true)}}>
+              <img src="/static/images/like-add.svg" width="30px" height="30px" alt="" />
+              <span className='video-player-button-text'>Add to favourites</span>
+            </div>)}
             
-            <div className="player-verify-button" onClick={() => {updateVerify(!isVerfied)}}>
+            {isFavourite && (<div className='video-player-button' onClick={() => {updateVideoFavourite(false)}}>
+              <img src="/static/images/like-remove.svg" width="30px" height="30px" alt="" />
+              <span className='video-player-button-text'>Remove from favourites</span>
+            </div>)}  
+
+            <div className='video-player-button' onClick={() => {updateVerify(!isVerfied)}}> 
               {isVerfied && (
-                <img src="/static/images/verfied.svg" alt="" />
-              )}
+                  <img src="/static/images/verfied.svg" width="30px" height="30px" alt="" />
+                )}
               {!isVerfied && (
                 <div className="unverified-container">
                   <svg  width="30" height="30" fill="#c63c22" viewBox="0 0 16 16">
@@ -366,17 +395,16 @@ function VideoPlayerPage() {
                   <div className="white-background"></div> 
                 </div>
               )}
-
               {isVerfied && (
-                <div className="verify-text">Verfied</div>
+                <span className='video-player-button-text'>Verfied</span>
               )}
               {!isVerfied && (
-                <div className="verify-text">Not Verfied</div>
+                <span className='video-player-button-text'>Not Verfied</span>
               )}
             </div>
-
-
           </div>
+
+
           <div className="video-player-categories-pane">
             <div className="video-player-categories-box">
               {categories.map((categoryName, i) => (
@@ -443,7 +471,7 @@ function VideoPlayerPage() {
         <VideoAdvertSlide videoData={watchNextVideos} title={(videoData.series && videoData.series.name) || "Continue Watching"} />
       </div>
       <div className="discover-container">
-        <VideoAdvertBox videoData={similarVideos}  title="Discover" onRefresh={RefreshSimilarVideos}/>
+        <VideoAdvertBox videoData={similarVideos}  title="Discover" onRefresh={refreshSimilarVideos}/>
       </div>
     </div>
   );
