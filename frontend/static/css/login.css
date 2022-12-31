@@ -59,7 +59,7 @@ body {
 }
 
 button{
-    font-size: 46px;
+    font-size: 2vw;
     width: 5.2vw;
     height: 5vw;
     border-radius: 35px;
@@ -70,6 +70,11 @@ button{
     color: #f8f9fa;
     border: 2px solid #ff4646;
     transition: 0.2s ease-in-out;
+}
+
+svg{
+    width: 5vh;
+    height: 5vh;
 }
 
 button:hover {
@@ -97,5 +102,13 @@ button:active {
     position: absolute;
     top: 15vh;
     visibility: hidden;
+}
+
+.welcome-image img{
     border-radius: 5%;
 }
+
+.details{
+    margin-top: 5px;
+}
+

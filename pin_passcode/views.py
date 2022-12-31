@@ -3,12 +3,29 @@ from django.contrib.auth import login, get_user_model
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import requires_csrf_token
 from django.middleware.csrf import get_token
+from videos.models import Video
 
 
 @requires_csrf_token
 def form(request):
     get_token(request)
-    return render(request, 'pin_passcode/form.html')
+    total_watch_time, total_duration = 0, 0
+    for watch_time, duration in Video.objects.all().values_list('watch_time', 'duration'):
+        total_watch_time += watch_time
+        total_duration += duration.seconds
+
+    h, m = divmod(total_watch_time/60, 60)
+    if h:
+        total_watch_time = f"{int(h)} hrs {int(m)} mins"
+    else:
+        total_watch_time = f"{int(m)} mins"
+
+    ctx = {
+        "watch_time" : total_watch_time,
+        "duration" : f"{int(total_duration / 3600)} hrs"
+    }
+
+    return render(request, 'pin_passcode/form.html', ctx)
 
 
 @requires_csrf_token

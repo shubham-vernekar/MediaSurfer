@@ -217,7 +217,6 @@ class VideoQuerySet(models.QuerySet):
 
         return qs
 
-
     def get_related(self, parameters, master_video):
         limit = int(parameters.get("limit", 0))
         recommendation_type = parameters.get("type", None)
@@ -267,7 +266,6 @@ class VideoQuerySet(models.QuerySet):
 
         return self.none()
 
-    
     def get_recommendation(self, parameters):
         limit = int(parameters.get("limit", 0))
         recommendation_type = parameters.get("type", None)

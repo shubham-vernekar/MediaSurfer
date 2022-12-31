@@ -46,7 +46,6 @@ var attempt_auth = function() {
         .success(function() {
             $('.welcome-image').css('visibility', 'visible')
             setTimeout(start_website, 1000);
-            
         })
 };
 
