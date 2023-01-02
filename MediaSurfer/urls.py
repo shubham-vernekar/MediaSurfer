@@ -33,6 +33,7 @@ urlpatterns = [
     path('search', include('frontend.urls')),
     path('series', include('frontend.urls')),
     path('update', include('frontend.urls')),
+    path('custom', include('frontend.urls')),
     path('login/', include('pin_passcode.urls')),
     path("favicon.ico",RedirectView.as_view(url=staticfiles_storage.url("/images/favicon.ico")),),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

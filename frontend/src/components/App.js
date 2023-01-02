@@ -8,6 +8,7 @@ import SearchPage from "./pages/SearchPage";
 import SeriesPage from "./pages/SeriesPage";
 import Navbar from "./navbar/Navbar"
 import UpdatePage from "./pages/UpdatePage";
+import CustomPage from "./pages/CustomPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/series" element={<SeriesPage />} />
           <Route path="/update" element={<UpdatePage />} />
+          <Route path="/custom" element={<CustomPage />} />
           <Route path="" element={<HomePage />} />
         </Routes>
       </BrowserRouter>

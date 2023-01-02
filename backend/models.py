@@ -9,7 +9,7 @@ def upload_category_poster(instance, filename):
 class Series(models.Model):
     ''' Model to store Series '''
     id = models.CharField(max_length=15, primary_key=True)
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=512, unique=True)
     added = models.DateTimeField(default=timezone.now)
     videos = models.IntegerField(default=0, blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
@@ -24,7 +24,7 @@ class Series(models.Model):
 class Navbar(models.Model):
     ''' Store navbar elements '''
     text = models.CharField(max_length=64, unique=True)
-    url = models.CharField(max_length=300)
+    url = models.CharField(max_length=4000)
     open_tab = models.BooleanField(default=False)
     weight = models.FloatField(default=0, blank=True, null=True)
 

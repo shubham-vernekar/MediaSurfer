@@ -1,14 +1,28 @@
 import VideoCard from "./VideoCard";
 import "../../../static/css/video/VideoAdvertBox.css";
+import { React, useRef, useEffect, useState } from "react";
+
 
 function VideoAdvertBox(props) {
+  const videoAdvertBoxRef = useRef(null);
+
+  useEffect(() => {
+    if(props.width){
+      let adverts = videoAdvertBoxRef.current.querySelectorAll('.video-card')
+      adverts.forEach(function (item, index) {
+        item.style.width = props.width + "px"
+        item.style.height = Math.floor(props.width*319/385) + "px"
+      });
+    }
+  }, [props.width]);
+
   return (
     <div className="video-advert-box-container">
       <div className="video-advert-box-title">
         <div className="video-advert-box-title-name">{props.title}</div>
-        <div className="video-advert-box-refresh" onClick={props.onRefresh}>Refresh {">"}</div>
+        <div className="video-advert-box-refresh" onClick={props.onRefresh} index={props.index}>Refresh {">"}</div>
       </div>
-      <div className="video-advert-box">
+      <div className="video-advert-box" ref={videoAdvertBoxRef}>
         {props.videoData.map((data, i) => (
           <VideoCard
             key={i}
