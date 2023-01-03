@@ -21,6 +21,6 @@ class StarSerializer(serializers.ModelSerializer):
 
     def get_poster(self, obj):
         if obj.poster:
-            obj.poster
+            return obj.poster.url
         else:
             return "/static/images/no-profile-pic.jpg"
