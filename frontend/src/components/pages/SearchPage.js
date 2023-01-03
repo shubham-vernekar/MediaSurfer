@@ -39,7 +39,7 @@ function SearchPage() {
   );
   const [castQuery, SetCastQuery] = useState(searchParams.get("cast") || "");
   const [categoryQuery, SetCategoryQuery] = useState(
-    searchParams.get("category") || ""
+    searchParams.get("categories") || ""
   );
   const [videosPageLimit, SetVideosPageLimit] = useState(
     searchParams.get("offset") || videosPerPage
@@ -335,6 +335,23 @@ function SearchPage() {
                 />
               )}
               {sortQuery === "size" && (
+                <img
+                  src="static/images/up.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+            </div>
+            <div className="search-page-sort" onClick={handleSortOnClick}>
+              <span>Views</span>
+              {sortQuery === "-views" && (
+                <img
+                  src="static/images/down.png"
+                  alt=""
+                  className="sort-direction"
+                />
+              )}
+              {sortQuery === "views" && (
                 <img
                   src="static/images/up.png"
                   alt=""

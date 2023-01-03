@@ -57,9 +57,13 @@ function Navbar(props) {
     if (scanMsgTextRef.current){
       if (showScanMsg) {
           scanMsgTextRef.current.style.maxWidth = "600px"
+          scanMsgTextRef.current.style.marginLeft = "7px"
+          scanMsgTextRef.current.style.marginRight = "2px"
       }else{
         if (!showLogs){
           scanMsgTextRef.current.style.maxWidth = "0px"
+          scanMsgTextRef.current.style.marginLeft = "0px"
+          scanMsgTextRef.current.style.marginRight = "0px"
         }
       }
     }

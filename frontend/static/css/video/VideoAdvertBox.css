@@ -18,27 +18,21 @@
 
 .video-advert-box-title {
   display: flex;
-  column-gap: 30px;
+  column-gap: 10px;
   flex-direction: row;
   align-content: center;
   align-items: baseline;
   justify-content: flex-start;
   margin-left: 7%;
+  align-items: center;
 }
 
 .video-advert-box-title-name {
   font-size: 32px;
   font-weight: 700;
+  margin-right: 15px;
   text-transform: capitalize;
   font-family: "Nexa", sans-serif;
-}
-
-.video-advert-box-refresh {
-  font-size: 19px;
-  font-weight: 600;
-  color: #c55454;
-  opacity: 0;
-  transition: 0.5s ease-in-out;
 }
 
 .video-advert-box-title:hover .video-advert-box-refresh {
@@ -47,10 +41,40 @@
   transition: 0.5s ease-in-out;
 }
 
-.video-advert-box-refresh:hover {
-  color: #eb3232;
+.video-advert-box-title:hover .video-advert-box-explore {
+  opacity: 1;
 }
 
 .video-advert-box-refresh{
+  cursor: pointer;
+}
+
+.video-advert-box-explore, .video-advert-box-refresh {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  font-weight: 600;
+  /* opacity: 0; */
+  transition: 0.5s ease-in-out;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.video-advert-box-explore:hover .video-advert-box-text{
+  max-width: 500px;
+  margin: 0 10px;
+}
+
+.video-advert-box-refresh:hover .video-advert-box-text{
+  max-width: 500px;
+  margin-left: 10px;
+}
+
+.video-advert-box-text{
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  transition: 0.5s ease-in-out;
   cursor: pointer;
 }

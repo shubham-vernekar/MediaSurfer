@@ -23,7 +23,7 @@ function CustomPage() {
 
   useEffect(() => {
     let query = JSON.parse(searchParams.get("q"));
-    SetBoxes(query.data);
+    SetBoxes(query);
   }, []);
 
   useEffect(() => {
@@ -31,6 +31,10 @@ function CustomPage() {
       axios({
         method: "get",
         url: "/api/videos?" + item["query"],
+        params: {
+          limit: item["limit"],
+          sort_by: item["sort_by"],
+        },
       }).then((response) => {
         let data = allData;
         data[item["name"]] = response.data.results;
@@ -40,11 +44,14 @@ function CustomPage() {
   }, [boxes]);
 
   
-  const HandleRefreshButton = (e) => {
-    let index = parseInt(e.target.getAttribute("index"));
+  const HandleRefreshButton = (index) => {
     axios({
       method: "get",
       url: "/api/videos?" + boxes[index]["query"],
+      params: {
+        limit: boxes[index]["limit"],
+        sort_by: boxes[index]["sort_by"],
+      },
     }).then((response) => {
       let data = allData;
       data[boxes[index]["name"]] = response.data.results;
@@ -64,6 +71,7 @@ function CustomPage() {
                 width={data.width}
                 onRefresh={HandleRefreshButton}
                 index={i}
+                explore={"/search?" + data.query}
               />
             )}
           </div>

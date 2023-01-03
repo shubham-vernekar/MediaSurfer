@@ -239,21 +239,12 @@ a{
 .alert-msg-text, .scan-msg-text{
 	user-select: none;
 	max-width: 0;
-  	transition: max-width 0.5s ease-in;
+  	transition: 0.5s ease-in;
 	text-transform: capitalize;
-}
-
-.scan-msg-text{
-	margin-left: 7px;
 }
 
 .scan-alert-container:active {
 	transform:scale(1.025);
-}
-
-.scan-msg-text:hover{
-	margin-right: 1px;
-	margin-left: 7px;
 }
 
 .alert-text-color{
@@ -280,8 +271,7 @@ a{
 .navbar-btn img{
 	width: 23px;
 	cursor: pointer;
-	margin-left: 2px;
-	margin-left: 13px;
+	margin-right: 5px;
 }
 
 .navbar-btn:hover{
