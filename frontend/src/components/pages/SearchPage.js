@@ -149,11 +149,11 @@ function SearchPage() {
     );
     if (!sameButton) {
       clickedSort.classList.add("selected-filter");
-      SetSortQuery(clickedText);
+      SetSortQuery("-" + clickedText);
     } else {
-      if (sortQuery === clickedText && clickedText != "?") {
+      if (sortQuery === "-" + clickedText && clickedText != "?") {
         clickedSort.classList.add("selected-filter");
-        SetSortQuery("-" + clickedText);
+        SetSortQuery(clickedText);
       } else {
         SetSortQuery("");
       }
