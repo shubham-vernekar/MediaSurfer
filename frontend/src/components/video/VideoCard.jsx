@@ -303,7 +303,7 @@ function VideoCard(props) {
               .toUpperCase()} {" "} 
             {created.getFullYear()}
           </div>
-          <div>{durationText}</div>
+          <div style={{"cursor": "pointer"}} onClick={() => window.open("/admin/videos/video/"+ props.vidid +"/change/", '_blank').focus()} >{durationText}</div>
           <div className='advert-views-box'> 
             <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
               <path d="M9 5a.5.5 0 0 0-1 0v3H6a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 .5-.5V5z"/>

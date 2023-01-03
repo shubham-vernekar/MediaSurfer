@@ -61,14 +61,16 @@
 .star-advert-filter:hover,
 .star-advert-tag:hover,
 .star-advert-sort:hover,
-.star-advert-clear-button:hover {
+.star-advert-clear-button:hover,
+.star-advert-global-search:hover {
   color: red;
   cursor: pointer;
 }
 
 .star-advert-filter,
 .star-advert-tag,
-.star-advert-sort {
+.star-advert-sort,
+.star-advert-global-search {
   text-align: right;
   padding-bottom: 5px;
   text-transform: capitalize;

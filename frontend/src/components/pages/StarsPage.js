@@ -165,6 +165,34 @@ function StarAdvert() {
     SetFilterQuery(filterText);
   };
 
+  const getTopStars = (e) => {
+    let clickedFilter = e.currentTarget;
+    let clickedSiblings = clickedFilter.parentElement.children;
+    let sameButton = [...clickedFilter.classList].includes("selected-filter");
+    [...clickedSiblings].forEach((sib) =>
+      sib.classList.remove("selected-filter")
+    );
+    let filterText = "";
+    if (!sameButton) {
+      clickedFilter.classList.add("selected-filter");
+      filterText = clickedFilter.innerText.replace("By ", "").trim();
+    }
+    if (filterText){
+      axios({
+        method: "get",
+        url: "/api/stars",
+        params: {
+          sort_by: "-" + filterText.toLowerCase(),
+          limit: 100
+        },
+      }).then((response) => {
+        SetStarData(response.data);
+      });
+    }else{
+      SetAlphabetOne("A")
+    }
+  };
+
   const handleSortOnClick = (e) => {
     let clickedSort = e.currentTarget;
     let clickedSiblings = clickedSort.parentElement.children;
@@ -265,6 +293,12 @@ function StarAdvert() {
           />
           <div className="star-advert-clear-button" onClick={clearAllFilters}>
             <span>CLEAR</span>
+          </div>
+          <div>
+            <div className="star-advert-filter-title">TOP 100</div>
+            <div className="star-advert-global-search" onClick={getTopStars}>By Views</div>
+            <div className="star-advert-global-search" onClick={getTopStars}>By Videos</div>
+            <div className="star-advert-global-search" onClick={getTopStars}>By Watchtime</div>
           </div>
           <div className="star-advert-filter-container" ref={starsFilter}>
             <div className="star-advert-filter-title">FILTER</div>
