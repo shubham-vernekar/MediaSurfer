@@ -170,22 +170,56 @@ class VideoQuerySet(models.QuerySet):
             qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
 
         if cast:
-            if cast[-1] == "~":
+            and_operation = cast[-1] == "~"
+            if and_operation:
                 cast = cast[:-1]
-                qs = qs.filter(reduce(operator.and_, (Q(cast__icontains=x) for x in [x.strip() for x in cast.split(",") if x.strip()])))
+
+            cast = [x.strip() for x in cast.split(",") if x.strip()]
+            cast_include, cast_exclude = [], []
+            for i in cast:
+                if i[0] == "|":
+                    cast_exclude.append(i[1:])
+                else:
+                    cast_include.append(i)
+            
+            if and_operation:
+                if cast_include:
+                    qs = qs.filter(reduce(operator.and_, (Q(cast__icontains=x) for x in cast_include)))
+                if cast_exclude:
+                    qs = qs.filter(reduce(operator.and_, (~Q(cast__icontains=x) for x in cast_exclude)))
             else:
-                qs = qs.filter(reduce(operator.or_, (Q(cast__icontains=x) for x in [x.strip() for x in cast.split(",") if x.strip()])))
+                if cast_include:
+                    qs = qs.filter(reduce(operator.or_, (Q(cast__icontains=x) for x in cast_include)))
+                if cast_exclude:
+                    qs = qs.filter(reduce(operator.or_, (~Q(cast__icontains=x) for x in cast_exclude)))
+
+        if categories:
+            and_operation = categories[-1] == "~"
+            if and_operation:
+                categories = categories[:-1]
+
+            categories = [x.strip() for x in categories.split(",") if x.strip()]
+            categories_include, categories_exclude = [], []
+            for i in categories:
+                if i[0] == "|":
+                    categories_exclude.append(i[1:])
+                else:
+                    categories_include.append(i)
+
+            if and_operation:
+                if categories_include:
+                    qs = qs.filter(reduce(operator.and_, (Q(categories__icontains=x) for x in categories_include)))
+                if categories_exclude:
+                    qs = qs.filter(reduce(operator.and_, (~Q(categories__icontains=x) for x in categories_exclude)))
+            else:
+                if categories_include:
+                    qs = qs.filter(reduce(operator.or_, (Q(categories__icontains=x) for x in categories_include)))
+                if categories_exclude:
+                    qs = qs.filter(reduce(operator.or_, (~Q(categories__icontains=x) for x in categories_exclude)))
 
         if series:
             qs = qs.filter(Q(series__id=series))
             return sort_related_videos(qs)
-
-        if categories:
-            if categories[-1] == "~":
-                categories = categories[:-1]
-                qs = qs.filter(reduce(operator.and_, (Q(categories__icontains=x) for x in [x.strip() for x in categories.split(",") if x.strip()])))
-            else:
-                qs = qs.filter(reduce(operator.or_, (Q(categories__icontains=x) for x in [x.strip() for x in categories.split(",") if x.strip()])))
 
         if favourite is not None:
             try:

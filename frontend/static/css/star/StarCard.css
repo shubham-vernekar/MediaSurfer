@@ -38,7 +38,7 @@
 .star-title{
     font-size: 17px;
     font-weight: 500;
-    text-transform: uppercase;
+    text-transform: capitalize;
     grid-column: 1/-1;
     text-align: center;
 }
