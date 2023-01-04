@@ -280,6 +280,7 @@ function StarAdvert() {
               views={data["views"]}
               liked={data["liked"]}
               favourite={data["favourite"]}
+              watchtime={data["watchtime"]}
             />
           ))}
         </div>

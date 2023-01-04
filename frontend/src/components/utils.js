@@ -6,7 +6,11 @@ const getDurationText = (duration) => {
       if (parseInt(duration[0]) > 0) {
         return parseInt(duration[0]) + " hrs " + parseInt(duration[1]) + " mins";
       } else {
-        return parseInt(duration[1]) + " mins";
+        if (duration[1]<2){
+          return parseInt(duration[1]) + " min";
+        }else{
+          return parseInt(duration[1]) + " mins";
+        }
       }
     }
   };

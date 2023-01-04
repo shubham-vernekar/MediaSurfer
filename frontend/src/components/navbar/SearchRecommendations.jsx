@@ -190,6 +190,7 @@ const SearchRecommendations = (props) => {
               views={previewStar["views"]}
               liked={previewStar["liked"]}
               favourite={previewStar["favourite"]}
+              watchtime={previewStar["watchtime"]}
             />
           </div>
         )}

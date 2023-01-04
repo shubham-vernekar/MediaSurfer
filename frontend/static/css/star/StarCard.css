@@ -111,6 +111,23 @@
     right: 7px;
 }
 
+.star-watch-time-container{
+    position: relative;
+}
+
+.star-watch-time{
+    position: absolute;
+    bottom: 7px;
+    /* background: #00000096; */
+    color: var(--star-card-text-color);
+    background: var(--star-card-theme);
+    padding: 1px 7px;
+    right: 10px;
+    border-radius: 8px;
+    line-height: 18px;
+    height: 23px;
+}
+
 .star-videos, .star-views{
     display: none;
     column-gap: 12px;

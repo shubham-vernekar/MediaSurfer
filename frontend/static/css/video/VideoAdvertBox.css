@@ -68,6 +68,7 @@
 .video-advert-box-refresh:hover .video-advert-box-text{
   max-width: 500px;
   margin-left: 10px;
+  margin-right: 5px;
 }
 
 .video-advert-box-text{
@@ -77,4 +78,14 @@
   user-select: none;
   transition: 0.5s ease-in-out;
   cursor: pointer;
+}
+
+.video-advert-button-container{
+  display: flex;
+  opacity: 0;
+  transition: 0.5s ease-in-out;
+}
+
+.video-advert-box-title:hover .video-advert-button-container{
+  opacity: 1;
 }

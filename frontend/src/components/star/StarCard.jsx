@@ -1,7 +1,7 @@
 import '../../../static/css/star/StarCard.css';
 import { React, useRef, useEffect, useState } from "react";
 import axios from "axios";
-import { getCookie } from '../utils'
+import { getCookie, getDurationText } from '../utils'
 
 // ebc2ac - rose gold
 // ffd700 -  gold
@@ -13,11 +13,12 @@ function StarCard(props) {
   const [bannerImg, SetBannerImg] = useState("");
   const [liked, SetLiked] = useState(false);
   const [favourite, SetFavourite] = useState(false);
+  const [watchTimeText, SetWatchTimeText] = useState("");
 
   const videoThemeDict = {
     "DEFAULT" : {
       "icon" : "",
-      "theme": "#f8f9fa",
+      "theme": "#00000096",
       "background": "linear-gradient(0deg, rgba(0,0,0,1) 0%, rgb(49 47 47) 100%)",
       "glow": "#000",
       "textcolor": "#f8f9fa",
@@ -25,7 +26,7 @@ function StarCard(props) {
     },
     "LIKED" : {
       "icon" : "/static/images/fire.png",
-      "theme": "#fbbf00",
+      "theme": "#ffdc00",
       "background": "linear-gradient(0deg, rgba(255,131,0,1) 0%, rgba(255,221,0,1) 100%)",
       "glow": "#ff8e00",
       "textcolor": "#000",
@@ -33,7 +34,7 @@ function StarCard(props) {
     },
     "FAVOURITE" : {
       "icon" : "/static/images/star.svg",
-      "theme": "#f20101",
+      "theme": "#f90101",
       "background": "linear-gradient(to top, rgb(150 14 14) 0%, rgb(255 0 0) 100%)",
       "glow": "#e60303",
       "textcolor": "#f8f9fa",
@@ -41,7 +42,7 @@ function StarCard(props) {
     },
     "BOTH" : {
       "icon" : "/static/images/heart.png",
-      "theme": "#ff00c0",
+      "theme": "#93156a",
       "background": "linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #FFF800 100%)", 
       "glow": "#f71362",
       "textcolor": "#f8f9fa",
@@ -52,6 +53,9 @@ function StarCard(props) {
   useEffect(() => {
     SetLiked(props.liked);
     SetFavourite(props.favourite);
+    if (props.watchtime && parseInt(props.watchtime)>60){
+      SetWatchTimeText(getDurationText(new Date(parseInt(props.watchtime) * 1000).toISOString().slice(11, 19)));
+    }
   }, [props]);
 
   useEffect(() => {
@@ -115,6 +119,11 @@ function StarCard(props) {
         </div>
         <div className="star-poster">
           <a href={"/search?cast=" + props.name}><img src={props.poster} alt=""/></a>
+        </div>
+        <div className="star-watch-time-container">
+          {watchTimeText && (<div className="star-watch-time">
+            {watchTimeText}
+          </div>)}
         </div>
         <div className="star-details">
             <span className="star-title"> {props.name} </span>
