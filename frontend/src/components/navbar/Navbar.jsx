@@ -143,7 +143,7 @@ function Navbar(props) {
   return (
     <div className="navbar">
       <div className="navbar-left">
-        <img className="logo-img" src="static/images/logo.svg" alt="" onClick={() => window.location.href="/" } />
+        <img className="logo-img" src="/static/images/logo.svg" alt="" onClick={() => window.location.href="/" } />
         {navbarData.map((data, i) => (
           <a
             key={i}

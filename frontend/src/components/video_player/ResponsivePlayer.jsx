@@ -209,10 +209,10 @@ function ResponsivePlayer(props) {
           toggleCaptions();
           break;
         case "arrowup":
-          changeVolume(0.2);
+          changeVolume(0.05);
           break;
         case "arrowdown":
-          changeVolume(-0.2);
+          changeVolume(-0.05);
           break;
         default:
           break;
@@ -251,7 +251,7 @@ function ResponsivePlayer(props) {
     );
 
     let captionsText =
-      videoRef.current.subtitle_data[Math.floor(videoRef.current.currentTime)];
+      videoRef.current.subtitle_data[Math.floor(parseInt(videoRef.current.currentTime))];
 
     if (captionsRef.current) {
       if (captionsText) {

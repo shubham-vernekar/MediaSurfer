@@ -408,7 +408,7 @@ function VideoPlayerPage() {
           <div className="video-player-categories-pane">
             <div className="video-player-categories-box">
               {categories.map((categoryName, i) => (
-                <a key={i} href={"/search?category="+categoryName}>{categoryName}</a>
+                <a key={i} href={"/search?categories="+categoryName}>{categoryName}</a>
               ))}
             </div>
             

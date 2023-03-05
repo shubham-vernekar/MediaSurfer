@@ -137,7 +137,7 @@ const SearchRecommendations = (props) => {
                     <a
                       key={i}
                       className="search-results-link"
-                      href={"/search?category=" + data.title}
+                      href={"/search?categories=" + data.title}
                       target="_blank"
                     >
                       <li

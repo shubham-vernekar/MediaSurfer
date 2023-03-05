@@ -231,7 +231,7 @@ class VideoQuerySet(models.QuerySet):
             try:
                 if int(duration_max)>1:
                     qs = qs.filter(duration__lte=datetime.timedelta(
-                        seconds=int(duration_max)+1)).order_by('-duration')
+                        seconds=int(duration_max)+1))
             except (ValueError, ValidationError):
                 qs = self.none()
 
@@ -239,7 +239,7 @@ class VideoQuerySet(models.QuerySet):
             try:
                 if int(duration_min)>1:
                     qs = qs.filter(duration__gte=datetime.timedelta(
-                        seconds=int(duration_min)-1)).order_by('-duration')
+                        seconds=int(duration_min)-1))
             except (ValueError, ValidationError):
                 qs = self.none()
 
@@ -351,18 +351,18 @@ class VideoManager(models.Manager):
 class Video(models.Model):
     ''' Model to store video details '''
     id = models.CharField(max_length=15, primary_key=True)
-    file_path = models.CharField(max_length=512, unique=True)
-    title = models.CharField(max_length=1024)
+    file_path = models.CharField(max_length=1024, unique=True)
+    title = models.CharField(max_length=2048)
     categories = models.CharField(
-        max_length=512, default="", blank=True, null=True)
+        max_length=1024, default="", blank=True, null=True)
     views = models.IntegerField(default=0, blank=True, null=True)
-    cast = models.CharField(max_length=512, default="", blank=True, null=True)
+    cast = models.CharField(max_length=1024, default="", blank=True, null=True)
     favourite = models.BooleanField(default=False)
-    description = models.CharField(max_length=1024, blank=True, null=True)
+    description = models.CharField(max_length=2048, blank=True, null=True)
     duration = models.DurationField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
     size = models.FloatField(blank=True, null=True)
-    subtitle = models.CharField(max_length=512, blank=True, null=True)
+    subtitle = models.CharField(max_length=1024, blank=True, null=True)
     poster = models.FileField(blank=True, null=True)
     preview = models.FileField(blank=True, null=True)
     preview_thumbnail = models.FileField(blank=True, null=True)
@@ -373,11 +373,11 @@ class Video(models.Model):
     width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
     movie_id = models.CharField(max_length=25, blank=True, null=True)
-    search_text = models.CharField(max_length=2048, blank=True, null=True)
+    search_text = models.CharField(max_length=4096, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
     recommended = models.BooleanField(default=False)
     verfied = models.BooleanField(default=False)
-    tags = models.CharField(max_length=512, blank=True, null=True)
+    tags = models.CharField(max_length=1024, blank=True, null=True)
     series = models.ForeignKey(
         Series, on_delete=models.SET_NULL, related_name="episodes", blank=True, null=True)
     progress = models.IntegerField(default=0, blank=True, null=True)
@@ -435,11 +435,11 @@ class Video(models.Model):
     def get_special_tag(self):
         special_tag = ""
 
-        if (timezone.now()-self.created).days <15:
-            special_tag = "NEW"
-
         if self.recommended:
             special_tag = "RECOMMENDED"
+
+        if (timezone.now()-self.created).days <15:
+            special_tag = "NEW"
 
         if self.progress:
             if self.progress > self.duration.seconds * 0.9 or self.watch_time > 600:
