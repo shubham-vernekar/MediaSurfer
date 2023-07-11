@@ -16,4 +16,5 @@ urlpatterns = [
     path('openfolder', views.OpenFileFolderView.as_view(), name='open-file-folder'),
     path('volume', views.UpdateVolume.as_view(), name='volume'),
     path('scan/logs', views.GetScanLogs.as_view(), name='get-scan-logs'),
+    path('webscr', views.GetWebScrData.as_view(), name='get-webscr'),
 ]

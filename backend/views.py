@@ -1,6 +1,6 @@
 from .models import Category, Navbar, Series, UserLevelData
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
-from .utils import get_pending_videos
+from .utils import get_pending_videos, apply_regex
 from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
@@ -11,12 +11,13 @@ from videos.serializer import VideoListSerializer
 from stars.serializer import StarSerializer
 from rest_framework.response import Response
 import os
+import datetime
 from django.conf import settings
 import json
 from django.core.management import call_command
 from file_read_backwards import FileReadBackwards
 from django.contrib.postgres.search import SearchQuery, SearchRank
-
+   
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -44,6 +45,7 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
 
 class CategoryUpdateAPIView(generics.UpdateAPIView):
     queryset = Category.objects.all()
@@ -139,6 +141,7 @@ class MasterSearchView(generics.GenericAPIView):
             "categories": categories,
         })
 
+
 class RunScanView(generics.GenericAPIView):
     def post(self, request):
         try:
@@ -192,6 +195,7 @@ class UpdateJson(generics.GenericAPIView):
                 "message": f"{filename} Not found"
             })
 
+
 class CategoryNamesListAPIView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
@@ -203,6 +207,7 @@ class CategoryNamesListAPIView(generics.GenericAPIView):
             qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank").order_by('-starts_with') 
         
         return Response(qs.values_list('title', flat=True))
+
 
 class FindPending(generics.GenericAPIView):
 
@@ -256,6 +261,7 @@ class FindPending(generics.GenericAPIView):
                 "scanning" : user_data_object.scanning
             })
 
+
 class OpenFileFolderView(generics.GenericAPIView):
     def post(self, request):
         file_path = request.data.get('file', '') 
@@ -265,6 +271,7 @@ class OpenFileFolderView(generics.GenericAPIView):
         return Response({
                 "Status": "Success"
             })
+
 
 class UpdateVolume(generics.GenericAPIView):
 
@@ -299,6 +306,7 @@ class UpdateVolume(generics.GenericAPIView):
                 "volume_level" : user_data_object.volume_level
             })
 
+
 class GetScanLogs(generics.GenericAPIView):
     log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"..\logs\scan.log")
     
@@ -331,3 +339,69 @@ class GetScanLogs(generics.GenericAPIView):
             "data" : "\n".join(log_lines)
         })
 
+
+class GetWebScrData(generics.GenericAPIView):
+
+    def get(self, request):
+        try:
+            user_data_object = UserLevelData.objects.latest('websrc_dir')
+        except UserLevelData.DoesNotExist:
+            user_data_object = UserLevelData()
+
+        key_dir = request.GET.get('key', False)
+
+        if key_dir:
+            label_map = json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/labels.json"), 'r').read().lower()).get("external_sites")
+            scr_pending = list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir))[::-1])
+            scr_pending = [x for x in scr_pending if x.lower()!="done"]
+            total_count = len(scr_pending)
+            results = []
+            for k, file_name in enumerate(scr_pending):
+                try:
+                    release_date = datetime.datetime.strptime(apply_regex(r"([\d]{4}-[\d]{2}-[\d]{2})", file_name), "%Y-%m-%d").date().strftime("%d %B %Y")
+                except:
+                    release_date = ""
+
+                movie_id = apply_regex(r"([a-zA-Z]{3,5}-\d{3,4})", file_name)
+
+                results.append({
+                    "title": file_name,
+                    "movie_id": movie_id,
+                    "release_date": release_date,
+                    "count": f"{k+1} of {total_count}, {round((k+1)*100/total_count, 2)}%",
+                    "video": label_map.get("j_vid", "").replace("{key}", movie_id),
+                    "sub": label_map.get("j_sub", "").replace("{key}", movie_id),
+                    "trailer": label_map.get("j_trailer", "").replace("{key}", movie_id)
+                })
+
+            return Response({
+                    "scr_pending": results
+                })
+    
+        else:
+            dirs = list(os.listdir(user_data_object.websrc_dir))
+            results = []
+            for dir in dirs:
+                if os.path.exists(os.path.join(user_data_object.websrc_dir, dir, "done")):
+                    done_count = len(list(os.listdir(os.path.join(user_data_object.websrc_dir, dir, "done"))))
+                else:
+                    done_count = 0
+
+                try:
+                    star_object = Star.objects.get(name=dir.lower())
+                    star_img = star_object.poster.url
+                except Star.DoesNotExist:
+                    star_img = ""
+
+                results.append({
+                    "title": dir,
+                    "pending": len([x for x in list(os.listdir(os.path.join(user_data_object.websrc_dir, dir))) if x.lower()!="done"]),
+                    "done" : done_count,
+                    "img" : star_img
+                })
+                
+            return Response({
+                    "dirs": results
+                })
+
+        

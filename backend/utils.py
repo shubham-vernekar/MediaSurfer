@@ -2,6 +2,7 @@ import json
 import os
 from videos.models import Video
 import ffmpeg
+import re
 
 def get_pending_videos():
 
@@ -33,3 +34,10 @@ def get_pending_videos():
                     unsupported_videos.append(file_name)
 
     return pending_videos, unsupported_videos
+
+
+def apply_regex(expr, key):
+    matches = re.findall(expr, key)
+    if matches:
+        return matches[0]
+    return ""

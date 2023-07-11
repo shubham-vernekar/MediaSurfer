@@ -71,6 +71,7 @@ class UserLevelData(models.Model):
     update_timestamp = models.DateTimeField(default=timezone.now)
     scan_timestamp = models.DateTimeField(blank=True, null=True)
     volume_level = models.FloatField(blank=True, null=True)
+    websrc_dir = models.CharField(max_length=1024, blank=True, null=True)
     scanning = models.BooleanField(default=False)
 
     def __str__(self):
