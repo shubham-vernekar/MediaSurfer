@@ -21,6 +21,16 @@ class StarQuerySet(models.QuerySet):
 
         qs = self.order_by('name')
 
+        # Get IDS without poster
+        # TEMP_IDS = []
+        # x = []
+        # for i in qs:
+        #     if not i.poster:
+        #         x.append(i.id)
+        # print (x)
+        # qs = qs.filter(id__in=TEMP_IDS)
+        # return qs
+
         if cast:
             qs = qs.filter(Q(name__in=cast))
             return qs
