@@ -1,0 +1,131 @@
+.scrp-page-container{
+    padding: 0 6%;
+    width: 100%;
+}
+
+.scrp-cast-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    padding-top: 50px;
+    width: 100%;
+    margin-bottom: 150px;
+}
+
+.scrp-img-container{
+    display: grid;
+    row-gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    padding: 1.5vh 6vw;
+    width: 100%;
+}
+
+.scrp-img-container span{
+    font-size: 20px;
+}
+
+.scrp-img img{
+    min-width: 60vw;
+    max-width: 65vw;
+    max-height: 73vh;
+    border-radius: 8px;
+}
+
+.scrp-count{
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.scrp-title-main{
+    font-size: 27px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.scrp-details-main{
+    display: flex;
+    justify-content: space-between;
+    width: 65%;
+    font-size: 22px;
+    align-items: center;
+}
+
+.scrp-move-btn{
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+    background-position: 50%;
+    height: 80%;
+    width: 10vw;
+    position: absolute;
+    z-index: 20;
+    opacity: 0;
+}
+
+.scrp-left{
+    left: 6vw;
+    background-image: url("/static/images/left.png");
+}
+
+.scrp-right{
+    right: 6vw;
+    background-image: url("/static/images/right.png");
+}
+
+.scrp-move-btn:hover {
+    opacity: 1;
+}
+
+.scrp-details-main a:hover{
+    color: #00a84f;
+    font-size: 22px;
+}
+
+.scrp-btn {
+    background-image: linear-gradient(to right, #006175 0%, #00a950 100%);
+    border-radius: 40px;
+    box-sizing: border-box;
+    color: #00a84f;
+    display: block;
+    height: 40px;
+    padding: 4px;
+    position: relative;
+    text-decoration: none;
+    width: 5em;
+    z-index: 2;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .scrp-btn-span:hover {
+    color: #fff;
+  }
+
+  .scrp-btn:active {
+    transform: scale(1.05);
+  }
+  
+  .scrp-btn .scrp-btn-span {
+    align-items: center;
+    background: #0e0e10;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    transition: background 0.5s ease;
+    width: 100%;
+  }
+  
+  .scrp-btn:hover .scrp-btn-span {
+    background: transparent;
+  }
+
+.scrp-mov-id{
+    cursor: pointer;
+}

@@ -5,12 +5,13 @@ from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
 from django.db.models import Q, F, ExpressionWrapper, BooleanField
-from videos.models import Video
+from videos.models import Video, convert_url
 from stars.models import Star
 from videos.serializer import VideoListSerializer
 from stars.serializer import StarSerializer
 from rest_framework.response import Response
 import os
+import shutil
 import datetime
 from django.conf import settings
 import json
@@ -342,6 +343,27 @@ class GetScanLogs(generics.GenericAPIView):
 
 class GetWebScrData(generics.GenericAPIView):
 
+    def post(self, request):
+        file_path = request.data.get('file_path', '') 
+        open_folder = request.data.get('open', False) 
+        if file_path:
+            if open_folder:
+                os.system('start %windir%\explorer.exe /select, "{}"'.format(file_path.replace("/", "\\")))
+                return Response({
+                    "Status": "Success"
+                })
+            
+            new_dir = os.path.join(os.path.dirname(file_path), "Done")
+            basename = os.path.basename(file_path)
+            if not os.path.exists(new_dir):
+                os.makedirs(new_dir)
+            
+            shutil.move(file_path, os.path.join(new_dir, basename))
+
+            return Response({
+                    "status": "success"
+                })
+
     def get(self, request):
         try:
             user_data_object = UserLevelData.objects.latest('websrc_dir')
@@ -351,33 +373,40 @@ class GetWebScrData(generics.GenericAPIView):
         key_dir = request.GET.get('key', False)
 
         if key_dir:
+            if os.path.exists(os.path.join(user_data_object.websrc_dir, key_dir, "done")):
+                done_count = len(list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir, "done"))))
+            else:
+                done_count = 0
+
+            index = int(request.GET.get('index', 0))
+            reverse = request.GET.get('reverse', "false").lower() == "true"
             label_map = json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/labels.json"), 'r').read().lower()).get("external_sites")
-            scr_pending = list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir))[::-1])
+            scr_pending = list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir)))
             scr_pending = [x for x in scr_pending if x.lower()!="done"]
+
+            if reverse:
+                scr_pending = scr_pending[::-1]
             total_count = len(scr_pending)
-            results = []
-            for k, file_name in enumerate(scr_pending):
-                try:
-                    release_date = datetime.datetime.strptime(apply_regex(r"([\d]{4}-[\d]{2}-[\d]{2})", file_name), "%Y-%m-%d").date().strftime("%d %B %Y")
-                except:
-                    release_date = ""
+            poster_number = index if index>=0 else total_count-index
 
-                movie_id = apply_regex(r"([a-zA-Z]{3,5}-\d{3,4})", file_name)
+            try:
+                release_date = datetime.datetime.strptime(apply_regex(r"([\d]{4}-[\d]{2}-[\d]{2})", scr_pending[index]), "%Y-%m-%d").date().strftime("%d %B %Y")
+            except:
+                release_date = ""
 
-                results.append({
-                    "title": file_name,
-                    "movie_id": movie_id,
-                    "release_date": release_date,
-                    "count": f"{k+1} of {total_count}, {round((k+1)*100/total_count, 2)}%",
-                    "video": label_map.get("j_vid", "").replace("{key}", movie_id),
-                    "sub": label_map.get("j_sub", "").replace("{key}", movie_id),
-                    "trailer": label_map.get("j_trailer", "").replace("{key}", movie_id)
-                })
-
+            movie_id = apply_regex(r"([a-zA-Z]{3,5}-\d{3,4})", scr_pending[index])
             return Response({
-                    "scr_pending": results
-                })
-    
+                "title": os.path.splitext(scr_pending[index])[0],
+                "movie_id": movie_id,
+                "release_date": release_date,
+                "count": f"Poster No {poster_number}: {done_count} done out of {total_count} - {round((done_count)*100/total_count, 2)} %",
+                "video": label_map.get("j_vid", "").replace("{key}", movie_id),
+                "sub": label_map.get("j_sub", "").replace("{key}", movie_id),
+                "trailer": label_map.get("j_trailer", "").replace("{key}", movie_id),
+                "file_path": os.path.join(user_data_object.websrc_dir, key_dir, scr_pending[index]),
+                "url": convert_url(os.path.join(user_data_object.websrc_dir, key_dir, scr_pending[index]).replace("\\","/"))
+            })
+
         else:
             dirs = list(os.listdir(user_data_object.websrc_dir))
             results = []
@@ -391,7 +420,7 @@ class GetWebScrData(generics.GenericAPIView):
                     star_object = Star.objects.get(name=dir.lower())
                     star_img = star_object.poster.url
                 except Star.DoesNotExist:
-                    star_img = ""
+                    star_img = "/static/images/no-profile-pic.jpg"
 
                 results.append({
                     "title": dir,

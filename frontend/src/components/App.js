@@ -9,6 +9,7 @@ import SeriesPage from "./pages/SeriesPage";
 import Navbar from "./navbar/Navbar"
 import UpdatePage from "./pages/UpdatePage";
 import CustomPage from "./pages/CustomPage";
+import ScrpPage from "./pages/ScrpPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/series" element={<SeriesPage />} />
           <Route path="/update" element={<UpdatePage />} />
           <Route path="/custom" element={<CustomPage />} />
+          <Route path="/scrp" element={<ScrpPage />} />
           <Route path="" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
