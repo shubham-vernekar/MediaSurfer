@@ -1,3 +1,4 @@
+from typing import Any
 from .models import Category, Navbar, Series, UserLevelData
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
 from .utils import get_pending_videos, apply_regex
@@ -18,6 +19,7 @@ import json
 from django.core.management import call_command
 from file_read_backwards import FileReadBackwards
 from django.contrib.postgres.search import SearchQuery, SearchRank
+from collections import defaultdict
    
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -343,6 +345,35 @@ class GetScanLogs(generics.GenericAPIView):
 
 class GetWebScrData(generics.GenericAPIView):
 
+    def __init__(self):
+        self.labels_data = json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/labels.json"), 'r').read().lower())
+        self.external_sites = self.labels_data.get("external_sites")
+
+        all_thumbs_files = self.get_all_files(self.labels_data.get("tag_folders_thumb"), ["jpg", "jpeg", "png"])
+        self.done_bucket = defaultdict(list)
+        for i in all_thumbs_files:
+            self.done_bucket[i.split("\\")[1].lower()].append(i)
+            if "\\done\\" in i:
+                self.done_bucket["done"].append(i)
+
+        for tag_folder in self.labels_data.get("tag_folders"):
+            self.done_bucket["downloaded"] += self.get_all_files(tag_folder, ["mp4", "ts"]) 
+
+    def get_all_files(self, root, extention):
+        fileList=[]
+        for path, _, files in os.walk(root):
+            for name in files:
+                name = os.path.join(path, name)
+                if name[name.rfind(".")+1:].lower() in extention:
+                    fileList.append(name)
+        return fileList
+    
+    def check_match(self, match, search_term):
+        for x in self.done_bucket[search_term] + self.done_bucket["done"] + self.done_bucket["downloaded"] :
+            if match.lower() in x.lower():
+                return True
+        return False
+
     def post(self, request):
         file_path = request.data.get('file_path', '') 
         open_folder = request.data.get('open', False) 
@@ -380,7 +411,6 @@ class GetWebScrData(generics.GenericAPIView):
 
             index = int(request.GET.get('index', 0))
             reverse = request.GET.get('reverse', "false").lower() == "true"
-            label_map = json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/labels.json"), 'r').read().lower()).get("external_sites")
             scr_pending = list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir)))
             scr_pending = [x for x in scr_pending if x.lower()!="done"]
 
@@ -395,15 +425,18 @@ class GetWebScrData(generics.GenericAPIView):
                 release_date = ""
 
             movie_id = apply_regex(r"([a-zA-Z]{3,5}-\d{3,4})", scr_pending[index])
+            is_duplicate = self.check_match(movie_id, key_dir)
             return Response({
                 "title": os.path.splitext(scr_pending[index])[0],
                 "movie_id": movie_id,
                 "release_date": release_date,
-                "count": f"Poster No {poster_number}: {done_count} done out of {total_count} - {round((done_count)*100/total_count, 2)} %",
-                "video": label_map.get("j_vid", "").replace("{key}", movie_id),
-                "sub": label_map.get("j_sub", "").replace("{key}", movie_id),
-                "trailer": label_map.get("j_trailer", "").replace("{key}", movie_id),
+                "count": f"Poster No {poster_number}: {done_count} Done, and {total_count} Pending - {round((done_count)*100/(total_count + done_count), 2)} "
+                            f"% {' - Possible Duplicate' if is_duplicate else ''}",
+                "video": self.external_sites.get("j_vid", "").replace("{key}", movie_id),
+                "sub": self.external_sites.get("j_sub", "").replace("{key}", movie_id),
+                "trailer": self.external_sites.get("j_trailer", "").replace("{key}", movie_id),
                 "file_path": os.path.join(user_data_object.websrc_dir, key_dir, scr_pending[index]),
+                "is_duplicate": is_duplicate,
                 "url": convert_url(os.path.join(user_data_object.websrc_dir, key_dir, scr_pending[index]).replace("\\","/"))
             })
 

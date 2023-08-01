@@ -101,17 +101,17 @@
     z-index: 2;
     cursor: pointer;
     user-select: none;
-  }
+}
   
-  .scrp-btn-span:hover {
+.scrp-btn-span:hover {
     color: #fff;
-  }
+}
 
-  .scrp-btn:active {
+.scrp-btn:active {
     transform: scale(1.05);
-  }
+}
   
-  .scrp-btn .scrp-btn-span {
+.scrp-btn .scrp-btn-span {
     align-items: center;
     background: #0e0e10;
     border-radius: 40px;
@@ -120,12 +120,20 @@
     height: 100%;
     transition: background 0.5s ease;
     width: 100%;
-  }
+}
   
-  .scrp-btn:hover .scrp-btn-span {
+.scrp-btn:hover .scrp-btn-span {
     background: transparent;
-  }
+}
 
 .scrp-mov-id{
+    cursor: grab;
+}
+
+.scrp-gl-icn{
+    width: 28px;
+}
+
+.scrp-gl-icn{
     cursor: pointer;
 }

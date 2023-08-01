@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import ScrpCard from "../Scrper/ScrpCard";
 import axios from "axios";
 import "../../../static/css/pages/ScrpPage.css";
@@ -11,6 +11,7 @@ function ScrpPage() {
   let [searchParams, setSearchParams] = useSearchParams();
   let key = searchParams.get("key") || false;
   let index = searchParams.get("index") || 0;
+  const mainRef = useRef(null);
 
   useEffect(() => {
     if(!key){
@@ -58,6 +59,12 @@ function ScrpPage() {
     }
   }, [key, reverse, index]);
 
+  useEffect(() => {
+    if (scrpImgData && scrpImgData.is_duplicate) {
+      mainRef.current.style.setProperty("color", "#00a752")
+    }
+  }, [scrpImgData]);
+
   const handleOnClickDone = (file_path) => {
     axios({
       method: "post",
@@ -83,8 +90,12 @@ function ScrpPage() {
     });
   };
 
+  const copyToClipboard = (movie_id) => {
+    navigator.clipboard.writeText(movie_id);
+  }
+
   return (
-    <div className="scrp-page-container">
+    <div className="scrp-page-container" ref={mainRef}>
         {scrpDirData.length>0 && !key && 
           (<div className="scrp-cast-container">
               {scrpDirData.map((data, i) => (
@@ -99,11 +110,17 @@ function ScrpPage() {
           (<div className="scrp-img-container">
               <div><span>{scrpImgData.count}</span></div>
               <div className="scrp-img">
-                <img src={scrpImgData.url}></img>
+                <a href={scrpImgData.trailer} className="scrp-links" target="_blank"> <img src={scrpImgData.url}></img> </a>
               </div>
               <div className="scrp-title-main">{scrpImgData.title}</div>
               <div className="scrp-details-main">
-                <div className="scrp-mov-id" onClick={() => handleOnClickOpenFolder(scrpImgData.file_path)}>{scrpImgData.movie_id}</div>
+                <div>
+                  <a href={"https://www.google.com/search?q=" + scrpImgData.movie_id} target="_blank">
+                    <img className='scrp-gl-icn' src="/static/images/google.png" alt=""/>
+                  </a>
+                </div>
+
+                <div className="scrp-mov-id" onClick={() => copyToClipboard(scrpImgData.movie_id)}>{scrpImgData.movie_id}</div>
                 {scrpImgData.release_date && (<div>{scrpImgData.release_date}</div>)}
                 
                 <a className="scrp-btn" onClick={() => handleOnClickDone(scrpImgData.file_path)}><span className="scrp-btn-span">Done</span></a>
@@ -115,6 +132,9 @@ function ScrpPage() {
                 </div>
                 <div>
                   <a href={scrpImgData.video} className="scrp-links" target="_blank"> Video </a>
+                </div>
+                <div onClick={() => handleOnClickOpenFolder(scrpImgData.file_path)}>
+                    <img className='scrp-gl-icn' src="/static/images/folder.svg" alt=""/>
                 </div>
               </div>
 
