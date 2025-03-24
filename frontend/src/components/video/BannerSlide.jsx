@@ -97,6 +97,7 @@ function BannerSlide(props) {
               specialTag={data["special_tag"]}
               subtitle_badge={data["subtitle_badge"]}
               watchTime={data["watch_time"]}
+              series={data["series"]}
             />
           ))}
         </div>

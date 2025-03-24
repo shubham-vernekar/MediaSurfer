@@ -121,6 +121,7 @@ function VideoAdvert() {
           watchTime={data["watch_time"]}
           subtitleBadge={data["subtitle_badge"]}
           size={data["size"]}
+          jtTrailerUrl={data["jt_trailer_url"]}
         />
       ))}
     </div>

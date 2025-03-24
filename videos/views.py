@@ -7,6 +7,7 @@ from django.conf import settings
 import subprocess
 from rest_framework.response import Response
 import os
+import random
 from send2trash import send2trash
 from django.utils import timezone
 
@@ -21,7 +22,7 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, args, kwargs)
-        qs = self.get_queryset()
+        qs = list(self.get_queryset())
         min_duration, max_duration, all_stars, all_categories = 0, 0, set(), set()
         for records in qs:
             if records.cast:
@@ -39,6 +40,7 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
         response.data["all_stars"] = sorted(list(all_stars))
         response.data["all_categories"] = sorted(list(all_categories))
         response.data["count"] = len(qs)
+        response.data["banner_videos"] = VideoListSerializer(random.sample(qs, len(qs))[:15], many=True).data 
         return response
 
 class VideoDetailAPIView(generics.RetrieveAPIView):

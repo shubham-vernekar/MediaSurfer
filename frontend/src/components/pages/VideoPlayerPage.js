@@ -296,6 +296,7 @@ function VideoPlayerPage() {
         'X-CSRFToken': getCookie('csrftoken')
       },
     }).then((response) => {
+      location.reload()
     });
   };
   
@@ -402,6 +403,10 @@ function VideoPlayerPage() {
                 <span className='video-player-button-text'>Not Verfied</span>
               )}
             </div>
+            {videoData.jt_trailer_url && (<div className='video-player-button' onClick={() => window.open(videoData.jt_trailer_url)}>  
+              <img src="/static/images/binocular.svg"  width="30px" height="30px" ></img>
+              <span className='video-player-button-text'>Open Trailer</span>
+            </div>)}
           </div>
 
 

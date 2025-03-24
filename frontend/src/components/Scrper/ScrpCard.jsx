@@ -12,7 +12,7 @@ function ScrpCard(props) {
       
       <div className="scrp-details">
         <div className="scrp-title">
-          <div>{props.title}</div>
+          <div><a href={"/search?query=" + props.title} target='_blank'>{props.title}</a></div>
         </div>
         <div className="scrp-cnt-details-box">
           <div className="scrp-cnt-details">

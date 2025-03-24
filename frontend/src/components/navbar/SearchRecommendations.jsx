@@ -177,6 +177,7 @@ const SearchRecommendations = (props) => {
               watchTime={previewVideo["watch_time"]}
               subtitleBadge={previewVideo["subtitle_badge"]}
               size={previewVideo["size"]}
+              jtTrailerUrl={previewVideo["jt_trailer_url"]}
             />
           </div>
         )}

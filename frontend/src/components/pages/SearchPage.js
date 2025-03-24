@@ -6,10 +6,11 @@ import axios from "axios";
 import "../../../static/css/pages/SearchPage.css";
 import { useSearchParams } from "react-router-dom";
 import { clearSiblingSelection, clearChildren, toggleDisplay } from '../utils'
+import BannerSlide from "../video/BannerSlide";
 
 function SearchPage() {
   const [videoData, SetVideoData] = useState([]);
-
+  const [bannerVideos, SetBannerVideos] = useState([]);
   let [searchParams, setSearchParams] = useSearchParams();
 
   const videosPerPage = 18;
@@ -20,6 +21,7 @@ function SearchPage() {
   const searchPageFilterBoxRef = useRef(null);
   const searchPageSortBoxRef = useRef(null);
   const durationQueryRef = useRef(null);
+  const videosContainerRef = useRef(null);
 
   let page_no = searchParams.get("page") || 1;
   if (page_no < 1) {
@@ -126,11 +128,11 @@ function SearchPage() {
       SetAllStars(response.data["all_stars"]);
       SetAllCategories(response.data["all_categories"]);
       SetVideoCount(response.data["count"]);
+      SetBannerVideos(response.data["banner_videos"]);
     });
   }, []);
 
   useEffect(() => {
-    SetVideosPageNumber(1)
     SetNumberOfPages(Math.ceil(videoCount/videosPageLimit))
   }, [videoCount]);
 
@@ -238,6 +240,7 @@ function SearchPage() {
   };
 
   const paginatorCallback = (val) => {
+    [...videosContainerRef.current.children].map((item) => item.style.display = "block");
     SetVideosPageNumber(val)
   };
 
@@ -275,6 +278,11 @@ function SearchPage() {
   
   return (
     <div className="search-page-container">
+
+      <div>
+        {bannerVideos && <BannerSlide videoData={bannerVideos}/>}
+      </div>
+
       <div className="search-page-filters-container">
         <div className="search-page-filters-left">
           {videoCount || "No"} videos found
@@ -409,7 +417,7 @@ function SearchPage() {
 
       <div className="search-page-content-container">
         <div className="search-videos-box">
-          <div className="video-adverts-container">
+          <div className="video-adverts-container" ref={videosContainerRef}>
             {videoData.map((data, i) => (
               <VideoCard
                 key={i}
@@ -429,6 +437,7 @@ function SearchPage() {
                 watchTime={data["watch_time"]}
                 subtitleBadge={data["subtitle_badge"]}
                 size={data["size"]}
+                jtTrailerUrl={data["jt_trailer_url"]}
               />
             ))}
           </div>

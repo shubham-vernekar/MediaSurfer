@@ -57,12 +57,11 @@
 
 .banner-category-container {
   display: flex;
-  column-gap: 10px;
+  column-gap: 15px;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 
-.banner-category-container,
 .banner-details-container {
   font-size: 20px;
 }
@@ -151,3 +150,6 @@
   opacity: 1;
 }
 
+.banner-category {
+  cursor: pointer;
+}

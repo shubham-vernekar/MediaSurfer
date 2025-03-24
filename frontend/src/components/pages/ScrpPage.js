@@ -108,7 +108,7 @@ function ScrpPage() {
 
         {scrpImgData && key && 
           (<div className="scrp-img-container">
-              <div><span>{scrpImgData.count}</span></div>
+              <div><span>{key} - {scrpImgData.count}</span></div>
               <div className="scrp-img">
                 <a href={scrpImgData.trailer} className="scrp-links" target="_blank"> <img src={scrpImgData.url}></img> </a>
               </div>

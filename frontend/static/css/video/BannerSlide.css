@@ -80,3 +80,9 @@
 .video-banner-slide-left:hover {
   opacity: 1;
 }
+
+.banner-tag-image {
+  position: relative;
+  top: 0px;
+  height: 45px;
+}

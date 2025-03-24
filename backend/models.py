@@ -73,6 +73,7 @@ class UserLevelData(models.Model):
     volume_level = models.FloatField(blank=True, null=True)
     websrc_dir = models.CharField(max_length=1024, blank=True, null=True)
     scanning = models.BooleanField(default=False)
+    uf_jt_link = models.CharField(max_length=1024, blank=True, null=True)
 
     def __str__(self):
         return self.update_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

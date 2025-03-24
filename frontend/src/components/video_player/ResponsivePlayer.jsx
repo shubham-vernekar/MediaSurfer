@@ -175,34 +175,70 @@ function ResponsivePlayer(props) {
       SetFullScreenMode(document.fullscreenElement != null);
     });
 
+    document.addEventListener("keyup", (e) => {
+      let allowed_letters = ["f", "g", "h", "j", "k", "l", "t", "y", "u"]
+      if (allowed_letters.includes(e.key.toLowerCase())){
+        videoRef.current.playbackRate = 1;
+      }
+    });
+
     document.addEventListener("keydown", (e) => {
       const tagName = document.activeElement.tagName.toLowerCase();
 
       if (tagName === "input") return;
 
       switch (e.key.toLowerCase()) {
+        case "f":
+          videoRef.current.playbackRate = 2;
+          break;
+        case "g":
+          videoRef.current.playbackRate = 3;
+          break;
+        case "h":
+          videoRef.current.playbackRate = 4;
+          break;
+        case "j":
+          videoRef.current.playbackRate = 5;
+          break;
+        case "k":
+          videoRef.current.playbackRate = 7;
+          break;
+        case "l":
+          videoRef.current.playbackRate = 10;
+          break;
+        case "t":
+          videoRef.current.playbackRate = 0.2;
+          break;
+        case "y":
+          videoRef.current.playbackRate = 0.5;
+          break;
+        case "u":
+          videoRef.current.playbackRate = 0.75;
+          break;
         case " ":
           if (tagName === "button") return;
           togglePlay();
           break;
-        case "k":
+        case "v":
           togglePlay();
           break;
-        case "f":
+        case "enter":  
           toggleFullScreenMode();
           break;
-        case "i":
+        case "p":
           toggleMiniPlayer();
           break;
         case "m":
           toggleMute();
           break;
         case "arrowleft":
-        case "j":
+        case "d":
           skip(-5);
           break;
+        case "s":
+          skip(-10);
+          break;
         case "arrowright":
-        case "l":
           skip(5);
           break;
         case "c":
@@ -250,8 +286,10 @@ function ResponsivePlayer(props) {
       percent
     );
 
-    let captionsText =
-      videoRef.current.subtitle_data[Math.floor(parseInt(videoRef.current.currentTime))];
+    let captionsText = ""
+    if (videoRef.current.subtitle_data) {
+      captionsText = videoRef.current.subtitle_data[Math.floor(parseInt(videoRef.current.currentTime))];
+    }
 
     if (captionsRef.current) {
       if (captionsText) {

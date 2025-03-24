@@ -8,8 +8,7 @@ from django.core.exceptions import FieldError, ValidationError
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from backend.models import Series
-from stars.models import Star
-from backend.models import Category
+from backend.models import UserLevelData
 from functools import reduce
 import operator
 from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
@@ -450,4 +449,13 @@ class Video(models.Model):
 
         return special_tag
 
+    def get_jt_trailer_url(self):
+        try:
+            user_data_object = UserLevelData.objects.latest('update_timestamp')
+        except UserLevelData.DoesNotExist:
+            return ""
 
+        if user_data_object.uf_jt_link and self.movie_id:
+            return user_data_object.uf_jt_link + self.movie_id
+        else:
+            return ""

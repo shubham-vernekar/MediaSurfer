@@ -8,6 +8,7 @@ class VideoListSerializer(serializers.ModelSerializer):
     special_tag = serializers.SerializerMethodField(read_only=True)
     subtitle_badge = serializers.SerializerMethodField(read_only=True)
     preview_poster = serializers.SerializerMethodField(read_only=True)
+    jt_trailer_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -33,6 +34,7 @@ class VideoListSerializer(serializers.ModelSerializer):
             'last_viewed',
             'badge',
             'special_tag',
+            'jt_trailer_url',
         ]
 
     def get_series(self, obj):
@@ -55,6 +57,9 @@ class VideoListSerializer(serializers.ModelSerializer):
 
     def get_preview_poster(self, obj):
         return obj.get_preview_poster()
+    
+    def get_jt_trailer_url(self, obj):
+        return obj.get_jt_trailer_url()
 
 class VideoSerializer(serializers.ModelSerializer):
 
@@ -64,6 +69,7 @@ class VideoSerializer(serializers.ModelSerializer):
     badge = serializers.SerializerMethodField(read_only=True)
     special_tag = serializers.SerializerMethodField(read_only=True)
     subtitle_badge = serializers.SerializerMethodField(read_only=True)
+    jt_trailer_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -93,7 +99,8 @@ class VideoSerializer(serializers.ModelSerializer):
             'last_viewed',
             'badge',
             'special_tag',
-            'verfied'
+            'verfied',
+            'jt_trailer_url',
         ]
 
     def get_video_url(self, obj):
@@ -119,3 +126,6 @@ class VideoSerializer(serializers.ModelSerializer):
 
     def get_subtitle_badge(self, obj):
         return obj.get_subtitle_badge()
+    
+    def get_jt_trailer_url(self, obj):
+        return obj.get_jt_trailer_url()

@@ -352,8 +352,7 @@ class GetWebScrData(generics.GenericAPIView):
         all_thumbs_files = self.get_all_files(self.labels_data.get("tag_folders_thumb"), ["jpg", "jpeg", "png"])
         self.done_bucket = defaultdict(list)
         for i in all_thumbs_files:
-            self.done_bucket[i.split("\\")[1].lower()].append(i)
-            if "\\done\\" in i:
+            if "\\done\\" in i.lower():
                 self.done_bucket["done"].append(i)
 
         for tag_folder in self.labels_data.get("tag_folders"):
@@ -369,7 +368,7 @@ class GetWebScrData(generics.GenericAPIView):
         return fileList
     
     def check_match(self, match, search_term):
-        for x in self.done_bucket[search_term] + self.done_bucket["done"] + self.done_bucket["downloaded"] :
+        for x in self.done_bucket["done"] + self.done_bucket["downloaded"]:
             if match.lower() in x.lower():
                 return True
         return False
@@ -452,7 +451,7 @@ class GetWebScrData(generics.GenericAPIView):
                 try:
                     star_object = Star.objects.get(name=dir.lower())
                     star_img = star_object.poster.url
-                except Star.DoesNotExist:
+                except:
                     star_img = "/static/images/no-profile-pic.jpg"
 
                 results.append({

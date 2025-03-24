@@ -5,10 +5,10 @@
 }
 
 .search-page-filters-container {
-  width: 96%;
+  width: 95vw;
   display: flex;
   font-size: 20px;
-  margin-top: 23px;
+  margin-top: 25px;
   justify-content: space-between;
   align-items: center;
 }
@@ -60,7 +60,7 @@
 }
 
 .search-page-content-container {
-  width: 100%;
+  width: 100vw;
   display: flex;
   text-transform: capitalize;
   text-align: right;

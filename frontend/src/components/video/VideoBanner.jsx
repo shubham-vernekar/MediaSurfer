@@ -13,9 +13,41 @@ function VideoBanner(props) {
 
   const [starData, SetStarData] = useState([]);
 
-  let category = []
+  const videoThemeDict = {
+    "WATCHED" : {
+      "icon" : "/static/images/Watched.png",
+      "text": "#fff",
+    },
+    "NEW" : {
+      "icon" : "/static/images/new_video.png",
+      "text": "#fff",
+    },
+    "FAVOURITE" : {
+      "icon" : "/static/images/Favorite Icon.png",
+      "text": "#fff",
+    },
+    "RECOMMENDED" : {
+      "icon" : "/static/images/Recommended.png",
+      "text": "#fff",
+    },
+    "SRT" : {
+      "icon" : "",
+      "text": "#fff",
+    }
+  }
+
+  const getTagImage = (name) => {
+    if (videoThemeDict[name]) {
+      return videoThemeDict[name].icon;
+    }else{
+      return "";
+    }
+  };
+  
+
+  let categories = []
   if (props.categories){
-    props.categories.split(",").filter(Boolean);
+      categories = props.categories.split(",").filter(Boolean);
   }
   
   useEffect(() => {
@@ -113,14 +145,20 @@ function VideoBanner(props) {
             </div>
             <div>{props.badge}</div>
             {props.subtitle_badge && (<div>SRT</div>)}
-            <div>{props.specialTag}</div>
+            <img src={getTagImage(props.specialTag)} className="banner-tag-image" alt="" />
           </div>
 
+          {props.series && props.series.name &&(
+            <div className="banner-series">
+              <a href={"/search?series="+props.series.id}>{props.series.name}</a>
+            </div>
+          )}
+
           <div className="banner-category-container">
-            {category.map((categoryName, i) => (
-              <div key={i}>
+            {categories.map((categoryName, i) => (
+              <div key={i} className="banner-category" target="_blank">
                 {/* eslint-disable-next-line */}
-                <a>{categoryName}</a>
+                <a href={'search?categories=' + categoryName}>{categoryName}</a>
               </div>
             ))}
           </div>
