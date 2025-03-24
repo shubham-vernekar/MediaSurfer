@@ -47,7 +47,7 @@ function SeriesPage() {
         cast: castQuery,
         sort_by: sortQuery,
       },
-    }).then((response) => {
+    }).then((response) => {     
       SetSeriesData(response.data.results);
       SetSeriesCount(response.data["count"]);
     });
@@ -251,6 +251,7 @@ function SeriesPage() {
             key={i}
             videoData={data.video_data}
             title={data.name}
+            explore={"/search?series=" + data.id}
           />
         ))}
       </div>

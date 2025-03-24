@@ -88,6 +88,8 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
         cast = self.request.GET.get("cast", None)
         categories = self.request.GET.get("categories", None)
 
+        qs = qs.filter(Q(videos__gt = 0))
+
         if query:
             qs = qs.filter(Q(name__icontains=query))
 
