@@ -37,6 +37,7 @@ function VideoPlayerPage() {
       method: "get",
       url: "/api/videos/" + videoID,
     }).then((response) => {
+      console.log(response.data);
       SetVideoData(response.data);
       SetCategories(response.data.categories && response.data.categories.split(",").filter(Boolean)) 
       SetCast(response.data.cast && response.data.cast.split(",").filter(Boolean)) 
@@ -323,7 +324,8 @@ function VideoPlayerPage() {
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
               </svg>
-              {getDurationText(videoData.duration.seconds)} </div>
+              {getDurationText(videoData.duration)}
+            </div>
             <div> 
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zm5.402 9.746c.625 0 1.184-.484 1.184-1.18 0-.832-.527-1.23-1.16-1.23-.586 0-1.168.387-1.168 1.21 0 .817.543 1.2 1.144 1.2z"/>

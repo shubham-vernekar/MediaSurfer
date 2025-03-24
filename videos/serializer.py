@@ -9,6 +9,7 @@ class VideoListSerializer(serializers.ModelSerializer):
     subtitle_badge = serializers.SerializerMethodField(read_only=True)
     preview_poster = serializers.SerializerMethodField(read_only=True)
     jt_trailer_url = serializers.SerializerMethodField(read_only=True)
+    duration_seconds = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -35,6 +36,7 @@ class VideoListSerializer(serializers.ModelSerializer):
             'badge',
             'special_tag',
             'jt_trailer_url',
+            'duration_seconds', 
         ]
 
     def get_series(self, obj):
@@ -60,6 +62,9 @@ class VideoListSerializer(serializers.ModelSerializer):
     
     def get_jt_trailer_url(self, obj):
         return obj.get_jt_trailer_url()
+    
+    def get_duration_seconds(self, obj):
+        return obj.duration.seconds
 
 class VideoSerializer(serializers.ModelSerializer):
 
@@ -70,6 +75,7 @@ class VideoSerializer(serializers.ModelSerializer):
     special_tag = serializers.SerializerMethodField(read_only=True)
     subtitle_badge = serializers.SerializerMethodField(read_only=True)
     jt_trailer_url = serializers.SerializerMethodField(read_only=True)
+    duration = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Video
@@ -129,3 +135,6 @@ class VideoSerializer(serializers.ModelSerializer):
     
     def get_jt_trailer_url(self, obj):
         return obj.get_jt_trailer_url()
+    
+    def get_duration(self, obj):
+        return obj.duration.seconds

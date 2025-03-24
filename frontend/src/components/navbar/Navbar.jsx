@@ -143,6 +143,11 @@ function Navbar(props) {
   return (
     <div className="navbar">
       <div className="navbar-left">
+        <div className="video-summary-container">
+          <div className="video-summary-text"> 1100  Videos </div>
+          <div className="video-summary-text"> 5  days  10  hrs  6  mins  </div>
+          <div className="video-summary-text"> 2211  hrs  45  mins  watched </div>
+        </div>
         <img className="logo-img" src="/static/images/logo.svg" alt="" onClick={() => window.location.href="/" } />
         {navbarData.map((data, i) => (
           <a

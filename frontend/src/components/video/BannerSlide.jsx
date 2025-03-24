@@ -98,6 +98,7 @@ function BannerSlide(props) {
               subtitle_badge={data["subtitle_badge"]}
               watchTime={data["watch_time"]}
               series={data["series"]}
+              duration_seconds={data["duration_seconds"]}
             />
           ))}
         </div>
