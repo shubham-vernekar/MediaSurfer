@@ -18,6 +18,7 @@ class StarQuerySet(models.QuerySet):
         tag = parameters.get("tag", None)
         limit = parameters.get("limit", None)
         cast = [x for x in parameters.get("cast", "").lower().split(",") if x]
+        print (sort_by)
 
         qs = self.order_by('name')
 
@@ -114,6 +115,7 @@ class Star(models.Model):
     views = models.IntegerField(default=0, blank=True, null=True)
     videos = models.IntegerField(default=0, blank=True, null=True)
     watchtime = models.IntegerField(default=0, blank=True, null=True)
+    totaltime = models.IntegerField(default=0, blank=True, null=True)
     added = models.DateTimeField(default=timezone.now)
     poster = models.ImageField(
         upload_to=upload_star_poster, blank=True, null=True)

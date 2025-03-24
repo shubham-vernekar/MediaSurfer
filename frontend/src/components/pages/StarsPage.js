@@ -281,6 +281,7 @@ function StarAdvert() {
               liked={data["liked"]}
               favourite={data["favourite"]}
               watchtime={data["watchtime"]}
+              totaltime={data["totaltime"]}
             />
           ))}
         </div>
@@ -300,6 +301,7 @@ function StarAdvert() {
             <div className="star-advert-global-search" onClick={getTopStars}>By Views</div>
             <div className="star-advert-global-search" onClick={getTopStars}>By Videos</div>
             <div className="star-advert-global-search" onClick={getTopStars}>By Watchtime</div>
+            <div className="star-advert-global-search" onClick={getTopStars}>By Totaltime</div>
           </div>
           <div className="star-advert-filter-container" ref={starsFilter}>
             <div className="star-advert-filter-title">FILTER</div>

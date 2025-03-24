@@ -17,7 +17,8 @@ class StarSerializer(serializers.ModelSerializer):
             'poster',
             'banner',
             'tags',
-            'watchtime'
+            'watchtime',
+            'totaltime'
         ]
 
     def get_poster(self, obj):

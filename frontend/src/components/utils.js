@@ -2,14 +2,15 @@ import axios from "axios";
 
 const getDurationText = (duration) => {
     if (duration){
-      duration = duration.split(":");
-      if (parseInt(duration[0]) > 0) {
-        return parseInt(duration[0]) + " hrs " + parseInt(duration[1]) + " mins";
+      let hours = Math.floor(duration / 3600);
+      let minutes = Math.floor((duration - (hours * 3600)) / 60);
+      if (hours > 0) {
+        return hours + " hrs " + minutes + " mins";
       } else {
-        if (duration[1]<2){
-          return parseInt(duration[1]) + " min";
+        if (minutes<2){
+          return minutes + " min";
         }else{
-          return parseInt(duration[1]) + " mins";
+          return minutes + " mins";
         }
       }
     }
