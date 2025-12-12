@@ -134,22 +134,22 @@ function StarCard(props) {
         </div>
         <div className="star-details">
             <span className="star-title"> {props.name} </span>
-            <div className="star-videos" onClick={() => window.open("/admin/stars/star/"+ props.id +"/change/", '_blank').focus()}> 
-              <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-11zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6v7zm6.258-6.437a.5.5 0 0 1 .507.013l4 2.5a.5.5 0 0 1 0 .848l-4 2.5A.5.5 0 0 1 6 12V7a.5.5 0 0 1 .258-.437z"/>
-              </svg>
-              <span> 
-                {props.videos} 
-                <div className="total-time-text"> {totalTimeText} </div>
-              </span>
+            <div className="star-info">
+              <div className="star-videos" onClick={() => window.open("/admin/stars/star/"+ props.id +"/change/", '_blank').focus()}> 
+                <span> 
+                  {props.videos} <span className="star-videos-label">Videos</span> 
+                  <div className="total-time-text"> {totalTimeText} </div>
+                </span>
+              </div>
+              <div className="star-views"> 
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                </svg>
+                <span> {props.views} </span>
+              </div>
             </div>
-            <div className="star-views"> 
-              <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-              </svg>
-              <span> {props.views} </span>
-            </div>
+            
             <div className="star-buttons-container">
 
               {!liked && (

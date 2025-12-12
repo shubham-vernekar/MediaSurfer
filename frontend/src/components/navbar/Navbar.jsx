@@ -15,6 +15,9 @@ function Navbar(props) {
   const [showAlertMsg, SetShowAlertMsg] = useState(false);
   const [showAlertDetails, SetShowAlertDetails] = useState(false);
   const [isScanning, SetIsScanning] = useState(false);
+  const [videoCount, SetVideoCount] = useState(0);
+  const [watchTime, SetWatchTime] = useState(0);
+  const [totalDuration, SetTotalDuration] = useState(0);
 
   const [showScanMsg, SetShowScanMsg] = useState(false);
   const [showLogs, SetShowLogs] = useState(false);
@@ -30,6 +33,9 @@ function Navbar(props) {
       url: "/api/navbar",
     }).then((response) => {
       SetNavbarData(response.data["results"]);
+      SetVideoCount(response.data["count"]);
+      SetWatchTime(response.data["watchtime"]);
+      SetTotalDuration(response.data["duration"]);
     });
 
     getPending();
@@ -144,9 +150,9 @@ function Navbar(props) {
     <div className="navbar">
       <div className="navbar-left">
         <div className="video-summary-container">
-          <div className="video-summary-text"> 1100  Videos </div>
-          <div className="video-summary-text"> 5  days  10  hrs  6  mins  </div>
-          <div className="video-summary-text"> 2211  hrs  45  mins  watched </div>
+          <div className="video-summary-text"> {videoCount} Videos </div>
+          <div className="video-summary-text"> {totalDuration} </div>
+          <div className="video-summary-text"> {watchTime} watched </div>
         </div>
         <img className="logo-img" src="/static/images/logo.svg" alt="" onClick={() => window.location.href="/" } />
         {navbarData.map((data, i) => (

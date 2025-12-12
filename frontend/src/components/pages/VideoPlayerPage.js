@@ -37,7 +37,6 @@ function VideoPlayerPage() {
       method: "get",
       url: "/api/videos/" + videoID,
     }).then((response) => {
-      console.log(response.data);
       SetVideoData(response.data);
       SetCategories(response.data.categories && response.data.categories.split(",").filter(Boolean)) 
       SetCast(response.data.cast && response.data.cast.split(",").filter(Boolean)) 

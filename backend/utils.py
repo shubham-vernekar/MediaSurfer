@@ -41,3 +41,13 @@ def apply_regex(expr, key):
     if matches:
         return matches[0]
     return ""
+
+def convert_seconds(seconds, format_type='days'):
+    days = seconds // (24 * 3600)
+    hours = (seconds % (24 * 3600)) // 3600
+    minutes = (seconds % 3600) // 60
+    
+    if format_type == 'hours':
+        return f"{hours + days*24 } hrs and {minutes} mins"
+    else:
+        return f"{days} days {hours} hrs and {minutes} mins"

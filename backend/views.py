@@ -1,7 +1,7 @@
 from typing import Any
 from .models import Category, Navbar, Series, UserLevelData
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer
-from .utils import get_pending_videos, apply_regex
+from .utils import get_pending_videos, apply_regex, convert_seconds
 from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
@@ -75,6 +75,21 @@ class NavbarListView(generics.ListCreateAPIView):
         qs = super().get_queryset(*args, **kwargs)
         qs = qs.order_by("-weight")
         return qs
+    
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, args, kwargs)
+        qs = self.get_queryset()
+
+        total_watch_time, total_duration = 0, 0
+        videos_data = Video.objects.all().values_list('watch_time', 'duration')
+        for watch_time, duration in videos_data:
+            total_watch_time += watch_time
+            total_duration += duration.seconds
+            
+        response.data["watchtime"] = convert_seconds(total_watch_time, "hours")
+        response.data["duration"] = convert_seconds(total_duration, "days")
+        response.data["count"] = len(videos_data)
+        return response
 
 
 class SeriesListCreateAPIView(generics.ListCreateAPIView):

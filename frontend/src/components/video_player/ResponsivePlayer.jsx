@@ -71,8 +71,64 @@ function ResponsivePlayer(props) {
       SetMiniPlayer(false);
     });
 
+    videoRef.current.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      skip(-5);
+    });
+
+    var timeoutID = 0
+    var holdTime = 250
+    var playState = 0
+    var skipClick = false
+    var intervalRewind = 0;
+
+    videoRef.current.addEventListener("mousedown", (e) => { 
+      if (e.button == 0) {
+        timeoutID = setTimeout(forwardVideo, holdTime);
+      }
+      if (e.button == 2) {
+        timeoutID = setTimeout(rewindVideo, holdTime);
+      }
+    });
+
+    videoRef.current.addEventListener("mouseup", (e) => {
+      clearTimeout(timeoutID);
+      clearInterval(intervalRewind);
+      if (skipClick) {
+        videoRef.current.playbackRate = 1;
+        if (playState == 1) {
+          videoRef.current.pause()
+        }
+      }
+    });
+
+    const forwardVideo = (e) => {
+      skipClick = true
+      playState = 0
+      if (videoRef.current.paused){
+        playState = 1
+        videoRef.current.play()
+      }
+      videoRef.current.playbackRate = 10;
+    }
+
+    const rewindVideo = (e) =>{
+        clearInterval(intervalRewind);
+        intervalRewind = setInterval((e) => {
+            skip(-1);
+            if (videoRef.current.currentTime <= 0) {
+                clearInterval(intervalRewind);
+                videoRef.current.pause(); 
+            }
+        }, 100);    
+    }
+
     var pendingClick = 0;
     videoRef.current.addEventListener("click", (e) => {
+      if (skipClick) {
+        skipClick = false
+        return
+      }
       if (pendingClick) {
         clearTimeout(pendingClick);
         pendingClick = 0;
@@ -184,7 +240,7 @@ function ResponsivePlayer(props) {
 
     document.addEventListener("keydown", (e) => {
       const tagName = document.activeElement.tagName.toLowerCase();
-
+      
       if (tagName === "input") return;
 
       switch (e.key.toLowerCase()) {
@@ -232,13 +288,16 @@ function ResponsivePlayer(props) {
           toggleMute();
           break;
         case "arrowleft":
-        case "d":
+        case "s":
+        case "4":
           skip(-5);
           break;
         case "s":
           skip(-10);
           break;
         case "arrowright":
+        case "6":
+        case "d":
           skip(5);
           break;
         case "c":

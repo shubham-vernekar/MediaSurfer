@@ -25,7 +25,7 @@
 
 .star-details{
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 1fr 1fr;
     align-content: space-around;
     height: 20%;
     border-radius: 0px 0px 8px 8px;
@@ -135,7 +135,7 @@
 }
 
 .total-time-text{
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 .star-videos{
@@ -183,3 +183,17 @@
     transform:scale(1.3);
 }
 
+.star-info{
+    display: none;
+    grid-column: 1/-1;
+    justify-content: space-around;
+    margin-bottom: 0.3rem;
+}
+
+.star-card:hover .star-info{
+    display: flex;
+}
+
+.star-videos-label{
+    font-size: 0.75rem;
+}

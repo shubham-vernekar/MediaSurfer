@@ -1,5 +1,5 @@
 .timeline-container {
-  height: 7px;
+  height: 10px;
   margin-inline: 0.5rem;
   cursor: pointer;
   display: flex;
@@ -8,7 +8,7 @@
 
 .timeline {
   background-color: rgba(100, 100, 100, 0.5);
-  height: 3px;
+  height: 7px;
   width: 100%;
   position: relative;
 }
