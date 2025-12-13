@@ -18,7 +18,6 @@ class StarQuerySet(models.QuerySet):
         tag = parameters.get("tag", None)
         limit = parameters.get("limit", None)
         cast = [x for x in parameters.get("cast", "").lower().split(",") if x]
-        print (sort_by)
 
         qs = self.order_by('name')
 

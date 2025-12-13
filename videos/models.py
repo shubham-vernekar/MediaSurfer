@@ -161,12 +161,26 @@ class VideoQuerySet(models.QuerySet):
 
         if filter=="unverfied":
             qs = qs.filter(Q(verfied=False))
-        
+
         if query:
-            search_query = SearchQuery(query)
-            search_rank = SearchRank(F("search_vector"), search_query)
-            title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
-            qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
+            # Cast search
+            # OR Operation - c:foo bar|abc xyz
+            # AND Operation - c:foo bar,abc xyz
+            if query.startswith('c:'):
+                cast = query[2:]
+                if "|" in query:
+                    cast = cast.replace("|", ",")
+                else:
+                    cast = f"{cast}~"
+                words = cast.split()
+                cast = ", ".join(" ".join(pair) for pair in zip(words[::2], words[1::2]))
+            elif query.startswith('"') and query.endswith('"'):
+                qs = qs.filter(Q(title__icontains=query[1:-1]))
+            else:
+                search_query = SearchQuery(query)
+                search_rank = SearchRank(F("search_vector"), search_query)
+                title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+                qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
 
         if cast:
             and_operation = cast[-1] == "~"
