@@ -82,7 +82,7 @@ function ResponsivePlayer(props) {
     var skipClick = false
     var intervalRewind = 0;
 
-    videoRef.current.addEventListener("mousedown", (e) => { 
+    videoRef.current.addEventListener("mousedown", (e) => {    
       if (e.button == 0) {
         timeoutID = setTimeout(forwardVideo, holdTime);
       }
@@ -135,7 +135,7 @@ function ResponsivePlayer(props) {
       }
       switch (e.detail) {
         case 1:
-          pendingClick = setTimeout(function () {
+          pendingClick = setTimeout(() => {
             togglePlay();
           }, 200);
           break;
@@ -524,13 +524,31 @@ function ResponsivePlayer(props) {
   };
   
   const videoContainerMouseWheelHandler = (e) => {
-    if (e.deltaY>0 && fullScreenMode){
-      changeVolume(-0.04);
-    }else{
-      changeVolume(0.04);
+    if (fullScreenMode) {
+      if(e.deltaX == 0) {
+        if (e.deltaY>0){
+          changeVolume(-0.04);
+        }else{
+          changeVolume(0.04);
+        }
+      }else{
+        changePlaybackRate(e.deltaX)
+      }
     }
-
   };
+
+  var lastScrollTime = 0
+  const changePlaybackRate  = (x) => {
+    const now = Date.now();
+    if (now - lastScrollTime > 200) {
+      if (x > 0) {
+        skip(1.5);
+      } else {
+        skip(-1.5);
+      }
+      lastScrollTime = now;
+    }
+  }
 
   const pauseVideoState = () => {
     SetPauseVideo(false);
