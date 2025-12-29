@@ -81,21 +81,25 @@ function ResponsivePlayer(props) {
     var playState = 0
     var skipClick = false
     var intervalRewind = 0;
+    var intervalForward = 0;
 
     videoRef.current.addEventListener("mousedown", (e) => {    
-      if (e.button == 0) {
+      // console.log(e.button);
+      
+      if (e.button == 0 || e.button == 4) {
         timeoutID = setTimeout(forwardVideo, holdTime);
       }
-      if (e.button == 2) {
+      if (e.button == 2 || e.button == 3) {
         timeoutID = setTimeout(rewindVideo, holdTime);
       }
     });
 
     videoRef.current.addEventListener("mouseup", (e) => {
+      videoRef.current.playbackRate = 1;
       clearTimeout(timeoutID);
       clearInterval(intervalRewind);
+      // sclearInterval(intervalForward);
       if (skipClick) {
-        videoRef.current.playbackRate = 1;
         if (playState == 1) {
           videoRef.current.pause()
         }
@@ -109,11 +113,15 @@ function ResponsivePlayer(props) {
         playState = 1
         videoRef.current.play()
       }
-      videoRef.current.playbackRate = 10;
+      videoRef.current.playbackRate = 16;
+      // clearInterval(intervalForward);
+      // intervalForward = setInterval((e) => {
+      //       skip(1);
+      //   }, 50);  
     }
 
     const rewindVideo = (e) =>{
-        clearInterval(intervalRewind);
+        // clearInterval(intervalRewind);
         intervalRewind = setInterval((e) => {
             skip(-1);
             if (videoRef.current.currentTime <= 0) {
@@ -129,18 +137,28 @@ function ResponsivePlayer(props) {
         skipClick = false
         return
       }
-      if (pendingClick) {
-        clearTimeout(pendingClick);
-        pendingClick = 0;
-      }
+      // if (pendingClick) {
+      //   clearTimeout(pendingClick);
+      //   pendingClick = 0;
+      // }
       switch (e.detail) {
         case 1:
-          pendingClick = setTimeout(() => {
-            togglePlay();
-          }, 200);
+          // pendingClick = setTimeout(() => {
+          //   // togglePlay();
+          //   if (videoRef.current.paused){
+          //     videoRef.current.play()
+          //   } else {
+          //     skip(5);
+          //   }
+          // }, 200);
+          if (videoRef.current.paused){
+              videoRef.current.play()
+            } else {
+              skip(5);
+            }
           break;
         case 2:
-          toggleFullScreenMode();
+          // toggleFullScreenMode();
           break;
         default:
           break;
@@ -542,9 +560,9 @@ function ResponsivePlayer(props) {
     const now = Date.now();
     if (now - lastScrollTime > 200) {
       if (x > 0) {
-        skip(1.5);
+        skip(0.5);
       } else {
-        skip(-1.5);
+        skip(-0.5);
       }
       lastScrollTime = now;
     }
