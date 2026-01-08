@@ -45,7 +45,7 @@ var attempt_auth = function() {
     $.post("/login/pin/auth", {"pin": current_pin})
         .success(function() {
             $('.welcome-image').css('visibility', 'visible')
-            setTimeout(start_website, 1000);
+            setTimeout(start_website, 2000);
         })
 };
 

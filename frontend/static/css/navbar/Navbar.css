@@ -1,7 +1,7 @@
 .navbar{
     position: sticky;
     width: 100%;
-    height: 70px;
+    height: 66px;
     top:0;
     display: flex;
     flex-direction: row;
@@ -14,13 +14,12 @@
 
 .navbar-left{
     display: flex;
-    padding-left: 60px;
     flex-direction: row;
     align-content: center;
     justify-content: flex-start;
     align-items: flex-end;
-    column-gap: 35px;
-    font-size: 18px;
+    column-gap: 25px;
+    font-size: 17px;
     margin-left: 160px;
 }
 
@@ -40,6 +39,7 @@
 .logo-img{
     width: 120px;
 	cursor: pointer;
+	margin-right: 7px;
 }
 
 .navbar-right{
@@ -51,6 +51,10 @@
     justify-content: center;
     padding-right: 40px;
 	position: relative;
+}
+
+.navbar-items{
+	margin-bottom: 3px;
 }
 
 
@@ -89,15 +93,15 @@
 	float: left;
 	font-size: 13px;
 	font-weight: 400;
-	height: 40px;
+	height: 35px;
 	margin: 0;
 	padding: 0 10px;
 	text-shadow: 0 -1px 0 #000;
-	width: 500px;
+	width: 400px;
 }
 
 .ie .navbar-search-box input {
-	line-height: 40px;
+	line-height: 35px;
 }
 
 .navbar-search-box input::-webkit-input-placeholder {
@@ -139,13 +143,13 @@
 	float: left;
 	font-size: 13px;
 	font-weight: 400;
-	height: 40px;
-	line-height: 40px;
+	height: 35px;
+	line-height: 35px;
 	margin: 0;
 	padding: 0;
 	position: relative;
 	text-shadow: 0 -1px 0 #000;
-	width: 80px;
+	width: 60px;
 }	
 
 .navbar-search-box button:hover,
@@ -241,6 +245,7 @@ a{
 	max-width: 0;
   	transition: 0.5s ease-in;
 	text-transform: capitalize;
+	font-size: 14px;
 }
 
 .scan-alert-container:active {

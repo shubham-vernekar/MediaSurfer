@@ -29,7 +29,7 @@ body {
 
 .pin-container {
     display: grid;
-    height: 98vh;
+    height: 96vh;
     justify-items: center;
     align-content: center;
 }
@@ -62,7 +62,7 @@ button{
     font-size: 2vw;
     width: 5.2vw;
     height: 5vw;
-    border-radius: 35px;
+    border-radius: 1.7vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,8 +73,7 @@ button{
 }
 
 svg{
-    width: 5vh;
-    height: 5vh;
+    width: 4vh;
 }
 
 button:hover {
@@ -100,7 +99,7 @@ button:active {
     width: 30vw;
     z-index: 12;
     position: absolute;
-    top: 15vh;
+    top: 8vh;
     visibility: hidden;
 }
 
