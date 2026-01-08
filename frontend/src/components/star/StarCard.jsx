@@ -79,7 +79,7 @@ function StarCard(props) {
     starCardRef.current.style.setProperty("--star-card-border-color", videoThemeDict[key]["border"]);
     starCardRef.current.style.setProperty("--star-card-background", videoThemeDict[key]["background"]);
     starCardRef.current.style.setProperty("--star-card-theme", videoThemeDict[key]["theme"]);
-    starCardRef.current.style.boxShadow = "0px 18px 60px -33px " + videoThemeDict[key]["glow"]
+    // starCardRef.current.style.boxShadow = "0px 1em 3em -2em " + videoThemeDict[key]["glow"]
   }, [liked, favourite]);
 
   const handleOnClickCastRandomButton = (e) => {
@@ -136,10 +136,10 @@ function StarCard(props) {
             <span className="star-title"> {props.name} </span>
             <div className="star-info">
               <div className="star-videos" onClick={() => window.open("/admin/stars/star/"+ props.id +"/change/", '_blank').focus()}> 
-                <span> 
+                <div> 
                   {props.videos} <span className="star-videos-label">Videos</span> 
-                  <div className="total-time-text"> {totalTimeText} </div>
-                </span>
+                </div>
+                <div className="total-time-text"> {totalTimeText} </div>
               </div>
               <div className="star-views"> 
                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
@@ -164,9 +164,7 @@ function StarCard(props) {
                 </div>
               )}
 
-              <div className="star-play">
-                <div className="star-play-button" onClick={handleOnClickCastRandomButton} cast={props.name}>PLAY</div>
-              </div>
+              <div className="star-play-button" onClick={handleOnClickCastRandomButton} cast={props.name}>PLAY</div>
 
               {!favourite && (
                 <div className="star-liked-button star-button" onClick={() => {updateStarState(props.id, props.name, !favourite, liked)}}>

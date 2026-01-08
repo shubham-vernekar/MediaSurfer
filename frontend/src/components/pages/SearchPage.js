@@ -13,7 +13,7 @@ function SearchPage() {
   const [bannerVideos, SetBannerVideos] = useState([]);
   let [searchParams, setSearchParams] = useSearchParams();
 
-  const videosPerPage = 18;
+  const videosPerPage = 20;
   const labelsContainerRef = useRef(null);
   const castBlockContainerRef = useRef(null);
   const categoryBlockContainerRef = useRef(null);

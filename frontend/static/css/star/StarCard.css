@@ -4,18 +4,22 @@
     cursor: pointer;
 }
 
+.star-card:hover .star-poster{
+    height: 68%;
+}
+
 .star-poster img{
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 7px 7px 0px 0px;
+    border-radius: 0.45em 0.45em 0px 0px;
     z-index: -10;
 }
 
 .star-card{
-    width: 200px;
-    height: 320px;
-    border-radius: 8px;
+    width: 12em;
+    height: 19.2em;
+    border-radius: 0.5em;
     border-color: var(--star-card-border-color);
     border-style: solid;
     border-width: 1px;
@@ -23,62 +27,53 @@
     background-color: #141414; 
 }
 
+.star-card:hover{
+    width: 12.9em;
+    height: 22.3em;
+}
+
 .star-details{
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-content: space-around;
     height: 20%;
-    border-radius: 0px 0px 8px 8px;
+    border-radius: 0px 0px 0.5em 0.5em;
     align-items: center;
     justify-content: center;
     color: var(--star-card-text-color);
     background: var(--star-card-background);
 }
 
+.star-card:hover .star-details{
+    height: 32%;
+    padding: 0.5em 0;
+}
+
 .star-title{
-    font-size: 17px;
+    font-size: 1.17em;
     font-weight: 500;
     text-transform: capitalize;
     grid-column: 1/-1;
     text-align: center;
 }
 
-.star-videos, .star-views{
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
 .star-play-button{
     display: none;
     cursor: pointer;
-    padding: 6px 20px;
+    padding: 0.22em 1.2em;
     text-align: center;
     text-decoration: none;
     border: 1px solid var(--star-card-text-color);
-    border-radius: 9px;
+    border-radius: 0.5em;
+    transition: 0.3s ease-in-out;
 }
 
 .star-play-button:hover {
-    transform:scale(1.05)
+    transform:scale(1.06)
 }
 
 .star-play-button:active {
-  transform:scale(1.1)
-}
-
-.star-card:hover{
-    height: 405px;
-    width: 215px;
-}
-
-.star-card:hover .star-poster{
-    height: 68%;
-}
-
-.star-card:hover .star-details{
-    height: 32%;
-    padding: 10px 0;
+    transform:scale(1.12)
 }
 
 .star-card:hover .star-title{
@@ -93,10 +88,6 @@
     display: inline-block;
 }
 
-.star-card:hover .star-views{
-    display: flex;
-}
-
 .star-card:hover .star-videos{
     display: flex;
 }
@@ -107,8 +98,8 @@
 
 .star-banner img{
     position: absolute;
-    top: 7px;
-    right: 7px;
+    top: 0.45em;
+    right: 0.45em;
 }
 
 .star-watch-time-container{
@@ -117,38 +108,43 @@
 
 .star-watch-time{
     position: absolute;
-    bottom: 7px;
+    bottom: 0.45em;
     /* background: #00000096; */
     color: var(--star-card-text-color);
     background: var(--star-card-theme);
-    padding: 1px 7px;
-    right: 10px;
-    border-radius: 8px;
-    line-height: 18px;
-    height: 23px;
-}
-
-.star-videos, .star-views{
-    display: none;
-    column-gap: 8px;
-    padding-right: 2px;
-}
-
-.total-time-text{
-    font-size: 0.75rem;
+    padding: 0.1em 0.45em;
+    right: 0.65em;
+    border-radius: 0.35em;
+    line-height: 1.2em;
+    /* height: 1.4em; */
 }
 
 .star-videos{
+    display: none;
     cursor: pointer;
+    flex-direction: column;
+    align-items: center;
 }
 
 .star-card:hover .star-videos{
     display: flex;
 }
 
+.star-views{
+    display: none;
+    column-gap: 0.4em;
+    align-items: center;
+    justify-content: center;
+}
+
 .star-card:hover .star-views{
     display: flex;
 }
+
+.total-time-text{
+    font-size: 0.9em;
+}
+
 
 .star-card:hover .star-title{
     white-space: nowrap;
@@ -169,7 +165,8 @@
 }
 
 .star-button{
-    width: 27px;
+    width: 1.4em;
+    display: flex;
     cursor: pointer;
     opacity: 0;
     transition: 0.3s ease-in-out;
@@ -186,8 +183,10 @@
 .star-info{
     display: none;
     grid-column: 1/-1;
-    justify-content: space-around;
-    margin-bottom: 0.3rem;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 0.4em;
 }
 
 .star-card:hover .star-info{
@@ -195,5 +194,5 @@
 }
 
 .star-videos-label{
-    font-size: 0.75rem;
+    font-size: 0.85em;
 }
