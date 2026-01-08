@@ -78,17 +78,10 @@
 }
 
 .banner-cast-block .star-card {
-  width: 6.5vw; 
-  height: 9.75vw;
+  font-size: 0.77em;
 }
 
-.banner-cast-block .star-button {
-  width: 1vw;
-}
 
-.banner-cast-block .star-title {
-  font-size: 16px !important;
-}
 
 .banner-cast-block {
   position: sticky;
@@ -97,22 +90,6 @@
   align-content: center;
   justify-content: flex-start;
   align-items: center;
-}
-
-.banner-cast-block .star-play-button {
-  padding: 2px 12px;
-  font-size: 15px;
-}
-
-.banner-cast-block .star-details {
-  row-gap: 3px;
-  padding: 4px 0!important;
-}
-
-.banner-cast-block .star-card:hover {
-  width: 6.5vw; 
-  height: 11.62vw; 
-  overflow: hidden;
 }
 
 .star-banner-slide-button {
