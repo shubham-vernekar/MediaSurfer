@@ -18,6 +18,7 @@ function ResponsivePlayer(props) {
   const captionsButtonRef = useRef(null);
   const speedButtonRef = useRef(null);
   const centerPlayButtonRef = useRef(null);
+  const blackScreenRef = useRef(null);
 
   const [fullScreenMode, SetFullScreenMode] = useState(false);
   const [miniPlayer, SetMiniPlayer] = useState(false);
@@ -98,7 +99,7 @@ function ResponsivePlayer(props) {
       videoRef.current.playbackRate = 1;
       clearTimeout(timeoutID);
       clearInterval(intervalRewind);
-      // sclearInterval(intervalForward);
+      clearInterval(intervalForward);
       if (skipClick) {
         if (playState == 1) {
           videoRef.current.pause()
@@ -290,6 +291,7 @@ function ResponsivePlayer(props) {
           videoRef.current.playbackRate = 0.75;
           break;
         case " ":
+          e.preventDefault()
           if (tagName === "button") return;
           togglePlay();
           break;
@@ -453,10 +455,19 @@ function ResponsivePlayer(props) {
     videoRef.current.muted = !videoRef.current.muted;
   };
 
+  var intervalBlackScreen = 0;
   const toggleFullScreenMode = () => {
     if (document.fullscreenElement == null) {
+      clearInterval(intervalBlackScreen)
+      blackScreenRef.current.style.display = "block"
+      blackScreenRef.current.style.opacity = 1
+      intervalBlackScreen = setInterval((e) => {
+              blackScreenRef.current.style.opacity = 0
+          }, 300);
       videoContainerRef.current.requestFullscreen();
     } else {
+      blackScreenRef.current.style.display = "none"
+      blackScreenRef.current.style.opacity = 1
       document.exitFullscreen();
     }
   };
@@ -624,6 +635,7 @@ function ResponsivePlayer(props) {
       ref={videoContainerRef}
     >
       <canvas className="thumbnail-img" ref={thumbnailImgRef}></canvas>
+      <canvas className="black-screen" ref={blackScreenRef}></canvas>
 
       <img
         src="/static/images/play.png"

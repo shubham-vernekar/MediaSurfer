@@ -47,6 +47,7 @@ function VideoPlayerPage() {
       SetIsVerfied(response.data.verfied)
       SetSpecialTag(response.data.special_tag)
       SetWatchTime(response.data.watch_time)
+      document.title = response.data.title;
     });
 
     axios({
