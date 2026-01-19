@@ -84,9 +84,7 @@ function ResponsivePlayer(props) {
     var intervalRewind = 0;
     var intervalForward = 0;
 
-    videoRef.current.addEventListener("mousedown", (e) => {    
-      // console.log(e.button);
-      
+    videoRef.current.addEventListener("mousedown", (e) => {
       if (e.button == 0 || e.button == 4) {
         timeoutID = setTimeout(forwardVideo, holdTime);
       }
@@ -455,20 +453,26 @@ function ResponsivePlayer(props) {
     videoRef.current.muted = !videoRef.current.muted;
   };
 
-  var intervalBlackScreen = 0;
+  var intervalFScreenOpen = 0;
+  var intervalFScreenClose = 0;
   const toggleFullScreenMode = () => {
     if (document.fullscreenElement == null) {
-      clearInterval(intervalBlackScreen)
       blackScreenRef.current.style.display = "block"
       blackScreenRef.current.style.opacity = 1
-      intervalBlackScreen = setInterval((e) => {
+      intervalFScreenOpen = setInterval((e) => {
+              clearInterval(intervalFScreenOpen)
               blackScreenRef.current.style.opacity = 0
           }, 300);
       videoContainerRef.current.requestFullscreen();
     } else {
-      blackScreenRef.current.style.display = "none"
+      blackScreenRef.current.style.display = "block"
       blackScreenRef.current.style.opacity = 1
-      document.exitFullscreen();
+      intervalFScreenClose = setInterval((e) => {
+              clearInterval(intervalFScreenClose)
+              document.exitFullscreen();
+              blackScreenRef.current.style.display = "none"
+              blackScreenRef.current.style.opacity = 0
+          }, 600);
     }
   };
 
