@@ -7,14 +7,10 @@ function VideoAdvertBox(props) {
   const videoAdvertBoxRef = useRef(null);
 
   useEffect(() => {
-    if(props.width){
-      let adverts = videoAdvertBoxRef.current.querySelectorAll('.video-card')
-      adverts.forEach(function (item, index) {
-        item.style.width = props.width + "px"
-        item.style.height = Math.floor(props.width*319/385) + "px"
-      });
+    if(props.scale){
+      videoAdvertBoxRef.current.style.fontSize = props.scale + "em"
     }
-  }, [props.width]);
+  }, [props.scale]);
 
   return (
     <div className="video-advert-box-container">

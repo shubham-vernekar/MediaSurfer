@@ -72,7 +72,7 @@ function ResponsivePlayer(props) {
       SetMiniPlayer(false);
     });
 
-    videoRef.current.addEventListener("contextmenu", (e) => {
+    videoContainerRef.current.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       skip(-5);
     });
@@ -84,7 +84,7 @@ function ResponsivePlayer(props) {
     var intervalRewind = 0;
     var intervalForward = 0;
 
-    videoRef.current.addEventListener("mousedown", (e) => {
+    videoContainerRef.current.addEventListener("mousedown", (e) => {
       if (e.button == 0 || e.button == 4) {
         timeoutID = setTimeout(forwardVideo, holdTime);
       }
@@ -93,7 +93,7 @@ function ResponsivePlayer(props) {
       }
     });
 
-    videoRef.current.addEventListener("mouseup", (e) => {
+    videoContainerRef.current.addEventListener("mouseup", (e) => {
       videoRef.current.playbackRate = 1;
       clearTimeout(timeoutID);
       clearInterval(intervalRewind);
@@ -131,7 +131,7 @@ function ResponsivePlayer(props) {
     }
 
     var pendingClick = 0;
-    videoRef.current.addEventListener("click", (e) => {
+    videoContainerRef.current.addEventListener("click", (e) => {
       if (skipClick) {
         skipClick = false
         return
@@ -472,7 +472,7 @@ function ResponsivePlayer(props) {
               document.exitFullscreen();
               blackScreenRef.current.style.display = "none"
               blackScreenRef.current.style.opacity = 0
-          }, 600);
+          }, 500);
     }
   };
 
