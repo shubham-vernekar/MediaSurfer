@@ -68,7 +68,7 @@ function CustomPage() {
               <VideoAdvertBox
                 videoData={allData[data.name]}
                 title={data.name}
-                width={data.width}
+                scale={data.scale}
                 onRefresh={HandleRefreshButton}
                 index={i}
                 explore={"/search?" + data.query}

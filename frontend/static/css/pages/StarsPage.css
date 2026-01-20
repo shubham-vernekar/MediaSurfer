@@ -5,11 +5,12 @@
   align-content: center;
   justify-content: center;
   align-items: center;
-  gap: 28px;
-  padding-top: 13px;
+  gap: 2rem;
+  padding-top: 0.6rem;
   margin-left: 5%;
   width: 92%;
-  margin-bottom: 150px;
+  margin-bottom: 9rem;
+  font-size: 0.9rem;
 }
 
 .star-advert-index {
@@ -51,6 +52,7 @@
   color: red;
   cursor: pointer;
 }
+
 .alphabet {
   width: 1vw;
   margin-bottom: 13px;
