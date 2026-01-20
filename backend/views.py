@@ -302,7 +302,8 @@ class UpdateVolume(generics.GenericAPIView):
             user_data_object = UserLevelData()
 
         return Response({
-                "volume_level" : user_data_object.volume_level
+                "volume_level" : user_data_object.volume_level,
+                "click_to_skip": user_data_object.click_to_skip,
             })
 
     def post(self, request):

@@ -28,19 +28,11 @@ function ResponsivePlayer(props) {
   const [lastTimeUpdate, SetLastTimeUpdate] = useState(false);
   const [watchTime, SetWatchTime] = useState(0);
 
-  
+  const clickToSkip = false
 
   useEffect(() => {
     SetWatchTime(props.watchTime)
   }, [props.watchTime]);
-
-  useEffect(() => {
-    if (pauseVideo) {
-      videoContainerRef.current.classList.remove("show-controls");
-    } else {
-      videoContainerRef.current.classList.add("show-controls");
-    }
-  }, [pauseVideo]);
 
   useEffect(() => {
     if (showCaptions) {
@@ -72,7 +64,7 @@ function ResponsivePlayer(props) {
       SetMiniPlayer(false);
     });
 
-    videoContainerRef.current.addEventListener("contextmenu", (e) => {
+    videoRef.current.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       skip(-5);
     });
@@ -84,7 +76,7 @@ function ResponsivePlayer(props) {
     var intervalRewind = 0;
     var intervalForward = 0;
 
-    videoContainerRef.current.addEventListener("mousedown", (e) => {
+    videoRef.current.addEventListener("mousedown", (e) => {
       if (e.button == 0 || e.button == 4) {
         timeoutID = setTimeout(forwardVideo, holdTime);
       }
@@ -93,7 +85,7 @@ function ResponsivePlayer(props) {
       }
     });
 
-    videoContainerRef.current.addEventListener("mouseup", (e) => {
+    videoRef.current.addEventListener("mouseup", (e) => {
       videoRef.current.playbackRate = 1;
       clearTimeout(timeoutID);
       clearInterval(intervalRewind);
@@ -131,36 +123,35 @@ function ResponsivePlayer(props) {
     }
 
     var pendingClick = 0;
-    videoContainerRef.current.addEventListener("click", (e) => {
-      if (skipClick) {
+    videoRef.current.addEventListener("click", (e) => {
+       if (skipClick) {
         skipClick = false
         return
       }
-      // if (pendingClick) {
-      //   clearTimeout(pendingClick);
-      //   pendingClick = 0;
-      // }
-      switch (e.detail) {
-        case 1:
-          // pendingClick = setTimeout(() => {
-          //   // togglePlay();
-          //   if (videoRef.current.paused){
-          //     videoRef.current.play()
-          //   } else {
-          //     skip(5);
-          //   }
-          // }, 200);
-          if (videoRef.current.paused){
-              videoRef.current.play()
-            } else {
-              skip(5);
-            }
-          break;
-        case 2:
-          // toggleFullScreenMode();
-          break;
-        default:
-          break;
+
+      if (clickToSkip) {
+        if (videoRef.current.paused){
+            videoRef.current.play()
+          } else {
+            skip(5);
+        }
+      } else {
+        if (pendingClick) {
+          clearTimeout(pendingClick);
+          pendingClick = 0;
+        }
+        switch (e.detail) {
+          case 1:
+            pendingClick = setTimeout(function () {
+              togglePlay();
+            }, 200);
+            break;
+          case 2:
+            toggleFullScreenMode();
+            break;
+          default:
+            break;
+        }
       }
     });
 
@@ -455,6 +446,7 @@ function ResponsivePlayer(props) {
 
   var intervalFScreenOpen = 0;
   var intervalFScreenClose = 0;
+  var intervalFScreenHide = 0;
   const toggleFullScreenMode = () => {
     if (document.fullscreenElement == null) {
       blackScreenRef.current.style.display = "block"
@@ -464,6 +456,10 @@ function ResponsivePlayer(props) {
               blackScreenRef.current.style.opacity = 0
           }, 300);
       videoContainerRef.current.requestFullscreen();
+      intervalFScreenHide = setInterval((e) => {
+              clearInterval(intervalFScreenHide)
+              blackScreenRef.current.style.display = "none"
+          }, 600);
     } else {
       blackScreenRef.current.style.display = "block"
       blackScreenRef.current.style.opacity = 1
@@ -553,6 +549,7 @@ function ResponsivePlayer(props) {
 
   const playVideoState = () => {
     centerPlayButtonRef.current.style.visibility = "hidden";
+    videoContainerRef.current.classList.remove("show-controls");
     SetPauseVideo(true);
   };
   
@@ -584,6 +581,8 @@ function ResponsivePlayer(props) {
   }
 
   const pauseVideoState = () => {
+    centerPlayButtonRef.current.style.visibility = "visible";
+    videoContainerRef.current.classList.add("show-controls");
     SetPauseVideo(false);
   };
 

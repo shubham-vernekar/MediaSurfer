@@ -7,7 +7,7 @@
   color: white;
   z-index: 100; 
   opacity: 0;
-  transition: opacity 150ms ease-in-out;
+  transition: opacity 1s ease-out;
 }
 
 .video-container.show-controls .video-controls-container {

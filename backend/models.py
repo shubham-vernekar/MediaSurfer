@@ -74,6 +74,7 @@ class UserLevelData(models.Model):
     websrc_dir = models.CharField(max_length=1024, blank=True, null=True)
     scanning = models.BooleanField(default=False)
     uf_jt_link = models.CharField(max_length=1024, blank=True, null=True)
+    click_to_skip = models.BooleanField(default=False)
 
     def __str__(self):
         return self.update_timestamp.strftime("%m/%d/%Y, %H:%M:%S")

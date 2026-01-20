@@ -29,6 +29,7 @@ function VideoPlayerPage() {
   const [specialTag, SetSpecialTag] = useState("");
   const [watchTime, SetWatchTime] = useState(0);
   const [volume, SetVolume] = useState(0);
+  const [clickToSkip, SetClickToSkip] = useState(false);
 
   const VideoDetailsRef = useRef(null);
 
@@ -85,6 +86,7 @@ function VideoPlayerPage() {
         url: "/api/volume",
       }).then((response) => {
         SetVolume(response.data.volume_level);
+        SetClickToSkip(response.data.click_to_skip);
     });
   
   }, []);
@@ -316,6 +318,7 @@ function VideoPlayerPage() {
           watchTime={videoData.watch_time}
           updateProgressCallback={updateProgress}
           initialVolume={volume}
+          clickToSkip={clickToSkip}
         />
         <div className="video-player-details" >
           <div className="video-player-title" ><h1 ref={VideoDetailsRef}>{videoData.title}</h1></div>
