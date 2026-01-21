@@ -28,7 +28,12 @@ function ResponsivePlayer(props) {
   const [lastTimeUpdate, SetLastTimeUpdate] = useState(false);
   const [watchTime, SetWatchTime] = useState(0);
 
-  const clickToSkip = false
+  var pendingClick = 0;
+  var timeoutID = 0
+  var playState = 0
+  var skipClick = false
+  var intervalRewind = 0;
+  var intervalForward = 0;
 
   useEffect(() => {
     SetWatchTime(props.watchTime)
@@ -55,6 +60,93 @@ function ResponsivePlayer(props) {
     }
   }, [miniPlayer]);
 
+
+  const forwardVideo = (e) => {
+      global.skipClick = true
+      global.playState = 0
+      if (videoRef.current.paused){
+        global.playState = 1
+        videoRef.current.play()
+      }
+      videoRef.current.playbackRate = 16;
+      // clearInterval(intervalForward);
+      // global.intervalForward = setInterval((e) => {
+      //       skip(1);
+      //   }, 50);  
+    }
+
+  const rewindVideo = (e) => {
+    centerPlayButtonRef.current.style.visibility = "hidden";
+    global.intervalRewind = setInterval((e) => {
+      skip(-1);
+      if (videoRef.current.currentTime <= 0) {
+          clearInterval(global.intervalRewind);
+          videoRef.current.pause(); 
+      }
+    }, 100);    
+  }
+
+  const videoMouseDown = (e) => {
+    var holdTime = 250
+    if (e.button == 0 || e.button == 4) {
+      global.timeoutID = setTimeout(forwardVideo, holdTime);
+    } else if (e.button == 2 || e.button == 3) {
+      global.timeoutID = setTimeout(rewindVideo, holdTime);
+    }
+  }
+
+  const videoMouseUp = (e) => {
+    videoRef.current.playbackRate = 1;
+    clearTimeout(global.timeoutID);
+    clearInterval(global.intervalRewind);
+    clearInterval(global.intervalForward);
+    if (global.skipClick) {
+      if (global.playState == 1) {
+        videoRef.current.pause()
+      }
+    }
+    if (videoRef.current.paused) {
+      centerPlayButtonRef.current.style.visibility = "visible";
+    }
+  }
+
+  const clickVideo = (e) => {
+    if (global.skipClick) {
+      global.skipClick = false
+      return
+    }
+
+    if (props.clickToSkip) {
+      if (videoRef.current.paused){
+          videoRef.current.play()
+        } else {
+          skip(5);
+      }
+    } else {
+      if (global.pendingClick) {
+        clearTimeout(global.pendingClick);
+        global.pendingClick = 0;
+      }
+      switch (e.detail) {
+        case 1:
+          global.pendingClick = setTimeout(function () {
+            togglePlay();
+          }, 200);
+          break;
+        case 2:
+          toggleFullScreenMode();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleRightClick = (e) => {
+    e.preventDefault();
+    skip(-5);
+  }
+
   useEffect(() => {
     videoRef.current.addEventListener("enterpictureinpicture", (e) => {
       SetMiniPlayer(true);
@@ -62,97 +154,6 @@ function ResponsivePlayer(props) {
 
     videoRef.current.addEventListener("leavepictureinpicture", (e) => {
       SetMiniPlayer(false);
-    });
-
-    videoRef.current.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      skip(-5);
-    });
-
-    var timeoutID = 0
-    var holdTime = 250
-    var playState = 0
-    var skipClick = false
-    var intervalRewind = 0;
-    var intervalForward = 0;
-
-    videoRef.current.addEventListener("mousedown", (e) => {
-      if (e.button == 0 || e.button == 4) {
-        timeoutID = setTimeout(forwardVideo, holdTime);
-      }
-      if (e.button == 2 || e.button == 3) {
-        timeoutID = setTimeout(rewindVideo, holdTime);
-      }
-    });
-
-    videoRef.current.addEventListener("mouseup", (e) => {
-      videoRef.current.playbackRate = 1;
-      clearTimeout(timeoutID);
-      clearInterval(intervalRewind);
-      clearInterval(intervalForward);
-      if (skipClick) {
-        if (playState == 1) {
-          videoRef.current.pause()
-        }
-      }
-    });
-
-    const forwardVideo = (e) => {
-      skipClick = true
-      playState = 0
-      if (videoRef.current.paused){
-        playState = 1
-        videoRef.current.play()
-      }
-      videoRef.current.playbackRate = 16;
-      // clearInterval(intervalForward);
-      // intervalForward = setInterval((e) => {
-      //       skip(1);
-      //   }, 50);  
-    }
-
-    const rewindVideo = (e) =>{
-        // clearInterval(intervalRewind);
-        intervalRewind = setInterval((e) => {
-            skip(-1);
-            if (videoRef.current.currentTime <= 0) {
-                clearInterval(intervalRewind);
-                videoRef.current.pause(); 
-            }
-        }, 100);    
-    }
-
-    var pendingClick = 0;
-    videoRef.current.addEventListener("click", (e) => {
-       if (skipClick) {
-        skipClick = false
-        return
-      }
-
-      if (clickToSkip) {
-        if (videoRef.current.paused){
-            videoRef.current.play()
-          } else {
-            skip(5);
-        }
-      } else {
-        if (pendingClick) {
-          clearTimeout(pendingClick);
-          pendingClick = 0;
-        }
-        switch (e.detail) {
-          case 1:
-            pendingClick = setTimeout(function () {
-              togglePlay();
-            }, 200);
-            break;
-          case 2:
-            toggleFullScreenMode();
-            break;
-          default:
-            break;
-        }
-      }
     });
 
     document.addEventListener("mouseup", (e) => {
@@ -684,6 +685,10 @@ function ResponsivePlayer(props) {
         timeupdate={timeUpdate}
         loadeddata={loadedData}
         volumechange={volumeChange}
+        clickVideo={clickVideo}
+        videoMouseDown={videoMouseDown}
+        videoMouseUp={videoMouseUp}
+        handleRightClick={handleRightClick}
       ></Video>
     </div>
   );

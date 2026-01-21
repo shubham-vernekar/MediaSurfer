@@ -13,6 +13,10 @@ function Video(props) {
       onTimeUpdate={props.timeupdate}
       onLoadedData={props.loadeddata}
       onVolumeChange={props.volumechange}
+      onClick={props.clickVideo}
+      onMouseDown={props.videoMouseDown}
+      onMouseUp={props.videoMouseUp}
+      onContextMenu={props.handleRightClick}
       className="video-player"
     >
       <track kind="captions" srcLang="en" src={props.subtitle}></track>
