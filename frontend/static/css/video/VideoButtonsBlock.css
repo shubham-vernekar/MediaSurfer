@@ -1,0 +1,37 @@
+.video-advert-buttons-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  column-gap: 1.3em;
+  margin-top: 0.1em;
+}
+
+.video-advert-button{
+  display: flex;
+  cursor: pointer;
+  column-gap: 0.9em;
+  flex-direction: row;
+  font-size: 0.7em;
+  align-items: center;
+}
+
+.video-advert-button:hover {
+  transform:scale(1.1)
+}
+
+.video-advert-button:active {
+  transform:scale(1.2)
+}
+
+.video-advert-button-text{
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  transition: 0.4s ease-in-out;
+  text-align: left;
+}
+
+.video-advert-button:hover .video-advert-button-text{
+  max-width: 100%
+}

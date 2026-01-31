@@ -1,7 +1,8 @@
 import '../../../static/css/video/VideoCard.css';
 import { React, useEffect, useRef, useState } from "react";
-import { dateToTimestamp, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayer, OpenFolder } from '../utils'
+import { dateToTimestamp, secondsToHHMMSS, getSize, getCookie } from '../utils'
 import axios from "axios";
+import VideoButtonsBlock from "./VideoButtonsBlock";
 
 function VideoCard(props) {
 
@@ -339,7 +340,17 @@ function VideoCard(props) {
             </div>
           ))}
         </div>
-        <div className="video-advert-buttons-container">
+
+        <VideoButtonsBlock
+          vidid={props.vidid}
+          handleOnClickDeleteButton={handleOnClickDeleteButton}
+          addFavoriteButton={addFavoriteButton}
+          jtTrailerUrl={props.jtTrailerUrl}
+          favorite={favorite}
+          title={props.title}
+        />
+
+        {/* <div className="video-advert-buttons-container">
           <div className='video-advert-button' onClick={() => OpenLocalPlayer(props.vidid)}> 
             <svg className='video-advert-button-text-svg' width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
               <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
@@ -376,7 +387,7 @@ function VideoCard(props) {
             </svg>
             <span className='video-advert-button-text'>Open Trailer</span>
           </div>)}
-        </div>
+        </div> */}
         {progress > 0 && (
           <div className="progress-bar">
             <div className="progress-bar-total">

@@ -12,15 +12,15 @@
   align-content: center;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 1em;
 }
 
 .video-banner-toggle-mute-container{
-  width: 43vw;
-  height: 5vw;
+  width: 51em;
+  height: 9em;
   position: absolute;
-  top: 541px;
-  right: 7.5vw;
+  top: 30em;
+  right: 7vw;
 }
 
 .video-banner-toggle-mute-container:hover .video-banner-toggle-mute {
@@ -28,15 +28,15 @@
 }
 
 .video-banner-toggle-mute {
-  padding: 10px;
+  padding: 0.5em;
   position: absolute;
   cursor: pointer;
   background: rgb(20 20 20 / 30%);
   border-radius: 50%;
-  border: 2px solid;
-  bottom: 0.4vw;
-  right: 1vw;
-  opacity: 0; 
+  border: 0.15em solid;
+  bottom: 3.5em;
+  right: 2em;
+  opacity: 0;
 }
 
 .video-banner-toggle-mute:hover {
@@ -50,10 +50,10 @@
 
 .video-banner-slide-button {
   background-repeat: no-repeat;
-  background-size: 40px 40px;
+  background-size: 2.5em 2.5em;
   background-position: 50%;
-  height: 500px;
-  width: 100px;
+  height: 28em;
+  width: 7em;
   position: absolute;
   z-index: 20;
   opacity: 0;
@@ -84,5 +84,5 @@
 .banner-tag-image {
   position: relative;
   top: 0px;
-  height: 45px;
+  height: 2em;
 }

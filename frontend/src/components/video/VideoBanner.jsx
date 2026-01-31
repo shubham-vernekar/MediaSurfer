@@ -1,8 +1,9 @@
 import '../../../static/css/video/VideoBanner.css';
 import StarCard from "../star/StarCard";
+import VideoButtonsBlock from "./VideoButtonsBlock";
 import { React, useRef, useEffect, useState} from "react";
 import axios from "axios";
-import { getDurationText, getCreatedDate, secondsToHHMMSS } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS, getCookie } from '../utils'
 
 function VideoBanner(props) {
   const bannerVideoRef = useRef(null);
@@ -10,6 +11,8 @@ function VideoBanner(props) {
   const slideLeftRef = useRef(null);
   const slideRightRef = useRef(null);
   const bannerCastContainerRef = useRef(null);
+  const imageTagRef = useRef(null);
+  const [favorite, SetFavorite] = useState(props.favorite);
 
   const [starData, SetStarData] = useState([]);
 
@@ -105,6 +108,52 @@ function VideoBanner(props) {
     });
   };
 
+  const handleOnClickDeleteButton = (e) => {
+    axios({
+      method: "post",
+      url: "/api/videos/" + props.vidID + "/localdelete",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+    }).then((response) => {
+      if (response.data["Status"]=="Success"){
+        bannerRef.current.style.display = "None"
+      }
+    });
+  };
+
+  const addFavoriteButton = (vidID, vidTitle, vidFavourite) => {
+    axios({
+      method: "put",
+      url: "/api/videos/" + vidID + "/update",
+      data: {
+        id: vidID,
+        title: vidTitle,
+        favourite: vidFavourite,
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+    }).then((response) => {
+      let favStatus = Boolean(response.data.favourite)
+      SetFavorite(favStatus)
+    });
+  };
+
+
+  useEffect(() => {
+    let specialTag = props.specialTag
+    if (favorite) {
+      specialTag = "FAVOURITE"
+    }
+    imageTagRef.current.src = getTagImage(specialTag)
+  }, [favorite]);
+
+
   return (
       <div
         className="video-banner"
@@ -145,7 +194,7 @@ function VideoBanner(props) {
             </div>
             <div>{props.badge}</div>
             {props.subtitle_badge && (<div>SRT</div>)}
-            <img src={getTagImage(props.specialTag)} className="banner-tag-image" alt="" />
+            <img src={getTagImage(props.specialTag)} ref={imageTagRef} className="banner-tag-image" alt="" />
           </div>
 
           {props.series && props.series.name &&(
@@ -162,6 +211,15 @@ function VideoBanner(props) {
               </div>
             ))}
           </div>
+
+          <VideoButtonsBlock
+            vidid={props.vidID}
+            handleOnClickDeleteButton={handleOnClickDeleteButton}
+            addFavoriteButton={addFavoriteButton}
+            jtTrailerUrl={props.jtTrailerUrl}
+            favorite={favorite}
+            title={props.title}
+          />
 
           <div className="banner-cast-box">
             {starData.length>2 && (<div className="star-banner-slide-right star-banner-slide-button" ref={slideRightRef}></div>)}

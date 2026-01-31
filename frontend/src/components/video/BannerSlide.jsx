@@ -18,7 +18,7 @@ function BannerSlide(props) {
 
     const interval = setInterval(() => {
       moveBanner("right");
-    }, 12000); // 12000
+    }, 1200000); // 12000
     return () => clearInterval(interval);
   }, [props.videoData]);
 
@@ -99,6 +99,7 @@ function BannerSlide(props) {
               watchTime={data["watch_time"]}
               series={data["series"]}
               duration_seconds={data["duration_seconds"]}
+              jtTrailerUrl={data["jt_trailer_url"]}
             />
           ))}
         </div>
