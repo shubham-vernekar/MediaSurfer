@@ -6,7 +6,7 @@ function ScrpCard(props) {
   return (
     <div className="scrp-card">
       <div className="scrp-poster">
-        <a href={parseInt(props.pending)>0 && "scrp?key=" + props.title}><img className='scrp-poster-img' src={props.img} alt=""/></a>
+        <a href={parseInt(props.pending)>0 ? "scrp?key=" + props.title : ''}><img className='scrp-poster-img' src={props.img} alt=""/></a>
         {parseInt(props.pending)==0 && (<img className="scrp-done-icn" src="/static/images/checked.png" alt=""></img>)}
       </div>
       

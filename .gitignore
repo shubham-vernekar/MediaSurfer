@@ -12,6 +12,7 @@ db.sqlite3*
 backend/management/commands
 frontend/static/frontend
 */portmap.json
+short_videos.pkl
 
 node_modules
 *main.js*

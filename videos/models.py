@@ -5,6 +5,7 @@ import os
 from django.db.models import Q, F, ExpressionWrapper, BooleanField
 import datetime
 from django.core.exceptions import FieldError, ValidationError
+from django.db.models import Manager as DefaultManager
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from backend.models import Series
@@ -349,7 +350,7 @@ class VideoQuerySet(models.QuerySet):
 
 class VideoManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return VideoQuerySet(self.model, using=self._db)
+        return VideoQuerySet(self.model, using=self._db).filter(is_active=True)
 
     def search(self, query):
         return self.get_queryset().search(query)
@@ -364,6 +365,8 @@ class VideoManager(models.Manager):
 class Video(models.Model):
     ''' Model to store video details '''
     id = models.CharField(max_length=15, primary_key=True)
+    is_active = models.BooleanField(default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     file_path = models.CharField(max_length=1024, unique=True)
     title = models.CharField(max_length=2048)
     categories = models.CharField(
@@ -404,10 +407,21 @@ class Video(models.Model):
         ]
 
     objects = VideoManager()
+    all_objects = DefaultManager()
 
     def __str__(self):
         return self.title
 
+    def delete(self, *args, **kwargs):
+        self.is_active = False
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def restore(self):
+        self.is_active = True
+        self.deleted_at = None
+        self.save()
+    
     def get_video_url(self):
         return convert_url(self.file_path)
 

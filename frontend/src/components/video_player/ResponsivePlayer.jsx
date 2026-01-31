@@ -455,12 +455,12 @@ function ResponsivePlayer(props) {
       intervalFScreenOpen = setInterval((e) => {
               clearInterval(intervalFScreenOpen)
               blackScreenRef.current.style.opacity = 0
-          }, 300);
+          }, 200);
       videoContainerRef.current.requestFullscreen();
       intervalFScreenHide = setInterval((e) => {
               clearInterval(intervalFScreenHide)
               blackScreenRef.current.style.display = "none"
-          }, 600);
+          }, 500);
     } else {
       blackScreenRef.current.style.display = "block"
       blackScreenRef.current.style.opacity = 1
@@ -469,7 +469,7 @@ function ResponsivePlayer(props) {
               document.exitFullscreen();
               blackScreenRef.current.style.display = "none"
               blackScreenRef.current.style.opacity = 0
-          }, 500);
+          }, 400);
     }
   };
 

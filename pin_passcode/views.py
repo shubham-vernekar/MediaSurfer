@@ -10,9 +10,11 @@ from videos.models import Video
 def form(request):
     get_token(request)
     total_watch_time, total_duration = 0, 0
-    for watch_time, duration in Video.objects.all().values_list('watch_time', 'duration'):
-        total_watch_time += watch_time
-        total_duration += duration.seconds
+    for duration in Video.objects.all().values_list('duration'):
+        total_duration += duration[0].seconds
+
+    for watch_time in Video.all_objects.all().values_list('watch_time'):
+        total_watch_time += watch_time[0]
 
     h, m = divmod(total_watch_time/60, 60)
     if h:

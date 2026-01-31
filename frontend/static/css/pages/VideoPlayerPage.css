@@ -215,3 +215,15 @@ body::-webkit-scrollbar {
 .video-player-button:hover .video-player-button-text{
     max-width: 200px;
 }
+
+.video-not-found{
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    top: 20vh;
+}
+
+.video-not-found img{
+    width: 45rem;
+}

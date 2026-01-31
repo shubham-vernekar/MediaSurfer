@@ -81,11 +81,14 @@ class NavbarListView(generics.ListCreateAPIView):
         qs = self.get_queryset()
 
         total_watch_time, total_duration = 0, 0
-        videos_data = Video.objects.all().values_list('watch_time', 'duration')
-        for watch_time, duration in videos_data:
-            total_watch_time += watch_time
-            total_duration += duration.seconds
-            
+        videos_data = Video.objects.all().values_list('duration')
+        all_videos_data = Video.all_objects.all().values_list('watch_time')
+        for duration in videos_data:
+            total_duration += duration[0].seconds
+
+        for watch_time in all_videos_data:
+            total_watch_time += watch_time[0]
+        
         response.data["watchtime"] = convert_seconds(total_watch_time, "hours")
         response.data["duration"] = convert_seconds(total_duration, "days")
         response.data["count"] = len(videos_data)
