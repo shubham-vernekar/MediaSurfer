@@ -367,7 +367,7 @@ class Video(models.Model):
     id = models.CharField(max_length=15, primary_key=True)
     is_active = models.BooleanField(default=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    file_path = models.CharField(max_length=1024, unique=True)
+    file_path = models.CharField(max_length=1024)
     title = models.CharField(max_length=2048)
     categories = models.CharField(
         max_length=1024, default="", blank=True, null=True)

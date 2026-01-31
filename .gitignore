@@ -19,6 +19,7 @@ node_modules
 *main.css*
 welcome_img.jpg
 no-profile-pic.jpg
+repeated_words.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
