@@ -420,7 +420,7 @@ function SearchPage() {
           <div className="video-adverts-container" ref={videosContainerRef}>
             {videoData.map((data, i) => (
               <VideoCard
-                key={i}
+                key={data["id"]}
                 vidid={data["id"]}
                 title={data["title"]}
                 categories={data["categories"]}

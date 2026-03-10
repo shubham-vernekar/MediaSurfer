@@ -41,7 +41,7 @@ class StarNamesListAPIView(generics.GenericAPIView):
         query = request.GET.get("query", None)
         get_tags = request.GET.get("tags", False)
 
-        qs = Star.objects.all().order_by("name") 
+        qs = Star.objects.all().order_by("name")
         if query:
             search_query = SearchQuery(query)
             search_rank = SearchRank(F("search_vector"), search_query)

@@ -18,9 +18,9 @@
     align-content: center;
     justify-content: flex-start;
     align-items: flex-end;
-    column-gap: 25px;
-    font-size: 17px;
-    margin-left: 160px;
+    column-gap: 1.2em;
+    font-size: 1rem;
+    margin-left: 7%;
 }
 
 .navbar-left a{
@@ -37,9 +37,10 @@
   }
 
 .logo-img{
-    width: 120px;
-	cursor: pointer;
-	margin-right: 7px;
+    width: 7em;
+    cursor: pointer;
+    margin-right: 1em;
+    margin-top: -0.5em;
 }
 
 .navbar-right{
@@ -293,12 +294,11 @@ a{
     display: flex;
     left: 0.8rem;
     top: 1rem;
-    font-size: 15px;
+    font-size: 1rem;
     flex-direction: column;
     row-gap: 3px;
     opacity: 0;
     transition: opacity 1s;
-    color: #d50000;
 	padding: 0 1rem 1rem 1rem;
 	border-radius: 1rem;
 }
@@ -306,6 +306,7 @@ a{
 .video-summary-text{
 	display: flex;
 	justify-content: center;
+	height: 0.9rem;
 }
 
 .video-summary-container:hover{

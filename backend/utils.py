@@ -42,12 +42,20 @@ def apply_regex(expr, key):
         return matches[0]
     return ""
 
-def convert_seconds(seconds, format_type='days'):
+def convert_seconds(seconds, format_type='days', oneword=False):
     days = seconds // (24 * 3600)
     hours = (seconds % (24 * 3600)) // 3600
     minutes = (seconds % 3600) // 60
     
     if format_type == 'hours':
+        if oneword:
+            return hours + days*24
         return f"{hours + days*24 } hrs and {minutes} mins"
     else:
+        if oneword:
+            return days
         return f"{days} days {hours} hrs and {minutes} mins"
+    
+def get_cast_videos(cast):
+    qs = Video.objects.all().filter(cast__contains = cast)
+    return qs

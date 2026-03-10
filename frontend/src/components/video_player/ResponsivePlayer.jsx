@@ -469,7 +469,7 @@ function ResponsivePlayer(props) {
               document.exitFullscreen();
               blackScreenRef.current.style.display = "none"
               blackScreenRef.current.style.opacity = 0
-          }, 300);
+          }, 200);
     }
   };
 

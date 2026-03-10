@@ -34,12 +34,16 @@ function StarAdvert() {
 
   useEffect(() => {
     let completeQuery = searchQuery + filterQuery + alphabetOne + alphabetTwo + alphabetThree + tagQuery
-    let alphabetOneValue = ""
+    let sortQueryValue = ""
+    let limitValue = ""
+
     if (completeQuery.trim() == "") {
-      alphabetOneValue = "A"
-      starAdvertIndexOne.current.children[0].classList.add("selected-filter");
+      sortQueryValue = "-videos"
+      limitValue = 99
+      // alphabetOneValue = "A"
+      // starAdvertIndexOne.current.children[0].classList.remove("selected-filter");
     }else{
-      alphabetOneValue = alphabetOne
+      sortQueryValue = sortQuery
     }
     axios({
       method: "get",
@@ -47,9 +51,10 @@ function StarAdvert() {
       params: {
         query: searchQuery,
         filter: filterQuery,
-        sort_by: sortQuery,
-        prefix: alphabetOneValue + alphabetTwo + alphabetThree,
+        sort_by: sortQueryValue,
+        prefix: alphabetOne + alphabetTwo + alphabetThree,
         tag: tagQuery,
+        limit: limitValue,
       },
     }).then((response) => {
       SetStarData(response.data);
@@ -98,7 +103,7 @@ function StarAdvert() {
   }, [alphabetTwo]);
 
   useEffect(() => {
-    starAdvertIndexOne.current.children[0].classList.add("selected-filter");
+    // starAdvertIndexOne.current.children[0].classList.add("selected-filter");
     axios({
       method: "get",
       url: "/api/stars/names",
@@ -183,7 +188,7 @@ function StarAdvert() {
         url: "/api/stars",
         params: {
           sort_by: "-" + filterText.toLowerCase(),
-          limit: 100
+          limit: 99
         },
       }).then((response) => {
         SetStarData(response.data);
@@ -272,7 +277,7 @@ function StarAdvert() {
         <div className="star-advert-box">
           {starData.map((data, i) => (
             <StarCard
-              key={i}
+              key={data["id"]}
               id={data["id"]}
               poster={data["poster"]}
               name={data["name"]}
@@ -310,6 +315,9 @@ function StarAdvert() {
             </div>
             <div className="star-advert-filter" onClick={handleFilterOnClick}>
               Only Favourites
+            </div>
+            <div className="star-advert-filter" onClick={handleFilterOnClick}>
+              Only Posterless
             </div>
           </div>
           <div className="star-advert-sort-container" ref={starsSort}>

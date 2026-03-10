@@ -12,6 +12,7 @@ from videos.serializer import VideoListSerializer
 from stars.serializer import StarSerializer
 from rest_framework.response import Response
 import os
+import glob
 import shutil
 import datetime
 from django.conf import settings
@@ -89,9 +90,10 @@ class NavbarListView(generics.ListCreateAPIView):
         for watch_time in all_videos_data:
             total_watch_time += watch_time[0]
         
-        response.data["watchtime"] = convert_seconds(total_watch_time, "hours")
-        response.data["duration"] = convert_seconds(total_duration, "days")
+        response.data["watchtime"] = convert_seconds(total_watch_time, "hours", oneword=True)
+        response.data["duration"] = convert_seconds(total_duration, "days", oneword=True)
         response.data["count"] = len(videos_data)
+        # response.data["count"] = len(Star.objects.all().filter(Q(poster__isnull=True) | Q(poster__exact='')))
         return response
 
 
@@ -332,15 +334,17 @@ class UpdateVolume(generics.GenericAPIView):
 
 
 class GetScanLogs(generics.GenericAPIView):
-    log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"..\logs\scan.log")
-    
     def get(self, request):
+        log_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"..\logs")
+        log_files = glob.glob(os.path.join(log_folder, "*.log"))
+        log_file = max(log_files, key=os.path.getmtime)
+
         max_lines = request.GET.get("lines", False)
         if max_lines:
             max_lines = int(max_lines)
 
         log_lines=[]
-        with FileReadBackwards(self.log_file) as frb:
+        with FileReadBackwards(log_file) as frb:
             while True:
                 try:
                     log_line = frb.readline()
@@ -358,7 +362,7 @@ class GetScanLogs(generics.GenericAPIView):
                 if "Starting processing ..." in log_line:
                     break
 
-        log_lines.reverse()                 
+        log_lines.reverse()        
         return Response({
             "data" : "\n".join(log_lines)
         })

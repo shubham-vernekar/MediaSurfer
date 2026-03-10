@@ -151,8 +151,8 @@ function Navbar(props) {
       <div className="navbar-left">
         <div className="video-summary-container">
           <div className="video-summary-text"> {videoCount} Videos </div>
-          <div className="video-summary-text"> {totalDuration} </div>
-          <div className="video-summary-text"> {watchTime} watched </div>
+          <div className="video-summary-text"> {totalDuration}+ Days Total Content </div>
+          <div className="video-summary-text"> {watchTime}+ Hours Watched </div>
         </div>
         <img className="logo-img" src="/static/images/logo.svg" alt="" onClick={() => window.location.href="/" } />
         {navbarData.map((data, i) => (

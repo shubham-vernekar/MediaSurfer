@@ -4,6 +4,7 @@ from django.db.models import Q, F, ExpressionWrapper, BooleanField
 from django.core.exceptions import FieldError, ValidationError
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
+from backend.utils import get_cast_videos
 
 class StarQuerySet(models.QuerySet):
     def search(self, parameters):
@@ -39,6 +40,9 @@ class StarQuerySet(models.QuerySet):
             liked = True
         elif filter=="favourites":
             favourite = True
+        elif filter=="posterless":
+            qs = qs.filter(Q(poster__isnull=True) | Q(poster__exact=''))[:18]
+            return qs
 
         if query:
             search_query = SearchQuery(query)
@@ -48,6 +52,7 @@ class StarQuerySet(models.QuerySet):
 
         if prefix:
             qs = qs.filter(Q(name__istartswith=prefix))
+            # qs = qs.filter(Q(poster__isnull=True) | Q(poster__exact=''))[:18]
 
         if tag:
             qs = qs.filter(Q(tags__icontains=tag))
@@ -133,3 +138,13 @@ class Star(models.Model):
 
     def __str__(self):
         return self.name
+
+    def delete(self, *args, **kwargs):
+        qs = get_cast_videos(self.name)
+        for i in qs:
+            cast = i.cast.split(",")
+            if self.name in cast:
+                cast.remove(self.name)
+                i.cast = ",".join(cast)
+                i.save()
+        super().delete(*args, **kwargs)
