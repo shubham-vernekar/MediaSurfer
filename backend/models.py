@@ -2,9 +2,12 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
+import shortuuid
+import re
 
 def upload_category_poster(instance, filename):
     return f'MediaSurf/media/categorydata/{instance.id}/{instance.id}_banner.jpg'
+
 
 class Series(models.Model):
     ''' Model to store Series '''
@@ -20,6 +23,7 @@ class Series(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Navbar(models.Model):
     ''' Store navbar elements '''
@@ -64,6 +68,7 @@ class DashboardHistory(models.Model):
     def __str__(self):
         return self.time.strftime("%m/%d/%Y, %H:%M:%S")
 
+
 class UserLevelData(models.Model):
     ''' Model to store site level data '''
     pending_videos = models.IntegerField(default=0, blank=True, null=True)
@@ -78,3 +83,29 @@ class UserLevelData(models.Model):
 
     def __str__(self):
         return self.update_timestamp.strftime("%m/%d/%Y, %H:%M:%S")
+
+class DebridFiles(models.Model):
+
+    id = models.CharField(max_length=15, primary_key=True)
+    added = models.DateTimeField(default=timezone.now)
+    debrid_id = models.CharField(max_length=20)
+    title = models.CharField(max_length=1024)
+    hash = models.CharField(max_length=40)
+    size = models.FloatField(blank=True, null=True)
+    status = models.CharField(max_length=15)
+    is_imported = models.BooleanField(default=False, blank=True, null=True)
+    import_timestamp = models.DateTimeField(blank=True, null=True)
+    files = models.IntegerField(blank=True, null=True)
+    importing = models.BooleanField(default=False)
+    task_id = models.CharField(max_length=40, blank=True, null=True)
+    search_text = models.CharField(max_length=4096, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+    
+    
+    def save(self, *args, **kwargs):
+        self.search_text = re.sub(r"[\W_]", " ", self.title.lower())
+        self.search_text = re.sub(r"\s+", " ", self.search_text).strip()
+        super().save(*args, **kwargs)
+    

@@ -37,6 +37,14 @@ const dateToTimestamp = (targetDate) => {
   return "NA"
 };
 
+const secondsToTimestamp = (seconds) => {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+};
+
 const clearSiblingSelection = (target) => {
   let clickedSort = target.currentTarget;
   let clickedSiblings = clickedSort.parentElement.children;
@@ -118,4 +126,4 @@ const OpenFolder = (vidid) => {
 
 
 export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, 
-  toggleDisplay, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayer, OpenFolder}
+  toggleDisplay, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayer, OpenFolder, secondsToTimestamp}

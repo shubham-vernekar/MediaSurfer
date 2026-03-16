@@ -1,0 +1,28 @@
+.debrid-url-input {
+    width: 100%;
+    padding: 0.5em 1.1em;
+    background: #2c2c2e;
+    border: none;
+    border-radius: 0.7em;
+    color: #ffffff;
+    font-size: 0.9em;
+    outline: none;
+    caret-color: #ffffff;
+    transition: background 0.15s ease;
+}
+
+.debrid-url-input::placeholder {
+    color: #8e8e93;
+}
+
+.debrid-url-input:focus {
+    background: #3a3a3c;
+}
+
+.debrid-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    width: 30em;
+}

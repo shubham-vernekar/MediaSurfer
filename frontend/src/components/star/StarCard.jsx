@@ -16,6 +16,30 @@ function StarCard(props) {
   const [watchTimeText, SetWatchTimeText] = useState("");
   const [totalTimeText, SetTotalimeText] = useState("");
 
+  // Cool Mint - background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+  // Light Lavender - background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+  // Mint Sky Blue - background: linear-gradient(135deg, #b2fefa, #a1c4fd);
+  // Light Lavender Soft Blue - background: linear-gradient(135deg, #d4b5ff, #8fd3f4);
+
+  // background-image: linear-gradient(to bottom right, #38A2D7, #561139);
+  // background-image: linear-gradient(to bottom right, #121C84, #8278DA);
+  // background-image: linear-gradient(to bottom right, #5761B2, #1FC5A8);
+  // background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  // background-image: linear-gradient(to right, #141e30, #243b55);
+  // background: linear-gradient(90deg, hsla(277, 75%, 84%, 1) 0%, hsla(297, 50%, 51%, 1) 100%);
+  // background: linear-gradient(90deg, hsla(213, 77%, 14%, 1) 0%, hsla(202, 27%, 45%, 1) 100%);
+  // background: linear-gradient(90deg, hsla(205, 46%, 30%, 1) 0%, hsla(260, 29%, 36%, 1) 100%);
+  // background: linear-gradient(90deg, hsla(208, 33%, 21%, 1) 0%, hsla(211, 36%, 46%, 1) 100%);
+  // ** background: linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%);
+
+
+  // background-image: linear-gradient(100deg, rgb(255, 255, 255) 10%, rgb(0, 6, 47) 100%), linear-gradient(120deg, rgb(255, 65, 65) 30%, rgb(0, 28, 100) 110%), radial-gradient(100% 220% at 100% 0%, rgb(128, 0, 255) 0%, rgb(255, 255, 255) 30%, rgb(0, 160, 255) 100%), linear-gradient(60deg, rgb(34, 0, 242) 0%, rgb(83, 0, 0) 100%), linear-gradient(190deg, rgb(185, 0, 255) 0%, rgb(0, 136, 123) 90%), linear-gradient(180deg, rgb(252, 0, 0) 0%, rgba(0, 50, 255, 1) 75%), linear-gradient(220deg, rgba(255, 0, 250, 1) 0%, rgb(255, 223, 0) 70%), radial-gradient(80% 110% at 50% 0%, rgb(2, 1, 1) 0%, rgb(0, 52, 187) 100%);
+  // background-blend-mode: overlay, overlay, color-burn, screen, color-burn, difference, color-dodge, normal;
+
+  // background-image: linear-gradient(120deg, #FF0000 0%, #2400FF 100%), linear-gradient(120deg, #FA00FF 0%, #208200 100%), linear-gradient(130deg, #00F0FF 0%, #000000 100%), radial-gradient(110% 140% at 15% 90%, #ffffff 0%, #1700A4 100%), radial-gradient(100% 100% at 50% 0%, #AD00FF 0%, #00FFE0 100%), radial-gradient(100% 100% at 50% 0%, #00FFE0 0%, #7300A9 80%), linear-gradient(30deg, #7ca304 0%, #2200AA 100%);
+  // background-blend-mode: overlay, color, overlay, difference, color-dodge, difference, normal;
+  // https://csspro.com/css-gradients/
+
   const videoThemeDict = {
     "DEFAULT" : {
       "icon" : "",
