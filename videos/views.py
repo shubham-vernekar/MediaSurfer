@@ -1,7 +1,7 @@
-from .models import Video
+from .models import Video, DebridVideo
 from stars.models import Star
 from backend.models import Category
-from .serializer import VideoListSerializer, VideoSerializer
+from .serializer import VideoListSerializer, VideoSerializer, DebridVideoSerializer
 from rest_framework import generics
 from django.conf import settings
 import subprocess
@@ -47,6 +47,9 @@ class VideoDetailAPIView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
 
+class DebridVideoDetailAPIView(generics.RetrieveAPIView):
+    queryset = DebridVideo.objects.all()
+    serializer_class = DebridVideoSerializer
 
 class VideoUpdateAPIView(generics.UpdateAPIView):
     queryset = Video.objects.all()
@@ -171,3 +174,46 @@ class VideoIncrementView(generics.GenericAPIView):
         return Response({
                 "Status": "Success"
             })
+    
+class DebridVideoIncrementView(generics.GenericAPIView):
+    def post(self, request, pk):
+        try:
+            debrid_video = DebridVideo.objects.get(id = pk)
+        except Video.DoesNotExist:
+            return Response({
+                "Status": "Failed"
+            })
+
+        debrid_video.views = debrid_video.views + 1
+        debrid_video.last_viewed = timezone.now()
+        debrid_video.save()
+
+        return Response({
+                "views": debrid_video.views
+            })
+    
+class DebridVideoUpdateAPIView(generics.UpdateAPIView):
+    queryset = DebridVideo.objects.all()
+    serializer_class = DebridVideoSerializer
+    lookup_field = "pk"
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+    
+
+class DebridVideoListCreateAPIView(generics.ListCreateAPIView):
+    queryset = DebridVideo.objects.all()
+    serializer_class = DebridVideoSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.search(self.request.GET)
+        return qs
+
+class DebridVideoDeleteAPIView(generics.DestroyAPIView):
+    queryset = DebridVideo.objects.all()
+    serializer_class = DebridVideoSerializer
+    lookup_field = "pk"
+
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)

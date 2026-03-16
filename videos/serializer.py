@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Video
+from .models import Video, DebridVideo
 
 class VideoListSerializer(serializers.ModelSerializer):
 
@@ -138,3 +138,41 @@ class VideoSerializer(serializers.ModelSerializer):
     
     def get_duration(self, obj):
         return obj.duration.seconds
+
+
+class DebridVideoSerializer(serializers.ModelSerializer):
+
+    badge = serializers.SerializerMethodField(read_only=True)
+    duration = serializers.SerializerMethodField(read_only=True)
+    poster = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = DebridVideo
+        fields = [
+            'id',
+            'title', 
+            'url',
+            'views', 
+            'favourite', 
+            'description',
+            'expired',
+            'duration', 
+            'added', 
+            'size',  
+            'width', 
+            'height', 
+            'tags', 
+            'progress', 
+            'watch_time',
+            'last_viewed',
+            'badge',
+            'poster',
+        ]
+
+    def get_badge(self, obj):
+        return obj.get_badge()
+    
+    def get_duration(self, obj):
+        return obj.duration.seconds
+    
+    def get_poster(self, obj):
+        return obj.get_poster()

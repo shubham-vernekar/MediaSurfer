@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django.contrib.postgres", 
+    'django.contrib.postgres', 
+    'django_celery_results',
     'pin_passcode',
     'backend',
     'videos',
@@ -61,7 +62,8 @@ if not DISABLE_LOGIN:
     MIDDLEWARE.append('pin_passcode.middleware.PinPasscodeMiddleware')
 
 # TODO move pin to more secure location
-PIN_PASSCODE_PIN = 1234
+PIN_PASSCODE_PIN = "***"
+DEBRID_API_KEY = "***"
 
 ROOT_URLCONF = 'MediaSurfer.urls'
 
@@ -102,6 +104,9 @@ DATABASES={
    }
 }
 
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -154,3 +159,9 @@ MEDIA_DIR = 'MediaSurfer/media'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+VIDEO_FORMATS = [".webm", ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".ogg",
+                     ".m4p", ".m4v", ".avi", ".wmv", ".mov", ".qt", ".mp4",
+                     ".flv", ".swf", ".ts", ".mkv"]
+MIN_VIDEO_LENGTH = 200
+SUPPORTED_VIDEO_FORMATS = [".mp4"]

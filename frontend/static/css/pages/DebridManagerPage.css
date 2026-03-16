@@ -1,0 +1,174 @@
+/* .debrid-list-page-container{
+    padding: 5vh 10vw;
+} */
+
+.real-debrid-title{
+    font-size: 3em;
+    padding: 7vh 9vw 1vh 9vw;
+}
+
+.real-debrid-container-box{
+    padding: 0 9vw;
+    margin-top: 1.5em;
+}
+
+.real-debrid-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5em;
+    margin: 0 0.2rem;
+}
+
+.real-debrid-filename{
+    font-size: 1.25em;
+    margin-bottom: 0.45em;
+}
+
+.real-debrid-details{
+    display: flex;
+    column-gap: 2em;
+}
+
+.real-debrid-info{
+    display: flex;
+    column-gap: 0.4em;
+    align-items: center;
+}
+
+.real-debrid-info-btn {
+    display: flex;
+    column-gap: 0.4em;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    align-items: center;
+}
+
+.real-debrid-info-btn svg {
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.real-debrid-info-btn:hover svg {
+    color: rgb(85, 255, 85);
+}
+
+.real-debrid-info-btn:hover svg{
+    transform: scale(1.2);
+}
+
+.real-debrid-info-btn:hover{
+    transform: scale(1.1);
+}
+
+.pagination-container{
+    display: flex;
+    column-gap: 3rem;
+    margin-top: 2.5em;
+}
+
+.pagination-btn{
+    background: linear-gradient(#393939, #292929);
+    color: #e0e0e0;
+    outline: none;
+    border-radius: 1.2em;
+    padding: 0.6em 2em;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.pagination-btn:hover{
+    color: #5f5;
+    transform: scale(1.05);
+}
+
+.pagination-pagenum{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    font-size: 1.4em;
+}
+
+.real-debrid-info-btn-text{
+    /* max-width: 0; */
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    /* transition: 0.4s ease-in-out; */
+    text-align: left;
+    
+}
+
+/* .real-debrid-info-btn:hover .real-debrid-info-btn-text{
+    max-width: 200px;
+    margin: 0 0.6em 0 0;
+} */
+
+.real-debrid-info-btn-box{
+    display: flex;
+    column-gap: 0.3em;
+}
+
+.real-debrid-box{
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    padding: 2em;
+    background: #1d1d1d;
+    border-radius: 1em;
+    row-gap: 0.4em;
+}
+
+.status-imported {
+    /* border: 1px solid #9d9d9d; */
+    background: #232e4e;
+    
+}
+
+.status-pending {
+    /* border: 1px solid orange; */
+    /* border: 1px solid #d3d3d3; */
+    background: #2f333d;
+    
+}
+
+.dark-page{
+    background: #141414;
+    min-height: 100vh;
+}
+
+.real-debrid-title{
+    cursor: pointer;
+}
+
+.real-debrid-status{
+    font-size: 12px;
+    text-transform: uppercase; 
+}
+
+.debrid-list-import-container{
+    display: flex;
+    column-gap: 2em;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 0 9vw 0 0; 
+    width: 40%;
+}
+
+.debrid-list-import-container div:hover{
+    cursor: pointer;
+    color: #ff0000;
+}
+
+.debrid-files-input-container{
+    display: flex;
+    justify-content: center;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 0 0 0 9vw;
+    margin: 1em 0;
+    align-items: flex-end;
+}
+
+.debrid-files-search-input {
+    width: 50%!important;
+}

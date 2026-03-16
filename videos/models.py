@@ -487,3 +487,123 @@ class Video(models.Model):
             return user_data_object.uf_jt_link + self.movie_id
         else:
             return ""
+
+
+class DebridVideoQuerySet(models.QuerySet):
+    def search(self, parameters):
+        query = parameters.get("query", "").lower() 
+        parent = parameters.get("parent", None)
+        favourite = parameters.get("favourite", None)
+        sort_by = parameters.get("sort_by", None)
+        filter = parameters.get("filter", "").lower() 
+        qs = self.order_by('-added').order_by(F("last_viewed").desc(nulls_last=True))
+        
+        if filter=="favourites":
+            favourite = True
+
+        if query:
+            qs = qs.filter(Q(search_text__icontains=query))
+
+        if parent:
+            qs = qs.filter(Q(parent_hash=parent))
+            return sort_related_videos(qs)
+
+        if favourite is not None:
+            try:
+                qs = qs.filter(Q(favourite=favourite))
+            except ValidationError:
+                qs = self.none()
+
+        if sort_by:
+            if sort_by == "-?":
+                sort_by = "?"
+            
+            try:
+                qs = qs.order_by(sort_by)
+            except (FieldError):
+                qs = self.none()
+
+            if "last_viewed" in sort_by:
+                qs = qs.filter(Q(progress__gte = 1) & Q(last_viewed__isnull = False))
+
+        return qs
+    
+class DebridVideoManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return DebridVideoQuerySet(self.model, using=self._db).filter(expired=False).filter(is_active=True)
+
+    def search(self, query):
+        return self.get_queryset().search(query)
+
+class DebridVideo(models.Model):
+    id = models.CharField(max_length=15, primary_key=True)
+    is_active = models.BooleanField(default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    url = models.CharField(max_length=2048, unique=True)
+    url_id = models.CharField(max_length=50, unique=True)
+    title = models.CharField(max_length=2048)
+    views = models.IntegerField(default=0, blank=True, null=True)
+    expired = models.BooleanField(default=False)
+    favourite = models.BooleanField(default=False)
+    description = models.CharField(max_length=2048, blank=True, null=True)
+    duration = models.DurationField(blank=True, null=True)
+    size = models.FloatField(blank=True, null=True)
+    subtitle = models.CharField(max_length=1024, blank=True, null=True)
+    added = models.DateTimeField(default=timezone.now)
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
+    movie_id = models.CharField(max_length=25, blank=True, null=True)
+    search_text = models.CharField(max_length=4096, blank=True, null=True)
+    recommended = models.BooleanField(default=False)
+    tags = models.CharField(max_length=1024, blank=True, null=True)
+    progress = models.IntegerField(default=0, blank=True, null=True)
+    watch_time = models.IntegerField(default=0, blank=True, null=True)
+    last_viewed = models.DateTimeField(blank=True, null=True)
+    poster = models.FileField(blank=True, null=True)
+    parent_hash = models.CharField(max_length=100, blank=True, null=True)
+    parent_title = models.CharField(max_length=2048, blank=True, null=True)
+    debrid_id = models.CharField(max_length=25, blank=True, null=True)
+    debrid_link = models.CharField(max_length=1024, blank=True, null=True)
+
+    objects = DebridVideoManager()
+    all_objects = DefaultManager()
+
+    def get_badge(self):
+        if  self.width < self.height:
+            return "VERTICAL"
+        if self.height > 2100 or self.width >3800:
+            return "4K UHD"
+        elif self.height > 1400 or self.width >2500:
+            return "2K QHD"
+        elif self.height > 1050 or self.width > 1900:
+            return "HD"
+        elif self.height > 700 or self.width > 1200:
+            return "720P"
+        elif self.height > 400 or self.width > 600:
+            return "SD"
+        elif self.height > 300 or self.width > 400:
+            return "360P"
+        else:
+            return "240P"
+
+    def __str__(self):
+        return self.title
+    
+    def get_poster(self):
+        if self.poster:
+            return self.poster.url
+        else:
+            return ""
+    
+    def save(self, *args, **kwargs):
+        parts = [self.title, self.parent_title]
+        self.search_text = " ".join(filter(None, parts))
+        self.search_text = re.sub(r"[\W_]", " ", self.search_text)
+        self.search_text = re.sub(r"\s+", " ", self.search_text).strip().lower()
+        super().save(*args, **kwargs)
+
+    # def delete(self, *args, **kwargs):
+    #     self.is_active = False
+    #     self.deleted_at = timezone.now()
+    #     self.save()
+

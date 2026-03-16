@@ -1,5 +1,5 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { React, useEffect, useState, useRef } from "react";
 import OptionsSearchBox from "../utils/OptionsSearchBox";
 import axios from "axios";
@@ -33,6 +33,18 @@ function VideoPlayerPage() {
   const [videoFound, SetVideoFound] = useState(true);
 
   const VideoDetailsRef = useRef(null);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [navigate]);
 
   useEffect(() => {
     axios({
@@ -95,6 +107,10 @@ function VideoPlayerPage() {
     });
   
   }, []);
+
+  useEffect(() => {
+      console.log(videoData);
+    }, [videoData]);
 
   useEffect(() => {
     if (specialTag == "FAVOURITE") {
