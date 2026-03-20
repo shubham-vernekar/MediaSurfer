@@ -12,7 +12,7 @@ function DebridManagerPage() {
   const [debridData, SetDebridData] = useState([]);
   const [loading, SetLoading] = useState(false);
   const [importing, SetImporting] = useState(false);
-  const [managerMode, SetManagerMode] = useState(false);
+  const [managerMode, SetManagerMode] = useState(true);
   const [debridFilesData, SetDebridFilesData] = useState([]);
   const [dd_page_no, SetDD_page_no] = useState(1);
   const [df_page_no, SetDF_page_no] = useState(1);
@@ -88,7 +88,7 @@ function DebridManagerPage() {
           page_no: dd_page_no,
         },
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         SetDebridData(response.data);
         SetLoading(false)
     });
@@ -129,9 +129,17 @@ function DebridManagerPage() {
   useEffect(() => {
     if (managerMode){
         RefreshDebridFilesData();
+        SetDF_page_no(1)
     }
-  }, [df_page_no, managerMode, searchQuery]);
+  }, [searchQuery]);
 
+  useEffect(() => {
+    if (managerMode){
+        RefreshDebridFilesData();
+    }
+  }, [df_page_no, managerMode]);
+
+  
   useEffect(() => {
       SetDF_NumberOfPages(Math.ceil(df_videoCount/df_videosPageLimit))
   }, [df_videoCount]);
