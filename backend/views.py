@@ -29,7 +29,7 @@ import requests
 from urllib.parse import unquote
 from .tasks import import_debrid_videos
 from celery.result import AsyncResult
-
+import re
    
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -548,6 +548,19 @@ class GetDebridDetails(generics.GenericAPIView):
 
 class ListRealDebrid(generics.GenericAPIView):
 
+    def filter_records(self, t, view_mode):
+        is_downloaded = t.get("status") == "downloaded"
+
+        if view_mode == "all":
+            return is_downloaded
+        if not is_downloaded:
+            return True
+        torrent_status = self.get_status(t)
+        file_count = len(t.get("links", []))
+
+        x =  torrent_status != "imported" and file_count > 1
+        return x
+
     def get_status(self, data):
         status = ""
         for debrid_file in DebridFiles.objects.filter(hash=data["hash"]):
@@ -571,32 +584,34 @@ class ListRealDebrid(generics.GenericAPIView):
             "page": request.GET.get("page_no", 1)
         }
 
+        view_mode = request.GET.get("view", "")
+
         results = requests.get(url, headers=headers, params=params).json()
 
         filtered = [
             {
                 "id": t["id"],
-                "filename": t["filename"],
+                "filename": DebridFiles.objects.filter(hash=t["hash"]).values_list('title', flat=True).first() or t["filename"],
                 "bytes": round(int(t["bytes"])/float(1048576),3),
                 "files": len(t.get("links", [])) if t.get("status") == "downloaded" else 0,
                 "debrid_status": t["status"].title(),
                 "hash": t["hash"],
-                "videos": DebridVideo.objects.filter(parent_hash=t["hash"]).count(),
+                "videos": DebridVideo.objects.filter(parent__hash=t["hash"]).count(),
                 "status": self.get_status(t)
             }
             for t in results
-            if t.get("status") == "downloaded"
+            if self.filter_records(t, view_mode)
         ]
 
         return Response(filtered)
+
 
 class DebridFilesImportAPIView(generics.GenericAPIView):
 
     def post(self, request):
         debrid_ids = request.data.get("debrid_id")
-        clear_import = request.data.get("clear_import")
         import_all = request.data.get("import_all")
-        task = import_debrid_videos.delay(debrid_ids, clear_import, import_all)
+        task = import_debrid_videos.delay(debrid_ids, import_all)
         if import_all:
             DebridFiles.objects.all().update(task_id=task.id)
         else:
@@ -605,16 +620,16 @@ class DebridFilesImportAPIView(generics.GenericAPIView):
         return JsonResponse({'task_id': task.id})
 
 
-class RealDebridDeleteAPIView(generics.GenericAPIView):
-    def post(self, request):
-        parent_hash = request.data.get("hash")
-        deleted_count = 0
+# class RealDebridDeleteAPIView(generics.GenericAPIView):
+#     def post(self, request):
+#         parent_hash = request.data.get("hash")
+#         deleted_count = 0
         # if parent_hash:
         #     deleted_count, _ = DebridVideo.objects.filter(parent_hash=parent_hash).delete()
 
-        return Response({
-            "deleted_count" : deleted_count
-        })
+        # return Response({
+        #     "deleted_count" : deleted_count
+        # })
     
 
 class DebridFilesCreateAPIView(generics.ListCreateAPIView):
@@ -623,7 +638,10 @@ class DebridFilesCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        query = self.request.GET.get("query", "").lower() 
+        query = self.request.GET.get("query", "").lower()
+        query = re.sub(r"[\W_]", " ", query)
+        query = re.sub(r"\s+", " ", query).strip()
+
         qs = qs.order_by('-added')#.order_by(F("import_timestamp").desc(nulls_last=True)).order_by('-files')
         if query:
             qs = qs.filter(Q(search_text__icontains=query))
@@ -637,19 +655,12 @@ class DebridFilesCreateAPIView(generics.ListCreateAPIView):
 class DebridFilesDeleteAPIView(generics.GenericAPIView):
     def post(self, request):
         debrid_ids = request.data.get("debrid_id")
-        clear_videos = request.data.get("clear_videos")
         debrid_ids = debrid_ids.split(",")
-        to_delete = DebridFiles.objects.filter(debrid_id__in=debrid_ids)
-
-        deleted_count_total = 0
-        for debrid_file in to_delete:
-            debrid_file.delete()
-            if clear_videos and debrid_file.hash:
-                deleted_count, _ = DebridVideo.objects.filter(parent_hash=debrid_file.hash).delete()
-                deleted_count_total += deleted_count
+        _, deleted_details = DebridFiles.objects.filter(debrid_id__in=debrid_ids).delete()
 
         return Response({
-            "videos_deleted" : deleted_count_total
+            "deleted_files": deleted_details.get('backend.DebridFiles', 0),
+            "deleted_videos": deleted_details.get('backend.DebridVideo', 0),
         })
 
 

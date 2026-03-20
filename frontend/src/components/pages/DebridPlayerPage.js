@@ -17,7 +17,7 @@ function DebridPlayerPage() {
   const [videoData, SetVideoData] = useState({});
   const [videoFound, SetVideoFound] = useState(true);
   const [watchTime, SetWatchTime] = useState(0);
-  const [loading, SetLoading] = useState(false);
+  const [loading, SetLoading] = useState(true);
   
   const [views, SetViews] = useState(0);
   const navigate = useNavigate();
@@ -56,6 +56,7 @@ function DebridPlayerPage() {
       SetWatchTime(response.data.watch_time)
       document.title = response.data.title;
       SetVideoFound(true)
+      SetLoading(false)
     })
     .catch((error) => {
       SetVideoFound(false)
@@ -190,6 +191,12 @@ function DebridPlayerPage() {
           <div className="video-not-found"> 
             <img src="/static/images/404-no-video.svg" alt="" />
           </div>
+        )}
+        {loading && (
+            <Spinner 
+                visible = {loading}
+                color = "#ff0000"
+            />
         )}
       </div>
   );

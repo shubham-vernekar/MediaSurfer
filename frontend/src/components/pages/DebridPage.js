@@ -46,7 +46,7 @@ function DebridPage() {
         'X-CSRFToken': getCookie('csrftoken')
       },
     }).then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         SetVideoData(response.data.results);
         SetVideoCount(response.data.count);
     });
@@ -55,6 +55,11 @@ function DebridPage() {
   useEffect(() => {
     SetNumberOfPages(Math.ceil(videoCount/videosPerPage))
   }, [videoCount]);
+
+  useEffect(() => {
+    SetCurrentPageNumber(1)
+  }, [searchQuery]);
+
 
   const paginatorCallback = (val) => {
     SetCurrentPageNumber(val)

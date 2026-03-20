@@ -77,11 +77,11 @@ class DebridFilesSerializer(serializers.ModelSerializer):
 
     
     def get_videos(self, obj):
-        return DebridVideo.objects.filter(parent_hash=obj.hash).count()
+        return obj.videos.all().count()
     
     def get_posters(self, obj):
         poster_urls = list(
-            DebridVideo.objects.filter(parent_hash=obj.hash)
+            obj.videos.all()
             .exclude(poster='')
             .values_list('poster', flat=True)
         )

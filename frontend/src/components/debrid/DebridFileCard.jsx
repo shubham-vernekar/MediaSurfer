@@ -99,17 +99,19 @@ const DebridFileCard = (props) => {
             />
 
         <div className="debrid-file-poster-container">
+            <a href={"/debrid?parent=" + props.hash} target="_blank">
             {poster && (
-                <a href={"/debrid?parent=" + props.hash} target="_blank">
-                    <img className="debrid-file-poster-img"
+                
+                <img className="debrid-file-poster-img"
                     src={poster} 
                     style={{ opacity: opacity }}
-                    />
-                </a>
+                />
+                
             )}
             {!poster && (
                 <div className="debrid-file-no-poster-container"> <div className="debrid-file-pending">IMPORT PENDING</div> </div>
             )}
+            </a>
         </div>
  
       <div className="debrid-file-details-container">

@@ -150,7 +150,7 @@ class DebridVideoSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title', 
-            'url',
+            'download_url',
             'views', 
             'favourite', 
             'description',
@@ -172,7 +172,10 @@ class DebridVideoSerializer(serializers.ModelSerializer):
         return obj.get_badge()
     
     def get_duration(self, obj):
-        return obj.duration.seconds
+        if obj.duration:
+            return obj.duration.seconds
+        else:
+            return 0
     
     def get_poster(self, obj):
         return obj.get_poster()

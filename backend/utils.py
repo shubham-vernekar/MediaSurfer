@@ -8,6 +8,9 @@ import subprocess
 import requests
 from pathlib import Path
 from django.conf import settings
+import shortuuid
+import datetime
+
 
 def get_pending_videos():
 
@@ -83,3 +86,105 @@ def is_valid_video_url(url):
     if any(ext in cd for ext in settings.VIDEO_FORMATS):
         return True
 
+
+def add_debrid_videos(instance):
+    headers = {
+            "Authorization": f"Bearer {settings.DEBRID_API_KEY}"
+        }
+
+    api_url = f"{settings.DEBRID_API}/torrents/info/{instance.debrid_id}"
+    response = requests.get(
+        api_url,
+        headers=headers
+    )
+    if response.status_code != 200:
+        print(f"Real-Debrid API error {response.status_code}: {response.text}")
+        return None
+    
+    data = response.json()
+    video_files = data.get("files", [])
+    links = data.get("links", [])
+    if not links:
+        return
+
+    selected_files = [f for f in video_files if f.get("selected") == 1]
+    if len(selected_files) != len(links):
+        raise ValueError(f"Mismatch: {len(selected_files)} selected files but {len(links)} links")
+
+    for video_file, link in zip(selected_files, links):
+        debrid_object = DebridVideo.objects.create(
+            id = shortuuid.ShortUUID().random(length=12),
+            title = os.path.splitext(video_file.get("path", "Unknown").split("/")[-1])[0],
+            size = round(int(video_file.get("bytes", 0))/float(1048576),3),
+            parent = instance,
+            debrid_link = link
+        )
+
+
+def unrestrict_link(link):
+    headers = {
+            "Authorization": f"Bearer {settings.DEBRID_API_KEY}"
+        }
+    
+    url = f"{settings.DEBRID_API}/unrestrict/link"
+    data = {
+        "link": link
+    }
+    response = requests.post(url, headers=headers, data=data)
+    if response.status_code == 200:
+        return response.json().get("download")
+    
+
+def get_debrid_info(stream_url):
+
+    cmd = [
+        "ffprobe",
+        "-v", "quiet",
+        "-print_format", "json",
+        "-show_format",
+        "-show_streams",
+        stream_url
+    ]
+
+    result = subprocess.run(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+        timeout=30
+    )
+
+    probe = json.loads(result.stdout)
+    format_info = probe.get("format", {})
+    video_stream = None
+
+    for stream in probe.get("streams", []):
+        if stream.get("codec_type") == "video":
+            video_stream = stream
+            break
+    
+    width = video_stream.get("width") if video_stream else None
+    height = video_stream.get("height") if video_stream else None
+    duration = datetime.timedelta(seconds=float(format_info.get("duration", 0))) 
+    return width, height, duration
+
+def generate_poster(video_url, video_id):
+    debriddata_dir = os.path.join(settings.MEDIA_ROOT, settings.MEDIA_DIR, "debriddata")
+    base_folder = os.path.join(debriddata_dir, video_id[:2].upper())
+    poster_path = Path(os.path.join(base_folder, f"{video_id}_poster.jpg"))
+    poster_path.parent.mkdir(parents=True, exist_ok=True)
+
+    cmd = [
+        "ffmpeg",
+        "-ss", "5",
+        "-i", video_url,
+        "-vframes", "1",
+        "-q:v", "15",
+        "-y",
+        "-loglevel", "error",
+        str(poster_path)
+    ]
+
+    subprocess.run(cmd, check=True)
+    return poster_path

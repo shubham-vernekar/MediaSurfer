@@ -10,6 +10,10 @@ import os
 import random
 from send2trash import send2trash
 from django.utils import timezone
+from backend.utils import unrestrict_link, get_debrid_info
+import datetime
+from django.core.cache import cache
+import json
 
 class VideoListCreateAPIView(generics.ListCreateAPIView):
     queryset = Video.objects.all()
@@ -46,10 +50,6 @@ class VideoListCreateAPIView(generics.ListCreateAPIView):
 class VideoDetailAPIView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-
-class DebridVideoDetailAPIView(generics.RetrieveAPIView):
-    queryset = DebridVideo.objects.all()
-    serializer_class = DebridVideoSerializer
 
 class VideoUpdateAPIView(generics.UpdateAPIView):
     queryset = Video.objects.all()
@@ -217,3 +217,36 @@ class DebridVideoDeleteAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         return super().perform_destroy(instance)
+
+class DebridVideoDetailAPIView(generics.RetrieveAPIView):
+    queryset = DebridVideo.objects.all()
+    serializer_class = DebridVideoSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        stream_url = self.get_stream_url(instance.debrid_link)
+        if not stream_url:
+            return Response(
+                {"error": "Failed to unrestrict link"},
+                status=status.HTTP_502_BAD_GATEWAY
+            )
+        
+        if not instance.width:
+            instance.width, instance.height, instance.duration = get_debrid_info(stream_url)
+            instance.save()
+        
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        data['url'] = stream_url
+        return Response(data)  
+
+    def get_stream_url(self, debrid_link):
+        cache_key = f"rd_stream_{hash(debrid_link)}"
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
+        stream_url = unrestrict_link(debrid_link)
+        if stream_url:
+            cache.set(cache_key, stream_url, timeout=3600)
+
+        return stream_url
