@@ -8,8 +8,7 @@ from django.core.exceptions import FieldError, ValidationError
 from django.db.models import Manager as DefaultManager
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from backend.models import Series
-from backend.models import UserLevelData
+from backend.models import Series, UserLevelData, DebridFiles
 from functools import reduce
 import operator
 from MediaSurfer.constants import CATEGORIES_EXCLUDE_LIST
@@ -497,6 +496,9 @@ class DebridVideoQuerySet(models.QuerySet):
         sort_by = parameters.get("sort_by", None)
         filter = parameters.get("filter", "").lower() 
         qs = self.order_by('-added').order_by(F("last_viewed").desc(nulls_last=True))
+
+        query = re.sub(r"[\W_]", " ", query)
+        query = re.sub(r"\s+", " ", query).strip()
         
         if filter=="favourites":
             favourite = True
@@ -505,8 +507,8 @@ class DebridVideoQuerySet(models.QuerySet):
             qs = qs.filter(Q(search_text__icontains=query))
 
         if parent:
-            qs = qs.filter(Q(parent_hash=parent))
-            return sort_related_videos(qs)
+            qs = qs.filter(Q(parent__hash=parent))
+            return qs
 
         if favourite is not None:
             try:
@@ -539,8 +541,8 @@ class DebridVideo(models.Model):
     id = models.CharField(max_length=15, primary_key=True)
     is_active = models.BooleanField(default=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    url = models.CharField(max_length=2048, unique=True)
-    url_id = models.CharField(max_length=50, unique=True)
+    download_url = models.CharField(max_length=1024, blank=True, null=True)
+    unrestricted_at = models.DateTimeField(blank=True, null=True)
     title = models.CharField(max_length=2048)
     views = models.IntegerField(default=0, blank=True, null=True)
     expired = models.BooleanField(default=False)
@@ -560,15 +562,21 @@ class DebridVideo(models.Model):
     watch_time = models.IntegerField(default=0, blank=True, null=True)
     last_viewed = models.DateTimeField(blank=True, null=True)
     poster = models.FileField(blank=True, null=True)
-    parent_hash = models.CharField(max_length=100, blank=True, null=True)
-    parent_title = models.CharField(max_length=2048, blank=True, null=True)
-    debrid_id = models.CharField(max_length=25, blank=True, null=True)
     debrid_link = models.CharField(max_length=1024, blank=True, null=True)
+    parent = models.ForeignKey(
+        DebridFiles,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='videos'
+    )
 
     objects = DebridVideoManager()
     all_objects = DefaultManager()
 
     def get_badge(self):
+        if not (self.width or self.height):
+            return "NA"
         if  self.width < self.height:
             return "VERTICAL"
         if self.height > 2100 or self.width >3800:
@@ -593,10 +601,10 @@ class DebridVideo(models.Model):
         if self.poster:
             return self.poster.url
         else:
-            return ""
+            return "/static/images/no-video-poster.png"
     
     def save(self, *args, **kwargs):
-        parts = [self.title, self.parent_title]
+        parts = [self.title, self.parent.title]
         self.search_text = " ".join(filter(None, parts))
         self.search_text = re.sub(r"[\W_]", " ", self.search_text)
         self.search_text = re.sub(r"\s+", " ", self.search_text).strip().lower()

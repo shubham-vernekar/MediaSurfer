@@ -12,7 +12,7 @@ function DebridManagerPage() {
   const [debridData, SetDebridData] = useState([]);
   const [loading, SetLoading] = useState(false);
   const [importing, SetImporting] = useState(false);
-  const [managerMode, SetManagerMode] = useState(true);
+  const [managerMode, SetManagerMode] = useState(false);
   const [debridFilesData, SetDebridFilesData] = useState([]);
   const [dd_page_no, SetDD_page_no] = useState(1);
   const [df_page_no, SetDF_page_no] = useState(1);
@@ -20,6 +20,7 @@ function DebridManagerPage() {
   const [df_videoCount, SetDF_VideoCount] = useState(0);
   const [selectedDebridIds, setSelectedDebridIds] = useState(new Set());
   const [clearSelectionTick, setClearSelectionTick] = useState(0);
+  const [editedTitles, setEditedTitles] = useState({});
   const [searchQuery, SetSearchQuery] = useState(searchParams.get("query") || "");
   const dd_videosPageLimit = 50
   const df_videosPageLimit = 20
@@ -33,7 +34,7 @@ function DebridManagerPage() {
         data: {
           debrid_id: data["id"],
           hash: data["hash"],
-          title: data["filename"],
+          title: getTitle(data),
           size: data["bytes"],
           status: data["debrid_status"],
           files: data["files"],
@@ -87,7 +88,7 @@ function DebridManagerPage() {
           page_no: dd_page_no,
         },
       }).then((response) => {
-        // console.log(response);
+        console.log(response);
         SetDebridData(response.data);
         SetLoading(false)
     });
@@ -160,6 +161,8 @@ function DebridManagerPage() {
     });
   };
 
+  const getTitle = (data) => editedTitles[data["id"]] ?? data["filename"];
+
 
   return (
     <div className='dark-page'>
@@ -171,15 +174,21 @@ function DebridManagerPage() {
             {debridData && (<div className={`real-debrid-container`}>
                 {debridData.map((data, i) => (
                     <div className={`real-debrid-box status-${data["status"]}`} key={data["id"]}>
-                        <a href={"/debrid?parent="+ data["hash"]} _blank="true">
-                            <div className={`real-debrid-filename`}>
-                                {data["filename"]}
-                            </div> 
-                        </a>
+                        <div
+                            className="real-debrid-filename"
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) => setEditedTitles(prev => ({
+                                ...prev,
+                                [data["id"]]: e.target.innerText.trim()
+                            }))}
+                            >
+                            {data["filename"]}
+                        </div>
 
                         <div className='real-debrid-details'>  
-                            {data["status"] && (<div className='real-debrid-info real-debrid-status'> 
-                                {data["status"].toUpperCase()}
+                            {data["debrid_status"] && (<div className='real-debrid-info real-debrid-status'> 
+                                {data["debrid_status"].toUpperCase()}
                             </div> )}
 
                             <div className='real-debrid-info'> 
@@ -204,7 +213,7 @@ function DebridManagerPage() {
                             </div> 
                             {/* <div className='real-debrid-status'>{data["status"]}</div> */}
                             {/* <div className='real-debrid-info-btn-box'> */}
-                            {data["status"] == "" && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
+                            {data["status"] == "" && data["debrid_status"] != "Downloading" && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                                     <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.53 7.53L9.81 15.25H12.83C13.24 15.25 13.58 15.59 13.58 16C13.58 16.41 13.24 16.75 12.83 16.75H8C7.59 16.75 7.25 16.41 7.25 16V11.17C7.25 10.76 7.59 10.42 8 10.42C8.41 10.42 8.75 10.76 8.75 11.17V14.19L16.47 6.47C16.62 6.32 16.81 6.25 17 6.25C17.19 6.25 17.38 6.32 17.53 6.47C17.82 6.76 17.82 7.24 17.53 7.53Z" fill="currentColor"/>
                                 </svg>

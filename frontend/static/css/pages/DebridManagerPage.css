@@ -10,6 +10,7 @@
 .real-debrid-container-box{
     padding: 0 9vw;
     margin-top: 1.5em;
+    padding-bottom: 4em;
 }
 
 .real-debrid-container{
@@ -171,4 +172,21 @@
 
 .debrid-files-search-input {
     width: 50%!important;
+}
+
+.real-debrid-filename[contenteditable] {
+    outline: none;
+    border-radius: 0.3em;
+    padding: 0.1em 0.3em;
+    margin-left: -0.3em;
+    transition: background 0.2s ease;
+}
+
+.real-debrid-filename[contenteditable]:hover {
+    background: #2a2a2a;
+}
+
+.real-debrid-filename[contenteditable]:focus {
+    background: #252525;
+    outline: 1px solid #444;
 }
