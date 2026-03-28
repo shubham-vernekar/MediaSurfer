@@ -26,6 +26,23 @@ function DebridManagerPage() {
   const df_videosPageLimit = 20
 
 
+  const handleDeleteRealDebrid = (debrid_id) => {
+    SetLoading(true)
+    axios({
+        method: "post",
+        url: "/api/real-debrid/delete",
+        data: {
+          debrid_id: debrid_id
+        },
+      }).then((response) => {
+        RefreshDebridData()
+    });
+  };
+
+  const handleDeleteDebridFile = (debrid_id) => {
+        SetDebridFilesData(prev => prev.filter(file => file.debrid_id !== debrid_id));
+    };
+
   const handleAdd = (data) => {
     SetLoading(true)
     axios({
@@ -144,10 +161,6 @@ function DebridManagerPage() {
       SetDF_NumberOfPages(Math.ceil(df_videoCount/df_videosPageLimit))
   }, [df_videoCount]);
 
-  const handleDeleteDebridFile = (debrid_id) => {
-        SetDebridFilesData(prev => prev.filter(file => file.debrid_id !== debrid_id));
-    };
-
  const onImportComplete = (debrid_id) => {
         RefreshDebridFilesData()
     };
@@ -199,6 +212,10 @@ function DebridManagerPage() {
                                 {data["debrid_status"].toUpperCase()}
                             </div> )}
 
+                            {data["progress"] > 0 && (<div className='real-debrid-info real-debrid-status'> 
+                                {data["progress"]} %
+                            </div> )}
+
                             <div className='real-debrid-info'> 
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M12.5 0H5.914a1.5 1.5 0 0 0-1.06.44L2.439 2.853A1.5 1.5 0 0 0 2 3.914V14.5A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 12.5 0Zm-7 2.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2 0a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2.75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 1.5 0Zm1.25-.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Z"/>
@@ -221,7 +238,7 @@ function DebridManagerPage() {
                             </div> 
                             {/* <div className='real-debrid-status'>{data["status"]}</div> */}
                             {/* <div className='real-debrid-info-btn-box'> */}
-                            {data["status"] == "" && data["debrid_status"] != "Downloading" && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
+                            {data["status"] == "" && data["debrid_status"] != "Downloading" && data["debrid_status"] != "Uploading" && data["debrid_status"] != "Error" && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                                     <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.53 7.53L9.81 15.25H12.83C13.24 15.25 13.58 15.59 13.58 16C13.58 16.41 13.24 16.75 12.83 16.75H8C7.59 16.75 7.25 16.41 7.25 16V11.17C7.25 10.76 7.59 10.42 8 10.42C8.41 10.42 8.75 10.76 8.75 11.17V14.19L16.47 6.47C16.62 6.32 16.81 6.25 17 6.25C17.19 6.25 17.38 6.32 17.53 6.47C17.82 6.76 17.82 7.24 17.53 7.53Z" fill="currentColor"/>
                                 </svg>
@@ -233,6 +250,15 @@ function DebridManagerPage() {
                                 </svg>
                                 <div className='real-debrid-info-btn-text'>Delete</div> 
                             </div> )}
+
+                            <div className='real-debrid-info-btn' onClick={() => handleDeleteRealDebrid(data["id"])}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <g id="Edit / Remove_Minus_Circle">
+                                        <path id="Vector" d="M8 12H16M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </g>
+                                </svg>
+                                <div className='real-debrid-info-btn-text'>Remove</div> 
+                            </div>
 
                             {/* </div>  */}
                         </div> 

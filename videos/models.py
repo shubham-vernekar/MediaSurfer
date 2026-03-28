@@ -508,7 +508,6 @@ class DebridVideoQuerySet(models.QuerySet):
 
         if parent:
             qs = qs.filter(Q(parent__hash=parent))
-            return qs
 
         if favourite is not None:
             try:

@@ -18,6 +18,7 @@ function DebridPlayerPage() {
   const [videoFound, SetVideoFound] = useState(true);
   const [watchTime, SetWatchTime] = useState(0);
   const [loading, SetLoading] = useState(true);
+  const [favorite, SetFavorite] = useState(false);
   
   const [views, SetViews] = useState(0);
   const navigate = useNavigate();
@@ -52,10 +53,13 @@ function DebridPlayerPage() {
       method: "get",
       url: "/api/videos/debrid/" + videoID,
     }).then((response) => {
+      console.log(response.data);
+      
       SetVideoData(response.data);
       SetWatchTime(response.data.watch_time)
       document.title = response.data.title;
       SetVideoFound(true)
+      SetFavorite(response.data.favourite)
       SetLoading(false)
     })
     .catch((error) => {
@@ -79,6 +83,39 @@ function DebridPlayerPage() {
   // useEffect(( => {
   //   console.log(videoData);
   // }, [videoData]);
+
+  const OpenLocalPlayerDebrid = (url) => {
+    axios({
+      method: "get",
+      url: "/api/debrid-files/open",
+      params: {
+        url: url,
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+    }).then((response) => {
+        console.log(response.data);
+    });
+  }
+
+  const HandleFavorite = (id, url, title, is_favourite) => {
+    axios({
+      method: "put",
+      url: "/api/videos/debrid/" + id + "/update",
+      data: {
+        id: id,
+        title: title,
+        url: url,
+        favourite: is_favourite,
+      }
+    }).then((response) => {
+      let favStatus = Boolean(response.data.favourite)
+      SetFavorite(favStatus)
+    });
+  };
 
 
   const updateProgress = (progress, watchTime, currentVolume) => {
@@ -135,7 +172,7 @@ function DebridPlayerPage() {
               />
               
               <div className="video-player-details">
-                <div className="video-player-title">
+                <div className={`video-player-title  ${favorite ? "fav-text" : ""}`}>
                   <h1>{videoData.title}</h1>
                 </div>
                 <div className="video-player-details-pane">
@@ -180,6 +217,27 @@ function DebridPlayerPage() {
                     {videoData.badge && (
                       <div> {videoData.badge} </div>
                     )}
+                    <div className='video-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url)}>  
+                      <img src="/static/images/play-red.svg"  width="25px" height="25px" ></img>
+                      <span className='video-player-button-text'>Open Player</span>
+                    </div>
+                    {/* <div className='video-advert-button' onClick={() => {HandleFavorite(videoData.vidid, videoData.url, videoData.title, !favorite)}}> 
+                      {favorite && (<svg width="14" height="14" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
+                      <path d="M8.931.586 7 3l1.5 4-2 3L8 15C22.534 5.396 13.757-2.21 8.931.586ZM7.358.77 5.5 3 7 7l-1.5 3 1.815 4.537C-6.533 4.96 2.685-2.467 7.358.77Z"/>
+                      </svg>)}
+                      {!favorite && (<svg width="14" height="14" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
+                      <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                      </svg>)}
+                    </div> */}
+                    {!favorite && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
+                      <img src="/static/images/like-add.svg" width="25px" height="25px" alt="" />
+                      <span className='video-player-button-text'>Add to favourites</span>
+                    </div>)}
+                    
+                    {favorite && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
+                      <img src="/static/images/like-remove.svg" width="25px" height="25px" alt="" />
+                      <span className='video-player-button-text'>Remove from favourites</span>
+                    </div>)}  
                     <DebridAddURLBox/>
                 </div>
 

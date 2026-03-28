@@ -1,7 +1,7 @@
 from typing import Any
 from .models import Category, Navbar, Series, UserLevelData , DebridFiles
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer , DebridFilesSerializer
-from .utils import get_pending_videos, apply_regex, convert_seconds, is_valid_video_url
+from .utils import get_pending_videos, apply_regex, convert_seconds, is_valid_video_url, delete_debrid_file
 # from .utils import get_debrid_info , generate_poster, extract_realdebrid_id
 from django.utils import timezone
 from rest_framework import generics
@@ -30,6 +30,7 @@ from urllib.parse import unquote
 from .tasks import import_debrid_videos
 from celery.result import AsyncResult
 import re
+import subprocess
    
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -546,6 +547,16 @@ class GetDebridDetails(generics.GenericAPIView):
         })
 
 
+class DeleteRealDebrid(generics.GenericAPIView):
+    def post(self, request):
+        debrid_ids = request.data.get("debrid_id")
+        for debrid_id in debrid_ids.split(","):
+            delete_debrid_file(debrid_id.strip())
+
+        return Response({
+            "debrid_ids": debrid_ids
+        })
+
 class ListRealDebrid(generics.GenericAPIView):
 
     def filter_records(self, t, view_mode):
@@ -586,24 +597,27 @@ class ListRealDebrid(generics.GenericAPIView):
 
         view_mode = request.GET.get("view", "")
 
-        results = requests.get(url, headers=headers, params=params).json()
+        results = requests.get(url, headers=headers, params=params)
+        if results.status_code == 200:
+            filtered = [
+                {
+                    "id": t["id"],
+                    "filename": DebridFiles.objects.filter(hash=t["hash"]).values_list('title', flat=True).first() or t["filename"],
+                    "bytes": round(int(t["bytes"])/float(1048576),3),
+                    "files": len(t.get("links", [])) if t.get("status") == "downloaded" else 0,
+                    "debrid_status": t["status"].title(),
+                    "hash": t["hash"],
+                    "progress": t.get("progress"),
+                    "videos": DebridVideo.objects.filter(parent__hash=t["hash"]).count(),
+                    "status": self.get_status(t)
+                }
+                for t in results.json()
+                if self.filter_records(t, view_mode)
+            ]
 
-        filtered = [
-            {
-                "id": t["id"],
-                "filename": DebridFiles.objects.filter(hash=t["hash"]).values_list('title', flat=True).first() or t["filename"],
-                "bytes": round(int(t["bytes"])/float(1048576),3),
-                "files": len(t.get("links", [])) if t.get("status") == "downloaded" else 0,
-                "debrid_status": t["status"].title(),
-                "hash": t["hash"],
-                "videos": DebridVideo.objects.filter(parent__hash=t["hash"]).count(),
-                "status": self.get_status(t)
-            }
-            for t in results
-            if self.filter_records(t, view_mode)
-        ]
-
-        return Response(filtered)
+            return Response(filtered)
+        
+        return Response({})
 
 
 class DebridFilesImportAPIView(generics.GenericAPIView):
@@ -684,3 +698,17 @@ def check_status(request, task_id):
         }
 
     return JsonResponse(response)
+
+
+class OpenPlayerDebridView(generics.GenericAPIView):
+    def get(self, request):
+        debrid_url = request.GET.get("url")
+        if debrid_url:
+            _ = subprocess.Popen([settings.LOCAL_MEDIA_PLAYER_PATH, debrid_url])
+            return Response({
+                    "Status": "Success"
+                })
+        else:
+            return Response({
+                    "debrid_url": debrid_url
+                }) 

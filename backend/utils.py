@@ -188,3 +188,17 @@ def generate_poster(video_url, video_id):
 
     subprocess.run(cmd, check=True)
     return poster_path
+
+
+def delete_debrid_file(debrid_id):
+    try:
+        r = requests.delete(
+            f"{settings.DEBRID_API}/torrents/delete/{debrid_id}",
+            headers={"Authorization": f"Bearer {settings.DEBRID_API_KEY}"},
+            timeout=15,
+        )
+        r.raise_for_status()
+        return True
+    except requests.RequestException as e:
+        print(f"✗ Failed to delete {debrid_id}: {e}")
+        return False

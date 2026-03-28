@@ -41,9 +41,10 @@ const DebridCard = (props) => {
           {/* <img src={"https://img.freepik.com/premium-photo/watercolor-white-paper-texture_87555-17727.jpg?semt=ais_rp_progressive&w=740&q=80"} alt="Online Image"/>  */}
         </a>
       </div>
-      <div className="image-tag-container">
-          <div className="duration-tag debrid-duration-tag">{secondsToTimestamp(props.duration)}</div>
-      </div>
+      {props.watchTime > 1 && (<div className="image-tag-container">
+          {/* <div className="duration-tag debrid-duration-tag">{secondsToTimestamp(props.duration)}</div> */}
+          <div className="duration-tag debrid-duration-tag">{secondsToHHMMSS(props.watchTime)}</div>
+      </div>)}
       <div className="debrid-card-details-container">
         <div className="debrid-details-heading">
           {/* <div style={{"cursor": "pointer"}} onClick={() => window.open("/admin/videos/video/debrid/"+ props.vidid +"/change/", '_blank').focus()} >{Math.floor(props.duration / 60)} Mins</div> */}
@@ -52,7 +53,8 @@ const DebridCard = (props) => {
               <path d="M9 5a.5.5 0 0 0-1 0v3H6a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 .5-.5V5z"/>
               <path d="M4 1.667v.383A2.5 2.5 0 0 0 2 4.5v7a2.5 2.5 0 0 0 2 2.45v.383C4 15.253 4.746 16 5.667 16h4.666c.92 0 1.667-.746 1.667-1.667v-.383a2.5 2.5 0 0 0 2-2.45V8h.5a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5H14v-.5a2.5 2.5 0 0 0-2-2.45v-.383C12 .747 11.254 0 10.333 0H5.667C4.747 0 4 .746 4 1.667zM4.5 3h7A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3z"/>
             </svg>
-            {secondsToHHMMSS(props.watchTime)} 
+            {/* {secondsToHHMMSS(props.watchTime)}  */}
+            {secondsToTimestamp(props.duration)}
           </div>
           {props.badge && (<div>{props.badge}</div>)}
           <div className='advert-views-box'> 

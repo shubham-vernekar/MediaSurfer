@@ -47,7 +47,20 @@ class ImportDebrid():
 
         logging.info(f"Total {debrid_file.videos.all().count()} videos. Importing {videos.count()} videos")
 
+        count = 0
         for video in videos:
+            total = debrid_file.videos.count()
+            remaining = videos.count() - count
+            processed = total - remaining
+
+            percentage = (processed / total * 100) if total > 0 else 0
+
+            logging.info(
+                f"Total {total} videos. {remaining} Remaining "
+                f"({percentage:.2f}% done)"
+            )
+
+            count += 1
             debrid_link = video.debrid_link
 
             download_link = self.all_downloads.get(debrid_link)
