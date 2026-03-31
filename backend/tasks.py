@@ -73,7 +73,7 @@ class ImportDebrid():
                 continue
 
             try:
-                video.width, video.height, video.duration = get_debrid_info(download_link)
+                video.width, video.height, video.duration, _  = get_debrid_info(download_link)
             except subprocess.TimeoutExpired:
                 logging.error(f"Download Timed Out - Unrestricting link -  {debrid_link}")
 
@@ -84,7 +84,7 @@ class ImportDebrid():
                     logging.warning(f"Download Link Unavailable {debrid_link}")
                     continue
                 try:
-                    video.width, video.height, video.duration = get_debrid_info(download_link)
+                    video.width, video.height, video.duration, _  = get_debrid_info(download_link)
                 except subprocess.TimeoutExpired:
                     logging.error(f"Download Timed Out (2)")
 
@@ -94,7 +94,7 @@ class ImportDebrid():
 
             logging.info(f"Downloading Poster")
             try:
-                poster_file = generate_poster(download_link, video.id)
+                poster_file = generate_poster(download_link, video.id, video.duration.total_seconds())
                 if os.path.exists(poster_file): 
                     video.poster = f"MediaSurfer\media\debriddata\{video.id[:2].upper()}\{video.id}_poster.jpg"
             except subprocess.CalledProcessError:
@@ -111,7 +111,7 @@ class ImportDebrid():
         page_no = 0
         while True:
             page_no += 1
-            url = f"{self.debrid_api}/downloads?limit=500&page={page_no}"
+            url = f"{self.debrid_api}/downloads?limit=5000&page={page_no}"
             x = requests.get(url, headers=self.headers)
             if x.status_code==200:
                 downloads = x.json()

@@ -36,7 +36,7 @@ const DebridCard = (props) => {
   return (
     <div className={`debrid-card animate-background  ${favorite ? "debrid-card-favorite" : ""}`}>
       <div className="debrid-card-poster-container">
-        <a href={"/debrid/player/" + props.vidid} target="_blank">
+        <a href={"/debrid/player?id=" + props.vidid} target="_blank">
           <img src={props.poster} alt="Poster Image"/>
           {/* <img src={"https://img.freepik.com/premium-photo/watercolor-white-paper-texture_87555-17727.jpg?semt=ais_rp_progressive&w=740&q=80"} alt="Online Image"/>  */}
         </a>
@@ -57,6 +57,7 @@ const DebridCard = (props) => {
             {secondsToTimestamp(props.duration)}
           </div>
           {props.badge && (<div>{props.badge}</div>)}
+          {props.extention && (<div>{props.extention.toUpperCase()}</div>)}
           <div className='advert-views-box'> 
             <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
               <path d="M12.5 0H5.914a1.5 1.5 0 0 0-1.06.44L2.439 2.853A1.5 1.5 0 0 0 2 3.914V14.5A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 12.5 0Zm-7 2.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2 0a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Zm2.75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 1.5 0Zm1.25-.75a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 1 .75-.75Z"/>

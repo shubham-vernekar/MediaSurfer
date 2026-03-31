@@ -28,6 +28,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich import print as rprint
 import threading
+from pathlib import Path
 
 console = Console()
 
@@ -37,6 +38,8 @@ class ImportDebrid():
     files_to_import = 0
     all_downloads = {}
     _progress_lock = threading.Lock()
+    DOWNLOADS_CACHE_PATH = Path("all_downloads_cache.pkl")
+    CACHE_TTL_SECONDS = 12 * 60 * 60
 
     def import_debrid_videos(self, debrid_file, progress, outer_task):
         videos = list(debrid_file.videos.filter(
@@ -63,7 +66,7 @@ class ImportDebrid():
                 return "skipped"
 
             try:
-                video.width, video.height, video.duration = get_debrid_info(download_link)
+                video.width, video.height, video.duration, _ = get_debrid_info(download_link)
             except subprocess.TimeoutExpired:
                 logging.error(f"Download Timed Out - {debrid_link}")
 
@@ -72,14 +75,14 @@ class ImportDebrid():
                 if not download_link:
                     return "skipped"
                 try:
-                    video.width, video.height, video.duration = get_debrid_info(download_link)
+                    video.width, video.height, video.duration, _  = get_debrid_info(download_link)
                 except subprocess.TimeoutExpired:
                     logging.error(f"Download Timed Out (2)")
                 if not video.duration:
                     return "skipped"
 
             try:
-                poster_file = generate_poster(download_link, video.id)
+                poster_file = generate_poster(download_link, video.id, video.duration.total_seconds())
                 if os.path.exists(poster_file):
                     video.poster = f"MediaSurfer\media\debriddata\{video.id[:2].upper()}\{video.id}_poster.jpg"
             except subprocess.CalledProcessError:
@@ -106,23 +109,55 @@ class ImportDebrid():
         debrid_file.save()
         return stats
 
-    def get_all_download_links(self):
+    def get_all_download_links(self, force_refresh=False):
+        # --- Try loading from cache ---
+        if not force_refresh and self.DOWNLOADS_CACHE_PATH.exists():
+            try:
+                with open(self.DOWNLOADS_CACHE_PATH, "rb") as f:
+                    cached = pickle.load(f)
+                age = time.time() - cached["timestamp"]
+                if age < self.CACHE_TTL_SECONDS:
+                    age_str = f"{int(age // 3600)}h {int((age % 3600) // 60)}m"
+                    console.print(
+                        f"[green]✓[/green] Loaded [bold]{len(cached['data'])}[/bold] "
+                        f"download links from cache (age: {age_str})"
+                    )
+                    return cached["data"]
+                else:
+                    console.print("[yellow]Cache expired, re-fetching...[/yellow]")
+            except (pickle.UnpicklingError, KeyError, EOFError):
+                console.print("[yellow]Cache corrupted, re-fetching...[/yellow]")
+
+        # --- Fetch from API ---
         all_downloads = {}
         page_no = 0
         with console.status("[bold yellow]Pre-caching all download links...", spinner="dots"):
             while True:
                 page_no += 1
-                url = f"{self.debrid_api}/downloads?limit=500&page={page_no}"
+                url = f"{self.debrid_api}/downloads?limit=5000&page={page_no}"
                 x = requests.get(url, headers=self.headers)
                 if x.status_code == 200:
                     downloads = x.json()
+                    if not downloads:
+                        break
                     for download in downloads:
                         link = download.get("link")
                         if link:
                             all_downloads[link] = download.get("download")
                 else:
                     break
-        console.print(f"[green]✓[/green] Cached [bold]{len(all_downloads)}[/bold] download links")
+
+        # --- Save to cache ---
+        try:
+            with open(self.DOWNLOADS_CACHE_PATH, "wb") as f:
+                pickle.dump({"timestamp": time.time(), "data": all_downloads}, f)
+            console.print(
+                f"[green]✓[/green] Fetched and cached [bold]{len(all_downloads)}[/bold] "
+                f"download links (valid for 12h)"
+            )
+        except OSError as e:
+            console.print(f"[yellow]Warning: could not save cache: {e}[/yellow]")
+
         return all_downloads
 
     def start_import_process(self, debrid_ids, import_all):

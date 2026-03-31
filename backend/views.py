@@ -2,7 +2,7 @@ from typing import Any
 from .models import Category, Navbar, Series, UserLevelData , DebridFiles
 from .serializer import CategorySerializer, NavbarSerializer, SeriesSerializer , DebridFilesSerializer
 from .utils import get_pending_videos, apply_regex, convert_seconds, is_valid_video_url, delete_debrid_file
-# from .utils import get_debrid_info , generate_poster, extract_realdebrid_id
+from .utils import get_debrid_info , generate_poster, unrestrict_link
 from django.utils import timezone
 from rest_framework import generics
 from django.core.exceptions import FieldError
@@ -17,6 +17,9 @@ import os
 import glob
 import shutil
 import datetime
+import tempfile
+import random
+import sys
 from django.conf import settings
 import json
 from django.core.management import call_command
@@ -25,6 +28,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank
 from collections import defaultdict
 from django.http import JsonResponse
 import shortuuid
+from urllib.parse import urlparse
 import requests
 from urllib.parse import unquote
 from .tasks import import_debrid_videos
@@ -55,11 +59,9 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 
         return qs
 
-
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-
 
 class CategoryUpdateAPIView(generics.UpdateAPIView):
     queryset = Category.objects.all()
@@ -76,7 +78,6 @@ class CategoryDeleteAPIView(generics.DestroyAPIView):
 
     def perform_destroy(self, instance):
         return super().perform_destroy(instance)
-
 
 class NavbarListView(generics.ListCreateAPIView):
     queryset = Navbar.objects.all()
@@ -105,7 +106,6 @@ class NavbarListView(generics.ListCreateAPIView):
         response.data["count"] = len(videos_data)
         # response.data["count"] = len(Star.objects.all().filter(Q(poster__isnull=True) | Q(poster__exact='')))
         return response
-
 
 class SeriesListCreateAPIView(generics.ListCreateAPIView):
     queryset = Series.objects.all()
@@ -154,7 +154,6 @@ class SeriesListCreateAPIView(generics.ListCreateAPIView):
         response.data["all_stars"] = sorted(list(all_stars))
         return response
 
-
 class MasterSearchView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
@@ -176,7 +175,6 @@ class MasterSearchView(generics.GenericAPIView):
             "categories": categories,
         })
 
-
 class RunScanView(generics.GenericAPIView):
     def post(self, request):
         try:
@@ -192,7 +190,6 @@ class RunScanView(generics.GenericAPIView):
             return Response({"Status": "Scanning Complete"})
         else:
             return Response({"Status": "Scanning already in progress"})
-
 
 class UpdateJson(generics.GenericAPIView):
 
@@ -230,7 +227,6 @@ class UpdateJson(generics.GenericAPIView):
                 "message": f"{filename} Not found"
             })
 
-
 class CategoryNamesListAPIView(generics.GenericAPIView):
     def get(self, request):
         query = request.GET.get("query", None)
@@ -242,7 +238,6 @@ class CategoryNamesListAPIView(generics.GenericAPIView):
             qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(title__icontains=query)).order_by("-rank").order_by('-starts_with') 
         
         return Response(qs.values_list('title', flat=True))
-
 
 class FindPending(generics.GenericAPIView):
 
@@ -296,7 +291,6 @@ class FindPending(generics.GenericAPIView):
                 "scanning" : user_data_object.scanning
             })
 
-
 class OpenFileFolderView(generics.GenericAPIView):
     def post(self, request):
         file_path = request.data.get('file', '') 
@@ -306,7 +300,6 @@ class OpenFileFolderView(generics.GenericAPIView):
         return Response({
                 "Status": "Success"
             })
-
 
 class UpdateVolume(generics.GenericAPIView):
 
@@ -342,7 +335,6 @@ class UpdateVolume(generics.GenericAPIView):
                 "volume_level" : user_data_object.volume_level
             })
 
-
 class GetScanLogs(generics.GenericAPIView):
     def get(self, request):
         log_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), r"..\logs")
@@ -376,7 +368,6 @@ class GetScanLogs(generics.GenericAPIView):
         return Response({
             "data" : "\n".join(log_lines)
         })
-
 
 class GetWebScrData(generics.GenericAPIView):
 
@@ -500,52 +491,51 @@ class GetWebScrData(generics.GenericAPIView):
                     "dirs": results
                 })
 
-
 class GetDebridDetails(generics.GenericAPIView):
+
+    def is_debrid_link(self, url):
+        hostname = urlparse(url).hostname or ""
+        title, extention = "", ""
+        if not re.match(r".*\.download\.real-debrid\.com$", hostname):
+            url = unrestrict_link(url)
+
+        if url:    
+            parsed = urlparse(url)
+            title = os.path.splitext(unquote(parsed.path.split("/")[-1]).split("/")[-1])[0]
+            extention = os.path.splitext(unquote(parsed.path.split("/")[-1]).split("/")[-1])[1].replace(".", "")
+
+        return url, title, extention
+            
+            
     def get(self, request):
-        debridURL = request.GET.get("debridURL")
-        if debridURL:
-            debridURL = unquote(debridURL)
-            url_id = extract_realdebrid_id(debridURL)
-            if not url_id:
-                return Response({
-                        "error" : "Invalid URL"
-                    })
-            try:
-                debrid_object = DebridVideo.objects.get(url_id=url_id)
-            except DebridVideo.DoesNotExist:
-                is_valid_url = is_valid_video_url(debridURL)
-                if is_valid_url:
-                    video_id = shortuuid.ShortUUID().random(length=12)
-                    poster_file = generate_poster(debridURL, video_id)
-                    data = get_debrid_info(debridURL)
-
-                    debrid_object = DebridVideo.objects.create(
-                        url = debridURL,
-                        id = video_id,
-                        url_id = url_id,
-                        title = data.get("title", "Unknown"),
-                        width = data.get("width", 0),
-                        height = data.get("height", 0),
-                        duration = datetime.timedelta(seconds=data.get("duration", 0)),
-                        size = data.get("size", 0),
-                    )
-
-                    if os.path.exists(poster_file): 
-                        debrid_object.poster = f"MediaSurfer\media\debriddata\{video_id}\{video_id}_poster.jpg"
-                        debrid_object.save()
-                else:
-                    return Response({
-                        "error" : "Invalid URL"
-                    })
+        debrid_url = request.GET.get("debridURL")
+        debrid_url, title, extention = self.is_debrid_link(debrid_url)
+        if debrid_url and is_valid_video_url(debrid_url):
+            debrid_url = unquote(debrid_url)
+            video_width, video_height, video_duration, video_size = get_debrid_info(debrid_url)
+            debrid_object = DebridVideo(
+                id = shortuuid.ShortUUID().random(length=12),
+                title = title,
+                width = video_width,
+                height = video_height,
+                duration = video_duration,
+                size = video_size,
+                extention = extention,
+            )
 
             serializer = DebridVideoSerializer(debrid_object)
-            return Response(serializer.data)
+            data = serializer.data
+            data['url'] = debrid_url
+            # data['parent_title'] = ""
+            # data['parent_hash'] = ""
+            qs = DebridVideo.objects.order_by('?')[:25]
+            data["related_videos"] = DebridVideoSerializer(qs, many=True).data
+            
+            return Response(data)
 
         return Response({
-            "error" : "Not Found"
+            "error" : "Invalid URL"
         })
-
 
 class DeleteRealDebrid(generics.GenericAPIView):
     def post(self, request):
@@ -590,34 +580,59 @@ class ListRealDebrid(generics.GenericAPIView):
             "Authorization": f"Bearer {settings.DEBRID_API_KEY}"
         }
 
-        params = {
-            "limit": request.GET.get("limit", 100),
-            "page": request.GET.get("page_no", 1)
-        }
-
+        limit = int(request.GET.get("limit", 50))
+        page_no = int(request.GET.get("page_no", 1))
         view_mode = request.GET.get("view", "")
 
-        results = requests.get(url, headers=headers, params=params)
-        if results.status_code == 200:
-            filtered = [
-                {
-                    "id": t["id"],
-                    "filename": DebridFiles.objects.filter(hash=t["hash"]).values_list('title', flat=True).first() or t["filename"],
-                    "bytes": round(int(t["bytes"])/float(1048576),3),
-                    "files": len(t.get("links", [])) if t.get("status") == "downloaded" else 0,
-                    "debrid_status": t["status"].title(),
-                    "hash": t["hash"],
-                    "progress": t.get("progress"),
-                    "videos": DebridVideo.objects.filter(parent__hash=t["hash"]).count(),
-                    "status": self.get_status(t)
-                }
-                for t in results.json()
-                if self.filter_records(t, view_mode)
-            ]
+        # Fetch all records from Real Debrid in pages until we have enough filtered results
+        all_filtered = []
+        rd_page = 1
+        rd_page_size = 100  # max allowed by Real Debrid API
 
-            return Response(filtered)
-        
-        return Response({})
+        while True:
+            params = {
+                "limit": rd_page_size,
+                "page": rd_page
+            }
+            results = requests.get(url, headers=headers, params=params)
+            if results.status_code != 200:
+                return Response({"status": "done"})
+
+            batch = results.json()
+            if not batch:
+                break
+
+            for t in batch:
+                if self.filter_records(t, view_mode):
+                    all_filtered.append({
+                        "id": t["id"],
+                        "filename": DebridFiles.objects.filter(hash=t["hash"]).values_list('title', flat=True).first() or t["filename"],
+                        "bytes": round(int(t["bytes"])/float(1048576), 3),
+                        "files": len(t.get("links", [])) if t.get("status") == "downloaded" else 0,
+                        "debrid_status": t["status"].title(),
+                        "hash": t["hash"],
+                        "progress": t.get("progress"),
+                        "videos": DebridVideo.objects.filter(parent__hash=t["hash"]).count(),
+                        "status": self.get_status(t)
+                    })
+
+            # Stop early if we already have enough records for the requested page
+            if len(all_filtered) >= page_no * limit:
+                break
+
+            # If Real Debrid returned fewer records than requested, we've hit the end
+            if len(batch) < rd_page_size:
+                break
+
+            rd_page += 1
+
+        # Slice the correct page from filtered results
+        start = (page_no - 1) * limit
+        end = start + limit
+        return Response({
+            "results": all_filtered[start:end],
+            "has_more": len(all_filtered) > end
+        })
 
 
 class DebridFilesImportAPIView(generics.GenericAPIView):
@@ -632,19 +647,6 @@ class DebridFilesImportAPIView(generics.GenericAPIView):
             DebridFiles.objects.filter(debrid_id__in=debrid_ids.split(",")).update(task_id=task.id)
             
         return JsonResponse({'task_id': task.id})
-
-
-# class RealDebridDeleteAPIView(generics.GenericAPIView):
-#     def post(self, request):
-#         parent_hash = request.data.get("hash")
-#         deleted_count = 0
-        # if parent_hash:
-        #     deleted_count, _ = DebridVideo.objects.filter(parent_hash=parent_hash).delete()
-
-        # return Response({
-        #     "deleted_count" : deleted_count
-        # })
-    
 
 class DebridFilesCreateAPIView(generics.ListCreateAPIView):
     queryset = DebridFiles.objects.all()
@@ -701,14 +703,54 @@ def check_status(request, task_id):
 
 
 class OpenPlayerDebridView(generics.GenericAPIView):
+
+    def download_subtitle(self, subs_url):
+        response = requests.get(subs_url)
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".srt")
+        tmp.write(response.content)
+        tmp.close()
+        return tmp.name
+
     def get(self, request):
         debrid_url = request.GET.get("url")
+        player = request.GET.get("player", "pot")
+        subs = request.GET.get("subs", "")
+
         if debrid_url:
-            _ = subprocess.Popen([settings.LOCAL_MEDIA_PLAYER_PATH, debrid_url])
-            return Response({
-                    "Status": "Success"
-                })
+            if player == "pot":
+                cmd = [settings.POT_PLAYER_PATH, debrid_url]
+                if subs:
+                    sub_path = self.download_subtitle(subs)
+                    cmd += ["/sub", sub_path]
+            else:
+                cmd = [settings.VLC_PLAYER_PATH, debrid_url]
+                if subs:
+                    sub_path = self.download_subtitle(subs)
+                    cmd += ["--sub-file", sub_path]
+
+            _ = subprocess.Popen(cmd)
+            return Response({"Status": "Success"})
         else:
-            return Response({
-                    "debrid_url": debrid_url
-                }) 
+            return Response({"debrid_url": debrid_url})
+
+
+class GetGatorView(generics.GenericAPIView):
+    def get(self, request):
+        movie_id = request.GET.get('movie_id')
+
+        if not movie_id:
+            return JsonResponse({'error': 'movie_id is required'}, status=400)
+
+        result = subprocess.run(
+            [sys.executable, 'manage.py', 'gator', '--movie-id', movie_id],
+            capture_output=True,
+            text=True
+        )
+
+        download_link = result.stdout.strip()
+
+        if not download_link:
+            return JsonResponse({'error': 'No rapidgator link found'}, status=404)
+
+        return JsonResponse({'url': download_link})
+    

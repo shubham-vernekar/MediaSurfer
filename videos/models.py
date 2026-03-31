@@ -562,6 +562,7 @@ class DebridVideo(models.Model):
     last_viewed = models.DateTimeField(blank=True, null=True)
     poster = models.FileField(blank=True, null=True)
     debrid_link = models.CharField(max_length=1024, blank=True, null=True)
+    extention = models.CharField(max_length=10, blank=True, null=True)
     parent = models.ForeignKey(
         DebridFiles,
         on_delete=models.CASCADE,

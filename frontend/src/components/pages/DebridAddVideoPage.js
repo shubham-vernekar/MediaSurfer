@@ -14,26 +14,7 @@ function DebridAddVideoPage() {
 
   useEffect(() => {
     if(debridURL){
-      SetLoading(true)
-      axios({
-        method: "get",
-        url: "/api/debrid/details",
-        params: {
-          debridURL: debridURL,
-        },
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
-        },
-      }).then((response) => {
-        if (response.data.error){
-          console.log(response.data.error);
-        }else{
-          SetLoading(false)
-          window.location.replace("/debrid/player/" + response.data.id);
-        }
-      });
+      window.location.replace("/debrid/player?url=" + value);
     }
   }, []);
 

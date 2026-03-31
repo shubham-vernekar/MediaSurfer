@@ -22,7 +22,8 @@ function DebridManagerPage() {
   const [clearSelectionTick, setClearSelectionTick] = useState(0);
   const [editedTitles, setEditedTitles] = useState({});
   const [searchQuery, SetSearchQuery] = useState(searchParams.get("query") || "");
-  const dd_videosPageLimit = 50
+  const [dd_VideosCompleted, SetDD_VideosCompleted] = useState(false);
+  const dd_videosPageLimit = 25
   const df_videosPageLimit = 20
 
 
@@ -35,7 +36,8 @@ function DebridManagerPage() {
           debrid_id: debrid_id
         },
       }).then((response) => {
-        RefreshDebridData()
+        SetDebridData(prev => prev.filter(item => item.id !== debrid_id));
+        SetLoading(false)
     });
   };
 
@@ -58,12 +60,16 @@ function DebridManagerPage() {
           is_imported: (data["files"] == data["videos"] && data["files"]!=0)
         },
       }).then((response) => {
-        RefreshDebridData()
+        SetDebridData(prev => prev.map(item =>
+            item.id === data["id"] ? { ...item, status: "pending" } : item
+        ));
+        SetLoading(false)
     });
   };
 
   const handleDelete = (ids, clear_videos) => {
-    SetLoading(true)
+    // SetLoading(true)
+    const idList = ids.split(",").map(id => id.trim());
     axios({
         method: "post",
         url: "/api/debrid-files/delete",
@@ -72,10 +78,12 @@ function DebridManagerPage() {
           clear_videos: clear_videos
         },
       }).then((response) => {
-        // console.log(response);
         RefreshDebridFilesData()
-        RefreshDebridData()
+        SetDebridData(prev => prev.map(item =>
+            idList.includes(item.id) ? { ...item, status: "" } : item
+        ));
         handleClearAll()
+        // SetLoading(false)
     });
   };
 
@@ -105,8 +113,13 @@ function DebridManagerPage() {
           page_no: dd_page_no,
         },
       }).then((response) => {
-        // console.log(response);
-        SetDebridData(response.data);
+        console.log(response);
+        if (response.data.status == "done"){
+            SetDD_VideosCompleted(true)
+        }else{
+            SetDebridData(response.data.results);
+            SetDD_VideosCompleted(!response.data.has_more)
+        }
         SetLoading(false)
     });
   };
@@ -193,8 +206,33 @@ function DebridManagerPage() {
         </div>
         <div className='real-debrid-container-box'> 
             {debridData && (<div className={`real-debrid-container`}>
-                {debridData.map((data, i) => (
-                    <div className={`real-debrid-box status-${data["status"]}`} key={data["id"]}>
+                {debridData.map((data, i) => {
+                    const progress = data["progress"] ?? 0;
+                    const canAdd = data["status"] == "" && data["debrid_status"] != "Downloading" && data["debrid_status"] != "Uploading" && data["debrid_status"] != "Error";
+                    const isError = data["debrid_status"] == "Error";
+                    const statusColors = {
+                        imported: { filled: '#2d3a5e', empty: '#232e4e' },
+                        pending:  { filled: '#3a3f4d', empty: '#2f333d' },
+                    };
+                    const colors = statusColors[data["status"]] ?? { filled: '#2e2e2e', empty: '#1d1d1d' };
+                    return (
+                    <div
+                        className={`real-debrid-box status-${data["status"]}${canAdd ? ' can-add' : ''}${isError ? ' is-error' : ''}`}
+                        key={data["id"]}
+                        style={{ background: colors.empty, position: 'relative', overflow: 'hidden' }}
+                    >
+                        {progress > 0 && (
+                            <div style={{
+                                position: 'absolute',
+                                top: 0, left: 0,
+                                height: '100%',
+                                width: `${progress}%`,
+                                background: colors.filled,
+                                borderRadius: '0 0.6em 0.6em 0',
+                                pointerEvents: 'none',
+                            }} />
+                        )}
+                        <div style={{ position: 'relative', zIndex: 1 }}>
                         <div
                             className="real-debrid-filename"
                             contentEditable
@@ -238,7 +276,7 @@ function DebridManagerPage() {
                             </div> 
                             {/* <div className='real-debrid-status'>{data["status"]}</div> */}
                             {/* <div className='real-debrid-info-btn-box'> */}
-                            {data["status"] == "" && data["debrid_status"] != "Downloading" && data["debrid_status"] != "Uploading" && data["debrid_status"] != "Error" && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
+                            {canAdd && (<div className='real-debrid-info-btn' onClick={() => handleAdd(data)}>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                                     <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM17.53 7.53L9.81 15.25H12.83C13.24 15.25 13.58 15.59 13.58 16C13.58 16.41 13.24 16.75 12.83 16.75H8C7.59 16.75 7.25 16.41 7.25 16V11.17C7.25 10.76 7.59 10.42 8 10.42C8.41 10.42 8.75 10.76 8.75 11.17V14.19L16.47 6.47C16.62 6.32 16.81 6.25 17 6.25C17.19 6.25 17.38 6.32 17.53 6.47C17.82 6.76 17.82 7.24 17.53 7.53Z" fill="currentColor"/>
                                 </svg>
@@ -261,9 +299,11 @@ function DebridManagerPage() {
                             </div>
 
                             {/* </div>  */}
+                        </div>
                         </div> 
-                    </div>    
-                ))}
+                    </div>
+                    );
+                })}
             </div>)}
 
             {!loading && (<div className="pagination-container">
@@ -271,9 +311,9 @@ function DebridManagerPage() {
                     Prev
                 </button>)}
                 {dd_page_no>1 && (<span className="pagination-pagenum">{dd_page_no}</span>)}
-                <button className="pagination-btn" onClick={() => SetDD_page_no(Number(dd_page_no) + 1)} >
+                {!dd_VideosCompleted && (<button className="pagination-btn" onClick={() => SetDD_page_no(Number(dd_page_no) + 1)} >
                     Next
-                </button>
+                </button>)}
                 </div>)}
             </div>
         </div>)}

@@ -26,4 +26,5 @@ urlpatterns = [
     path('scan/logs', views.GetScanLogs.as_view(), name='get-scan-logs'),
     path('webscr', views.GetWebScrData.as_view(), name='get-webscr'),
     path('task-status/<str:task_id>/', views.check_status),
+    path('gator', views.GetGatorView.as_view(), name='get-gator-link'),
 ]

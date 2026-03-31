@@ -244,6 +244,7 @@ function DebridPage() {
             watchTime={data["watch_time"]}
             size={data["size"]}
             url={data["url"]}
+            extention={data["extention"]}
             onDelete={handleDeleteVideo}
           />
         ))}

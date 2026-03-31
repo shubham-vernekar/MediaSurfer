@@ -5,7 +5,7 @@ const DebridAddURLBox = (props) => {
   const [value, setValue] = useState("");
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && value.trim()) {
-      window.location.replace("/debrid/add?url=" + value);
+      window.location.replace("/debrid/player?url=" + value);
     }
   };
 

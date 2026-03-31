@@ -109,7 +109,23 @@
     column-gap: 0.3em;
 }
 
-.real-debrid-box{
+.real-debrid-box.can-add {
+    box-shadow: 0 0 8px 2px rgba(85, 255, 85, 0.3);
+}
+
+.real-debrid-box.can-add:hover {
+    box-shadow: 0 0 12px 3px rgba(85, 255, 85, 0.6);
+}
+
+.real-debrid-box.is-error {
+    box-shadow: 0 0 8px 2px rgba(255, 80, 80, 0.3);
+}
+
+.real-debrid-box.is-error:hover {
+    box-shadow: 0 0 12px 3px rgba(255, 80, 80, 0.6);
+}
+
+.real-debrid-box {
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -120,18 +136,6 @@
     row-gap: 0.4em;
 }
 
-.status-imported {
-    /* border: 1px solid #9d9d9d; */
-    background: #232e4e;
-    
-}
-
-.status-pending {
-    /* border: 1px solid orange; */
-    /* border: 1px solid #d3d3d3; */
-    background: #2f333d;
-    
-}
 
 .dark-page{
     background: #141414;

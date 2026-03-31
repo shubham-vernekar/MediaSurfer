@@ -107,6 +107,7 @@ class VideoSerializer(serializers.ModelSerializer):
             'special_tag',
             'verfied',
             'jt_trailer_url',
+            'movie_id',
         ]
 
     def get_video_url(self, obj):
@@ -166,6 +167,7 @@ class DebridVideoSerializer(serializers.ModelSerializer):
             'last_viewed',
             'badge',
             'poster',
+            'extention',
         ]
 
     def get_badge(self, obj):

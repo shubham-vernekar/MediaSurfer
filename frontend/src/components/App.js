@@ -31,7 +31,7 @@ function App() {
           <Route path="/scrp" element={<ScrpPage />} />
           <Route path="/debrid" element={<DebridPage />} />
           <Route path="/debrid/manager" element={<DebridManagerPage />} />
-          <Route path="/debrid/player/:id" element={<DebridPlayerPage />} />
+          <Route path="/debrid/player" element={<DebridPlayerPage />} />
           <Route path="/debrid/add" element={<DebridAddVideoPage />} />
           <Route path="" element={<HomePage />} />
         </Routes>

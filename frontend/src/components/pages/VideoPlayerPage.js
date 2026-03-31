@@ -1,6 +1,7 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
 import { useParams, useNavigate } from "react-router-dom";
 import { React, useEffect, useState, useRef } from "react";
+import Spinner from "../utils/Spinner";
 import OptionsSearchBox from "../utils/OptionsSearchBox";
 import axios from "axios";
 import "../../../static/css/pages/VideoPlayerPage.css";
@@ -31,6 +32,7 @@ function VideoPlayerPage() {
   const [volume, SetVolume] = useState(0);
   const [clickToSkip, SetClickToSkip] = useState(false);
   const [videoFound, SetVideoFound] = useState(true);
+  const [loading, SetLoading] = useState(false);
 
   const VideoDetailsRef = useRef(null);
   const navigate = useNavigate();
@@ -140,6 +142,19 @@ function VideoPlayerPage() {
       VideoDetailsRef.current.classList.remove("fav-text");
     }
   }, [specialTag]);
+
+  useEffect(() => {
+    const el = VideoDetailsRef.current;
+    if (!el) return;
+
+    let fontSize = 32; // starting font size in px
+    el.style.fontSize = fontSize + "px";
+
+    while (el.scrollWidth > el.offsetWidth && fontSize > 10) {
+        fontSize--;
+        el.style.fontSize = fontSize + "px";
+    }
+  }, [videoData.title]);
 
   const getOtherVideos = (videoID, type, count) => {
     axios({
@@ -323,7 +338,24 @@ function VideoPlayerPage() {
       location.reload()
     });
   };
-  
+
+  const openGator = (movie_id, subtitle_url) => {
+    SetLoading(true)
+    axios({
+        method: "get",
+        url: "/api/gator",
+        params: {
+          "movie_id": movie_id
+        },
+      }).then((response) => {
+        SetLoading(false)
+        if (response.data.url){
+          window.location.replace("/debrid/player?url=" + response.data.url  +"&subs=" + subtitle_url);
+        }else{
+          console.log(response.data);
+        }
+      });
+  };
 
   return (
     <div className="video-player-container">
@@ -434,6 +466,10 @@ function VideoPlayerPage() {
                 <img src="/static/images/binocular.svg"  width="30px" height="30px" ></img>
                 <span className='video-player-button-text'>Open Trailer</span>
               </div>)}
+              {videoData.movie_id && (<div className='video-player-button' onClick={() => {openGator(videoData.movie_id, videoData.subtitle_url)}}>  
+                <img src="/static/images/television.png"  width="30px" height="30px" ></img>
+                <span className='video-player-button-text'>Play Gator</span>
+              </div>)}
             </div>
 
 
@@ -512,6 +548,13 @@ function VideoPlayerPage() {
         <div className="video-not-found"> 
           <img src="/static/images/404-no-video.svg" alt="" />
         </div>)}
+
+      {loading && (
+        <Spinner 
+            visible = {loading}
+            color = "#ff0000"
+        />
+      )}
     </div>
   );
 }

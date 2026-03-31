@@ -138,7 +138,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOCAL_MEDIA_PLAYER_PATH = r"C:/Program Files/DAUM/PotPlayer/PotPlayerMini64.exe"
+POT_PLAYER_PATH = r"C:/Program Files/DAUM/PotPlayer/PotPlayerMini64.exe"
+VLC_PLAYER_PATH = r"C:/Program Files/VideoLAN/VLC/vlc.exe"
 PYTHON_EXE = r"F:/MediaSurferV2/env/Scripts/python.exe"
 
 # Static files (CSS, JavaScript, Images)
@@ -165,3 +166,4 @@ VIDEO_FORMATS = [".webm", ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".ogg",
                      ".flv", ".swf", ".ts", ".mkv"]
 MIN_VIDEO_LENGTH = 200
 SUPPORTED_VIDEO_FORMATS = [".mp4"]
+DEBRID_API = "https://api.real-debrid.com/rest/1.0"

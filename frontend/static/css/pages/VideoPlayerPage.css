@@ -42,8 +42,17 @@
     margin-bottom: 10px;
 }
 
-.video-player-title h1{
+.video-player-title{
+    margin-bottom: -6px;
+    font-family: 'Nexa', sans-serif;
+    width: 100%;
+    overflow: hidden;
+}
+
+.video-player-title h1 {
     margin: 0;
+    white-space: nowrap;
+    display: block;
 }
 
 .fav-text {
@@ -72,11 +81,6 @@
     background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-}
-
-.video-player-title{
-    margin-bottom: -6px;
-    font-family: 'Nexa', sans-serif;
 }
 
 .video-player-details{

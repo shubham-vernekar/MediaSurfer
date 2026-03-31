@@ -10,6 +10,7 @@ from pathlib import Path
 from django.conf import settings
 import shortuuid
 import datetime
+import random
 
 
 def get_pending_videos():
@@ -115,6 +116,7 @@ def add_debrid_videos(instance):
         debrid_object = DebridVideo.objects.create(
             id = shortuuid.ShortUUID().random(length=12),
             title = os.path.splitext(video_file.get("path", "Unknown").split("/")[-1])[0],
+            extention = os.path.splitext(video_file.get("path", "Unknown").split("/")[-1])[1].replace(".", ""),
             size = round(int(video_file.get("bytes", 0))/float(1048576),3),
             parent = instance,
             debrid_link = link
@@ -135,7 +137,7 @@ def unrestrict_link(link):
         return response.json().get("download")
     
 
-def get_debrid_info(stream_url):
+def get_debrid_info(stream_url, timeout=30):
 
     cmd = [
         "ffprobe",
@@ -146,14 +148,17 @@ def get_debrid_info(stream_url):
         stream_url
     ]
 
-    result = subprocess.run(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        encoding="utf-8",
-        timeout=30
-    )
+    try:
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            timeout=timeout
+        )
+    except subprocess.TimeoutExpired:
+        return None, None, None, None
 
     probe = json.loads(result.stdout)
     format_info = probe.get("format", {})
@@ -167,17 +172,25 @@ def get_debrid_info(stream_url):
     width = video_stream.get("width") if video_stream else None
     height = video_stream.get("height") if video_stream else None
     duration = datetime.timedelta(seconds=float(format_info.get("duration", 0))) 
-    return width, height, duration
+    size = round(int(int(format_info.get("size", 0)))/float(1048576),3)  
+    return width, height, duration, size
 
-def generate_poster(video_url, video_id):
+
+def generate_poster(video_url, video_id, duration):
     debriddata_dir = os.path.join(settings.MEDIA_ROOT, settings.MEDIA_DIR, "debriddata")
     base_folder = os.path.join(debriddata_dir, video_id[:2].upper())
     poster_path = Path(os.path.join(base_folder, f"{video_id}_poster.jpg"))
     poster_path.parent.mkdir(parents=True, exist_ok=True)
+    if duration < 2:
+        seek_time = 0
+    elif duration < 12:
+        seek_time = int(random.uniform(duration * 0.33, duration * 0.66))
+    else:
+        seek_time = random.randint(10, min(20, int(duration) - 1))
 
     cmd = [
         "ffmpeg",
-        "-ss", "5",
+        "-ss", str(seek_time),
         "-i", video_url,
         "-vframes", "1",
         "-q:v", "15",
@@ -186,7 +199,7 @@ def generate_poster(video_url, video_id):
         str(poster_path)
     ]
 
-    subprocess.run(cmd, check=True)
+    subprocess.run(cmd, check=True, timeout=60)
     return poster_path
 
 

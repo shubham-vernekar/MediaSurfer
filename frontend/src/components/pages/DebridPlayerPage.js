@@ -1,7 +1,8 @@
 import ResponsivePlayer from "../video_player/ResponsivePlayer";
 import Spinner from "../utils/Spinner";
+import DebridCard from "../debrid/DebridCard";
 import DebridAddURLBox from "../debrid/DebridAddURLBox"; 
-import { useParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { React, useEffect, useState, useRef } from "react";
 import "../../../static/css/pages/DebridPlayerPage.css";
 import "../../../static/css/pages/VideoPlayerPage.css";
@@ -10,15 +11,25 @@ import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, getCookie } 
 
 
 function DebridPlayerPage() {
-  const params = useParams();
-  const [videoID, SetVideoID] = useState(params.id);
+  // const params = useParams();
+  // const [videoID, SetVideoID] = useState(params.id);
+  const SUPPORTED_VIDEO_EXTENSIONS = ["mp4", "webm", "ogg", "ogv", "mov", "m4v", "3gp"];
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [videoID, SetVideoID] = useState(searchParams.get("id") || "");
+  const [inputURL, SetInputURL] = useState(searchParams.get("url") || "");
+  const [subtitleURL, SetSubtitleURL] = useState(searchParams.get("subs") || "");
+  
+
   const [volume, SetVolume] = useState(0);
   const [clickToSkip, SetClickToSkip] = useState(false);
   const [videoData, SetVideoData] = useState({});
   const [videoFound, SetVideoFound] = useState(true);
+  const [videoSupported, SetVideoSupported] = useState(true);
   const [watchTime, SetWatchTime] = useState(0);
   const [loading, SetLoading] = useState(true);
   const [favorite, SetFavorite] = useState(false);
+  const [relatedVideos, SetRelatedVideos] = useState([]);
   
   const [views, SetViews] = useState(0);
   const navigate = useNavigate();
@@ -49,47 +60,85 @@ function DebridPlayerPage() {
         SetClickToSkip(response.data.click_to_skip);
     });
 
-    axios({
-      method: "get",
-      url: "/api/videos/debrid/" + videoID,
-    }).then((response) => {
-      console.log(response.data);
-      
-      SetVideoData(response.data);
-      SetWatchTime(response.data.watch_time)
-      document.title = response.data.title;
-      SetVideoFound(true)
-      SetFavorite(response.data.favourite)
-      SetLoading(false)
-    })
-    .catch((error) => {
-      SetVideoFound(false)
-    });
-
-    axios({
-      method: "post",
-      url: "/api/videos/debrid/" + videoID + "/viewincr",
-      headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-CSRFToken': getCookie('csrftoken')
-            }
+    if (videoID){
+      axios({
+        method: "get",
+        url: "/api/videos/debrid/" + videoID,
       }).then((response) => {
-        SetViews(response.data.views)
+        // console.log(response.data);
+        
+        SetVideoData(response.data);
+        SetWatchTime(response.data.watch_time)
+        SetRelatedVideos(response.data.related_videos)
+        SetVideoSupported(SUPPORTED_VIDEO_EXTENSIONS.includes(response.data.extention?.toLowerCase()))
+        document.title = response.data.title;
+        SetVideoFound(true)
+        SetFavorite(response.data.favourite)
+        SetLoading(false)
+      })
+      .catch((error) => {
+        SetVideoFound(false)
       });
+
+      axios({
+        method: "post",
+        url: "/api/videos/debrid/" + videoID + "/viewincr",
+        headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+              }
+        }).then((response) => {
+          SetViews(response.data.views)
+        });
+    }else if (inputURL){
+      axios({
+        method: "get",
+        url: "/api/debrid/details",
+        params: {
+          debridURL: inputURL,
+        },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+      }).then((response) => {
+        if (response.data.error){
+          console.log(response.data.error);
+        }else{
+          // console.log(response.data)
+
+          SetVideoData(response.data);
+          SetWatchTime(response.data.watch_time)
+          SetRelatedVideos(response.data.related_videos)
+          document.title = response.data.title;
+          SetVideoSupported(SUPPORTED_VIDEO_EXTENSIONS.includes(response.data.extention?.toLowerCase()))
+          SetVideoFound(true)
+          SetLoading(false)
+        }
+      });
+    }
 
   }, []);
 
-  // useEffect(( => {
-  //   console.log(videoData);
-  // }, [videoData]);
+  // useEffect(() => {
+  //   console.log(relatedVideos);
+  // }, [relatedVideos]);
 
-  const OpenLocalPlayerDebrid = (url) => {
+
+  const handleDeleteVideo = (id) => {
+    SetVideoData(prev => prev.filter(v => v.id !== id));
+  };
+  
+  const OpenLocalPlayerDebrid = (url, player, subs) => {
     axios({
       method: "get",
       url: "/api/debrid-files/open",
       params: {
         url: url,
+        player: player,
+        subs: subs
       },
       headers: {
         'Accept': 'application/json',
@@ -135,24 +184,26 @@ function DebridPlayerPage() {
       });
     }
 
-    axios({
-      method: "put",
-      url: "/api/videos/debrid/" + videoData.id + "/update",
-      data: {
-        id: videoData.id,
-        title: videoData.title,
-        url: videoData.url,
-        progress: progress,
-        watch_time: watchTime,
-      },
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
+    if (videoID){
+      axios({
+        method: "put",
+        url: "/api/videos/debrid/" + videoData.id + "/update",
+        data: {
+          id: videoData.id,
+          title: videoData.title,
+          url: videoData.url,
+          progress: progress,
+          watch_time: watchTime,
         },
-    }).then((response) => {
-      SetWatchTime(response.data.watch_time)
-    });
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+      }).then((response) => {
+        SetWatchTime(response.data.watch_time)
+      });
+    }
   }
 
   return (
@@ -160,16 +211,33 @@ function DebridPlayerPage() {
         {videoFound && (
           <div className="video-player-container">
             <div className="video-player-box">
-              <ResponsivePlayer
-                url={videoData.url}
-                title={videoData.title}
-                poster={videoData.poster}
-                progress={videoData.progress}
-                watchTime={videoData.watch_time}
-                updateProgressCallback={updateProgress}
-                initialVolume={volume}
-                clickToSkip={clickToSkip}
-              />
+              { videoSupported
+                ? (
+                  <ResponsivePlayer
+                    url={videoData.url}
+                    title={videoData.title}
+                    subtitle={subtitleURL}
+                    poster={videoData.poster}
+                    progress={videoData.progress}
+                    watchTime={videoData.watch_time}
+                    updateProgressCallback={updateProgress}
+                    initialVolume={volume}
+                    clickToSkip={clickToSkip}
+                  />
+                ) : (
+                  <div className="unsupported-format-box">
+                    <img className="unsupported-format-poster" src={videoData.poster} alt="" />
+                    <div className='unsupported-format-buttons-box'>
+                      <div className='unsupported-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url, "pot", subtitleURL)}>
+                        <img src="/static/images/play-red.svg" width="70px" height="70px" />
+                      </div>
+                      <div className='unsupported-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url, "vlc", subtitleURL)}>
+                        <img src="/static/images/vlc.png" width="70px" height="70px" />
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
               
               <div className="video-player-details">
                 <div className={`video-player-title  ${favorite ? "fav-text" : ""}`}>
@@ -215,11 +283,22 @@ function DebridPlayerPage() {
                     {secondsToHHMMSS(watchTime)} 
                   </div>
                     {videoData.badge && (
-                      <div> {videoData.badge} </div>
+                      <div> 
+                        {videoData.badge} 
+                      </div>
                     )}
-                    <div className='video-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url)}>  
+                    {videoData.extention && (
+                      <div> 
+                        {videoData.extention.toUpperCase()} 
+                      </div>
+                    )}
+                    <div className='video-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url, "pot", subtitleURL)}>  
                       <img src="/static/images/play-red.svg"  width="25px" height="25px" ></img>
-                      <span className='video-player-button-text'>Open Player</span>
+                      <span className='video-player-button-text'>Open Pot Player</span>
+                    </div>
+                    <div className='video-player-button' onClick={() => OpenLocalPlayerDebrid(videoData.url, "vlc", subtitleURL)}>  
+                      <img src="/static/images/vlc.png"  width="25px" height="25px" ></img>
+                      <span className='video-player-button-text'>Open VLC Player</span>
                     </div>
                     {/* <div className='video-advert-button' onClick={() => {HandleFavorite(videoData.vidid, videoData.url, videoData.title, !favorite)}}> 
                       {favorite && (<svg width="14" height="14" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
@@ -229,19 +308,47 @@ function DebridPlayerPage() {
                       <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
                       </svg>)}
                     </div> */}
-                    {!favorite && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
+                    {!favorite && videoID && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
                       <img src="/static/images/like-add.svg" width="25px" height="25px" alt="" />
                       <span className='video-player-button-text'>Add to favourites</span>
                     </div>)}
                     
-                    {favorite && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
+                    {favorite && videoID && (<div className='video-player-button' onClick={() => {HandleFavorite(videoData.id, videoData.url, videoData.title, !favorite)}}>
                       <img src="/static/images/like-remove.svg" width="25px" height="25px" alt="" />
                       <span className='video-player-button-text'>Remove from favourites</span>
                     </div>)}  
                     <DebridAddURLBox/>
                 </div>
 
+                {videoData.parent_title && videoData.parent_hash &&(
+                  <div className="video-player-series-pane">
+                    <a href={"/debrid?parent="+videoData.parent_hash}>{videoData.parent_title}</a>
+                  </div>
+                )}
+                
               </div>
+
+              <div className="debrid-adverts-container">
+                  {relatedVideos.map((data, i) => (
+                    <DebridCard
+                      key={data["id"]}
+                      vidid={data["id"]}
+                      title={data["title"]}
+                      views={data["views"]}
+                      favorite={data["favourite"]}
+                      poster={data["poster"]}
+                      progress={data["progress"]}
+                      duration={data["duration"]}
+                      created={data["added"]}
+                      badge={data["badge"]}
+                      watchTime={data["watch_time"]}
+                      size={data["size"]}
+                      url={data["url"]}
+                      extention={data["extention"]}
+                      onDelete={handleDeleteVideo}
+                    />
+                  ))}
+                </div>
             </div>
           </div>
         )}

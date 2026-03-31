@@ -11,6 +11,7 @@ import random
 from send2trash import send2trash
 from django.utils import timezone
 from backend.utils import unrestrict_link, get_debrid_info
+from rest_framework import status
 import datetime
 from django.core.cache import cache
 import json
@@ -105,7 +106,7 @@ class OpenPlayerView(generics.GenericAPIView):
         
         video.views = video.views + 1
         video.save()
-        _ = subprocess.Popen([settings.LOCAL_MEDIA_PLAYER_PATH, video.file_path])
+        _ = subprocess.Popen([settings.POT_PLAYER_PATH, video.file_path])
         return Response({
                 "Status": "Success"
             })
@@ -232,12 +233,17 @@ class DebridVideoDetailAPIView(generics.RetrieveAPIView):
             )
         
         if not instance.width:
-            instance.width, instance.height, instance.duration = get_debrid_info(stream_url)
-            instance.save()
+            instance.width, instance.height, instance.duration, _ = get_debrid_info(stream_url, 10)
+            if instance.width:
+                instance.save()
         
         serializer = self.get_serializer(instance)
         data = serializer.data
         data['url'] = stream_url
+        data['parent_title'] = instance.parent.title
+        data['parent_hash'] = instance.parent.hash
+        qs = list(DebridVideo.objects.filter(parent__hash=instance.parent.hash))
+        data["related_videos"] = DebridVideoSerializer(random.sample(qs, len(qs))[:25], many=True).data 
         return Response(data)  
 
     def get_stream_url(self, debrid_link):
