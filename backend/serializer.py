@@ -72,6 +72,7 @@ class DebridFilesSerializer(serializers.ModelSerializer):
             'videos',
             'posters',
             'task_id',
+            'favourite',
         ]
         read_only_fields = ["id"]
 

@@ -34,6 +34,7 @@ from urllib.parse import unquote
 from .tasks import import_debrid_videos
 from celery.result import AsyncResult
 import re
+from io import StringIO
 import subprocess
    
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
@@ -661,7 +662,10 @@ class DebridFilesCreateAPIView(generics.ListCreateAPIView):
         qs = qs.order_by('-added')#.order_by(F("import_timestamp").desc(nulls_last=True)).order_by('-files')
         if query:
             qs = qs.filter(Q(search_text__icontains=query))
-        return qs
+
+        favourites_qs = qs.filter(favourite=True).order_by('?')
+        rest_qs = qs.filter(favourite=False).order_by('-added')
+        return list(favourites_qs) + list(rest_qs)
     
     def perform_create(self, serializer):
         id = shortuuid.ShortUUID().random(length=8)
@@ -712,18 +716,21 @@ class OpenPlayerDebridView(generics.GenericAPIView):
         return tmp.name
 
     def get(self, request):
-        debrid_url = request.GET.get("url")
+        video_url = request.GET.get("url")
         player = request.GET.get("player", "pot")
         subs = request.GET.get("subs", "")
+        debrid_link = request.GET.get("debrid_link", "")
+        if debrid_link:
+            video_url = unrestrict_link(debrid_link)
 
-        if debrid_url:
+        if video_url:
             if player == "pot":
-                cmd = [settings.POT_PLAYER_PATH, debrid_url]
+                cmd = [settings.POT_PLAYER_PATH, video_url]
                 if subs:
                     sub_path = self.download_subtitle(subs)
                     cmd += ["/sub", sub_path]
             else:
-                cmd = [settings.VLC_PLAYER_PATH, debrid_url]
+                cmd = [settings.VLC_PLAYER_PATH, video_url]
                 if subs:
                     sub_path = self.download_subtitle(subs)
                     cmd += ["--sub-file", sub_path]
@@ -731,7 +738,7 @@ class OpenPlayerDebridView(generics.GenericAPIView):
             _ = subprocess.Popen(cmd)
             return Response({"Status": "Success"})
         else:
-            return Response({"debrid_url": debrid_url})
+            return Response({"url": video_url})
 
 
 class GetGatorView(generics.GenericAPIView):
@@ -741,16 +748,20 @@ class GetGatorView(generics.GenericAPIView):
         if not movie_id:
             return JsonResponse({'error': 'movie_id is required'}, status=400)
 
-        result = subprocess.run(
-            [sys.executable, 'manage.py', 'gator', '--movie-id', movie_id],
-            capture_output=True,
-            text=True
-        )
-
-        download_link = result.stdout.strip()
+        out = StringIO()
+        call_command('gator', movie_id=movie_id, stdout=out)
+        download_link = out.getvalue().strip()
 
         if not download_link:
-            return JsonResponse({'error': 'No rapidgator link found'}, status=404)
+            return JsonResponse({'error': 'No link found'}, status=404)
 
         return JsonResponse({'url': download_link})
-    
+
+
+class DebridFilesUpdateAPIView(generics.UpdateAPIView):
+    queryset = DebridFiles.objects.all()
+    serializer_class = DebridFilesSerializer
+    lookup_field = "pk"
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)

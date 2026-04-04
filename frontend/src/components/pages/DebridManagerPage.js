@@ -113,7 +113,7 @@ function DebridManagerPage() {
           page_no: dd_page_no,
         },
       }).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.data.status == "done"){
             SetDD_VideosCompleted(true)
         }else{
@@ -328,7 +328,7 @@ function DebridManagerPage() {
             <div className="debrid-files-input-container ">
                 <div className="debrid-input-box">
                     <div>
-                        <div className="debrid-add-page" onClick={() => window.open("/debrid/add", '_blank').focus()}>
+                        <div className="debrid-add-page" onClick={() => window.open("/debrid/add").focus()}>
                         Add Video
                         </div>
                     </div>
@@ -378,6 +378,7 @@ function DebridManagerPage() {
                         videos={data["videos"]}
                         posters={data["posters"]}
                         task_id={data["task_id"]}
+                        favorite={data["favourite"]}
                         onDelete={handleDeleteDebridFile}
                         onImportComplete= {onImportComplete}
                         onSelect={handleSelect}

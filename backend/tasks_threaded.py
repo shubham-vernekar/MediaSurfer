@@ -82,7 +82,13 @@ class ImportDebrid():
                     return "skipped"
 
             try:
-                poster_file = generate_poster(download_link, video.id, video.duration.total_seconds())
+                try:
+                    poster_file = generate_poster(download_link, video.id, video.duration.total_seconds())
+                except subprocess.TimeoutExpired:
+                    video.timeouts = video.timeouts + 1
+                    video.save()
+                    return "no_poster"
+
                 if os.path.exists(poster_file):
                     video.poster = f"MediaSurfer\media\debriddata\{video.id[:2].upper()}\{video.id}_poster.jpg"
             except subprocess.CalledProcessError:

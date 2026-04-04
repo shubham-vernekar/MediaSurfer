@@ -22,7 +22,7 @@ function DebridAddVideoPage() {
     <div>
       <div>
         <div className="debrid-link-input-container">
-          <div className="debrid-manager-title" onClick={() => window.open("/debrid/manager", '_blank').focus()}> 
+          <div className="debrid-manager-title" onClick={() => window.open("/debrid/manager").focus()}> 
             ADD DEBRID VIDEO
           </div>
           <DebridAddURLBox/>

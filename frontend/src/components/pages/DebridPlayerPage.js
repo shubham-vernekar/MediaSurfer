@@ -7,7 +7,7 @@ import { React, useEffect, useState, useRef } from "react";
 import "../../../static/css/pages/DebridPlayerPage.css";
 import "../../../static/css/pages/VideoPlayerPage.css";
 import axios from "axios";
-import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, getCookie } from '../utils'
+import { getDurationText, getCreatedDate, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayerDebrid } from '../utils'
 
 
 function DebridPlayerPage() {
@@ -131,24 +131,6 @@ function DebridPlayerPage() {
     SetVideoData(prev => prev.filter(v => v.id !== id));
   };
   
-  const OpenLocalPlayerDebrid = (url, player, subs) => {
-    axios({
-      method: "get",
-      url: "/api/debrid-files/open",
-      params: {
-        url: url,
-        player: player,
-        subs: subs
-      },
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken')
-      },
-    }).then((response) => {
-        console.log(response.data);
-    });
-  }
 
   const HandleFavorite = (id, url, title, is_favourite) => {
     axios({
@@ -343,7 +325,7 @@ function DebridPlayerPage() {
                       badge={data["badge"]}
                       watchTime={data["watch_time"]}
                       size={data["size"]}
-                      url={data["url"]}
+                      debrid_link={data["debrid_link"]}
                       extention={data["extention"]}
                       onDelete={handleDeleteVideo}
                     />

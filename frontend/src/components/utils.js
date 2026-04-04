@@ -112,6 +112,24 @@ const OpenLocalPlayer = (vidid) => {
   });
 };
 
+const OpenLocalPlayerDebrid = (url, player, subs) => {
+    axios({
+      method: "get",
+      url: "/api/debrid-files/open",
+      params: {
+        url: url,
+        player: player,
+        subs: subs
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+    }).then((response) => {
+    });
+  }
+
 const OpenFolder = (vidid) => {
   axios({
     method: "post",
@@ -125,5 +143,5 @@ const OpenFolder = (vidid) => {
 };
 
 
-export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, 
+export { getDurationText, getCreatedDate, dateToTimestamp, clearSiblingSelection, clearChildren, OpenLocalPlayerDebrid,
   toggleDisplay, secondsToHHMMSS, getSize, getCookie, OpenLocalPlayer, OpenFolder, secondsToTimestamp}

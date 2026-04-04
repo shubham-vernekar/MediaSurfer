@@ -151,7 +151,7 @@ class DebridVideoSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title', 
-            'download_url',
+            'debrid_link',
             'views', 
             'favourite', 
             'description',

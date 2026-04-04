@@ -11,7 +11,27 @@ const DebridFileCard = (props) => {
     const [opacity, setOpacity] = useState(1);
     const [task_id, setTask_id] = useState(props.task_id);
     const [checked, setChecked] = useState(false);
+    const [favorite, SetFavorite] = useState(props.favorite);
     let currentIndex = 0
+
+    const HandleFavorite = (props, is_favourite) => {
+        axios({
+            method: "put",
+            url: "/api/debrid-files/" + props.id + "/update",
+            data: {
+                id: props.id,
+                debrid_id: props.debrid_id,
+                title: props.title,
+                hash: props.hash,
+                status: props.status,
+                favourite: is_favourite,
+            }
+        }).then((response) => {
+            let favStatus = Boolean(response.data.favourite)
+            SetFavorite(favStatus)
+        });
+    };
+
 
     const handleCheckbox = (e) => {
         const isChecked = e.target.checked;
@@ -157,6 +177,14 @@ const DebridFileCard = (props) => {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg> 
+            </div>
+            <div className='video-advert-button' onClick={() => {HandleFavorite(props, !favorite)}}> 
+                {favorite && (<svg width="14" height="14" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
+                <path d="M8.931.586 7 3l1.5 4-2 3L8 15C22.534 5.396 13.757-2.21 8.931.586ZM7.358.77 5.5 3 7 7l-1.5 3 1.815 4.537C-6.533 4.96 2.685-2.467 7.358.77Z"/>
+                </svg>)}
+                {!favorite && (<svg width="14" height="14" fill="currentColor" className='video-advert-button-text-svg' viewBox="0 0 16 16">
+                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                </svg>)}
             </div>
         </div>
         <div className="advert-details-title debrid-details-title">

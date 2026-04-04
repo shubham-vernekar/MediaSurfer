@@ -177,10 +177,25 @@ class VideoQuerySet(models.QuerySet):
             elif query.startswith('"') and query.endswith('"'):
                 qs = qs.filter(Q(title__icontains=query[1:-1]))
             else:
+                # search_query = SearchQuery(query)
+                # search_rank = SearchRank(F("search_vector"), search_query)
+                # title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+                # qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
+                
                 search_query = SearchQuery(query)
                 search_rank = SearchRank(F("search_vector"), search_query)
                 title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
-                qs = qs.annotate(rank=search_rank, starts_with=title_match).filter(Q(search_vector=search_query)|Q(search_text__icontains=query)).order_by("-rank").order_by('-starts_with')  
+                search_text_filter = reduce(operator.and_, (Q(search_text__icontains=w) for w in query.split()))
+
+                qs = (
+                    qs.annotate(rank=search_rank, starts_with=title_match)
+                    .filter(
+                        Q(search_vector=search_query) |
+                        Q(title__icontains=query) |
+                        search_text_filter
+                    )
+                    .order_by('-starts_with', '-rank')
+                )
 
         if cast:
             and_operation = cast[-1] == "~"
@@ -504,7 +519,23 @@ class DebridVideoQuerySet(models.QuerySet):
             favourite = True
 
         if query:
-            qs = qs.filter(Q(search_text__icontains=query))
+            if query.startswith('"') and query.endswith('"'):
+                qs = qs.filter(Q(title__icontains=query[1:-1]))
+            else:
+                search_query = SearchQuery(query)
+                search_rank = SearchRank(F("search_vector"), search_query)
+                title_match = ExpressionWrapper(Q(title__istartswith=query), output_field=BooleanField())
+                search_text_filter = reduce(operator.and_, (Q(search_text__icontains=w) for w in query.split()))
+
+                qs = (
+                    qs.annotate(rank=search_rank, starts_with=title_match)
+                    .filter(
+                        Q(search_vector=search_query) |
+                        Q(title__icontains=query) |
+                        search_text_filter
+                    )
+                    .order_by('-starts_with', '-rank')
+                )
 
         if parent:
             qs = qs.filter(Q(parent__hash=parent))
@@ -520,7 +551,10 @@ class DebridVideoQuerySet(models.QuerySet):
                 sort_by = "?"
             
             try:
-                qs = qs.order_by(sort_by)
+                if sort_by.startswith('-'):
+                    qs = qs.order_by(F(sort_by[1:]).desc(nulls_last=True))
+                else:
+                    qs = qs.order_by(F(sort_by).asc(nulls_last=True))
             except (FieldError):
                 qs = self.none()
 
@@ -563,6 +597,7 @@ class DebridVideo(models.Model):
     poster = models.FileField(blank=True, null=True)
     debrid_link = models.CharField(max_length=1024, blank=True, null=True)
     extention = models.CharField(max_length=10, blank=True, null=True)
+    timeouts = models.IntegerField(default=0, blank=True, null=True)
     parent = models.ForeignKey(
         DebridFiles,
         on_delete=models.CASCADE,
@@ -570,6 +605,14 @@ class DebridVideo(models.Model):
         blank=True,
         related_name='videos'
     )
+
+    search_vector = SearchVectorField(null=True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
+
 
     objects = DebridVideoManager()
     all_objects = DefaultManager()

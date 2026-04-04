@@ -115,13 +115,13 @@ function DebridPage() {
     <div>
       <div>
         <div className="debrid-search-input-container">
-          <div className="debrid-search-title" onClick={() => window.open("/debrid/manager", '_blank').focus()}> 
+          <div className="debrid-search-title" onClick={() => window.open("/debrid/manager").focus()}> 
             DEBRID MANAGER
           </div>
           <div className="debrid-input-container">
             <div className="debrid-input-box">
               <div>
-                <div className="debrid-add-page" onClick={() => window.open("/debrid/add", '_blank').focus()}>
+                <div className="debrid-add-page" onClick={() => window.open("/debrid/add").focus()}>
                   Add Video
                 </div>
               </div>
@@ -243,7 +243,7 @@ function DebridPage() {
             badge={data["badge"]}
             watchTime={data["watch_time"]}
             size={data["size"]}
-            url={data["url"]}
+            debrid_link={data["debrid_link"]}
             extention={data["extention"]}
             onDelete={handleDeleteVideo}
           />

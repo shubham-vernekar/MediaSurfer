@@ -100,6 +100,7 @@ class DebridFiles(models.Model):
     task_id = models.CharField(max_length=40, blank=True, null=True)
     search_text = models.CharField(max_length=4096, blank=True, null=True)
     in_debrid = models.BooleanField(default=True)
+    favourite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
