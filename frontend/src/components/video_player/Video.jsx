@@ -3,6 +3,7 @@ import "../../../static/css/video_player/Video.css";
 function Video(props) {
   return (
     <video ref={props.videoRef}
+      preload="auto"
       src={props.url}
       sub={props.subtitle}
       sprite={props.sprite}
