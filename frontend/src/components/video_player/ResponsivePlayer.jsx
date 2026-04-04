@@ -369,6 +369,16 @@ function ResponsivePlayer(props) {
     }
   };
 
+const handleProgress = () => {
+  const video = videoRef.current;
+  if (video.buffered.length > 0) {
+    const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+    const bufferedPercent = bufferedEnd / video.duration;
+    timelineContainerRef.current.style.setProperty('--buffered-position', bufferedPercent);
+  }
+};
+
+
   const loadedData = () => {
     videoRef.current.volume = props.initialVolume;
     volumeSliderRef.current.style.background = "linear-gradient(90deg, #3ae23a "+props.initialVolume*100+"%, #fff "+props.initialVolume*100+"%)"
@@ -689,6 +699,7 @@ function ResponsivePlayer(props) {
         videoMouseDown={videoMouseDown}
         videoMouseUp={videoMouseUp}
         handleRightClick={handleRightClick}
+        onProgress={handleProgress}
       ></Video>
     </div>
   );
