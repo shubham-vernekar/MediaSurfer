@@ -18,6 +18,7 @@ function Video(props) {
       onMouseDown={props.videoMouseDown}
       onMouseUp={props.videoMouseUp}
       onContextMenu={props.handleRightClick}
+      onProgress={props.onProgress}
       className="video-player"
     >
       <track kind="captions" srcLang="en" src={props.subtitle}></track>

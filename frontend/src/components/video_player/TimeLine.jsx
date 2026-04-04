@@ -13,6 +13,7 @@ function TimeLine(props) {
     <div className="timeline-container" ref={props.timelineContainerRef}>
       <div className="timeline">
         {props.sprite && (<div className="preview-img" ref={props.previewImgRef} style={previewImageStyle}></div>)}
+        <div className="buffered-bar"></div>
         <div className="thumb-indicator"></div>
       </div>
     </div>

@@ -81,3 +81,12 @@
     border: 2px solid white;
     display: none;
   }
+
+.timeline .buffered-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--buffered-position, 0) * 100%);
+  background-color: rgba(255, 255, 255, 0.3);
+}
