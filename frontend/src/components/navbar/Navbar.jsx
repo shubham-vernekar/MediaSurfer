@@ -2,6 +2,7 @@ import "../../../static/css/navbar/Navbar.css";
 import SearchRecommendations from "./SearchRecommendations";
 import AlertResults from "./AlertResults";
 import LogsPanel from "./LogsPanel";
+import DebridAddURLBox from "../debrid/DebridAddURLBox"
 import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
@@ -15,6 +16,7 @@ function Navbar(props) {
   const [showAlertMsg, SetShowAlertMsg] = useState(false);
   const [showAlertDetails, SetShowAlertDetails] = useState(false);
   const [isScanning, SetIsScanning] = useState(false);
+  const [showAddVideo, SetShowAddVideo] = useState(false);
   const [videoCount, SetVideoCount] = useState(0);
   const [watchTime, SetWatchTime] = useState(0);
   const [totalDuration, SetTotalDuration] = useState(0);
@@ -215,6 +217,16 @@ function Navbar(props) {
           <a href="/admin" target="_blank" className="navbar-btn">
             <img src="/static/images/admin.svg" alt="" />
           </a>
+          <div className="add-debrid-video-navbar-container">
+            <div className="navbar-btn" onClick={() => SetShowAddVideo(!showAddVideo)}>
+              <img src="/static/images/add-video.svg" alt="" />
+            </div>
+            {showAddVideo && (
+              <div className="add-debrid-video-navbar">
+                <DebridAddURLBox />
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="navbar-search-box">

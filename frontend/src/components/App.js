@@ -14,6 +14,7 @@ import DebridPage from "./pages/DebridPage";
 import DebridManagerPage from "./pages/DebridManagerPage";
 import DebridPlayerPage from "./pages/DebridPlayerPage";
 import DebridAddVideoPage from "./pages/DebridAddVideoPage";
+import ScrpListPage from "./pages/ScrpListPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/update" element={<UpdatePage />} />
           <Route path="/custom" element={<CustomPage />} />
           <Route path="/scrp" element={<ScrpPage />} />
+          <Route path="/scrp/list" element={<ScrpListPage />} />
           <Route path="/debrid" element={<DebridPage />} />
           <Route path="/debrid/manager" element={<DebridManagerPage />} />
           <Route path="/debrid/player" element={<DebridPlayerPage />} />

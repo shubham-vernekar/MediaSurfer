@@ -51,7 +51,7 @@
 .scrp-details-main{
     display: flex;
     justify-content: space-between;
-    width: 65%;
+    width: 75%;
     font-size: 22px;
     align-items: center;
 }
@@ -137,3 +137,22 @@
 .scrp-gl-icn{
     cursor: pointer;
 }
+
+.scrp-subs-result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.scrp-subs-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.scrp-subs-status.ok  { color: #00a752; }
+.scrp-subs-status.err { color: #e05252; }
+
+.scrp-subs-title { color: #ccc; }

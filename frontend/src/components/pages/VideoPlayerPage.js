@@ -339,18 +339,33 @@ function VideoPlayerPage() {
     });
   };
 
-  const openGator = (movie_id, subtitle_url) => {
+  const openGator = (movie_id, subtitle_url, vidid) => {
     SetLoading(true)
     axios({
         method: "get",
         url: "/api/gator",
         params: {
-          "movie_id": movie_id
+          "movie_id": movie_id,
+          "subs": subtitle_url,
         },
       }).then((response) => {
         SetLoading(false)
-        if (response.data.url){
-          window.location.replace("/debrid/player?url=" + response.data.url  +"&subs=" + subtitle_url);
+
+        if (response.data.download_link){
+          const params = new URLSearchParams({
+            url: response.data.download_link
+          });
+
+          if (response.data.subs) {
+            params.append("subs", response.data.subs);
+          }
+
+          if (response.data.title) {
+            params.append("title", response.data.title);
+          }
+          params.append("id", vidid);
+
+          window.location.replace(`/debrid/player?${params.toString()}`);
         }else{
           console.log(response.data);
         }
@@ -466,7 +481,7 @@ function VideoPlayerPage() {
                 <img src="/static/images/binocular.svg"  width="30px" height="30px" ></img>
                 <span className='video-player-button-text'>Open Trailer</span>
               </div>)}
-              {videoData.movie_id && (<div className='video-player-button' onClick={() => {openGator(videoData.movie_id, videoData.subtitle_url)}}>  
+              {videoData.movie_id && (<div className='video-player-button' onClick={() => {openGator(videoData.movie_id, videoData.subtitle_url, videoData.id)}}>  
                 <img src="/static/images/television.png"  width="30px" height="30px" ></img>
                 <span className='video-player-button-text'>Play Gator</span>
               </div>)}

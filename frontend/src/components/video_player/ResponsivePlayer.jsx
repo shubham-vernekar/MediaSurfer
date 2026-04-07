@@ -2,6 +2,7 @@ import { React, useState, useRef, useEffect } from "react";
 import "../../../static/css/video_player/ResponsivePlayer.css";
 import Video from "./Video";
 import ClosedCaptions from "./ClosedCaptions";
+import axios from "axios";
 import VideoControls from "./VideoControls";
 
 function ResponsivePlayer(props) {
@@ -389,12 +390,18 @@ const handleProgress = () => {
     );
 
     let subtitle_file = videoRef.current.getAttribute("sub");
-    fetch(subtitle_file)
-      .then((response) => response.text())
-      .then((data) => {
-        let subtitle_data = parse_subs(data);
-        videoRef.current.subtitle_data = subtitle_data;
-      });
+
+    axios.get("/api/get-subs", {
+      params: { url: subtitle_file },
+      responseType: "text"
+    })
+    .then((response) => {
+      let subtitle_data = parse_subs(response.data);
+      videoRef.current.subtitle_data = subtitle_data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
     let sprite_file = videoRef.current.getAttribute("sprite_pos_file");
     fetch(sprite_file)

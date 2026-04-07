@@ -1,65 +1,60 @@
-.scrp-poster{
-    width: 100%;
-    height: 78%;
-    cursor: pointer;
-    position: relative;
-}
-
-.scrp-poster-img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 7px 7px 0px 0px;
-    z-index: -10;
+.scrp-adverts-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
+    padding-top: 0.6em;
+    margin-left: 5%;
+    width: 92%;
+    margin-bottom: 3em;
+    font-size: 0.9em;
+    align-content: flex-start;
 }
 
 .scrp-card{
-    width: 170px;
-    height: 272px;
-    border-radius: 8px;
-    border-color: #a8a8a8; 
-    border-style: solid;
-    border-width: 1px;
-    transition: 0.6s ease-in-out;
-    background-color: #141414; 
+    width: 50em;
+    height: 42em;
+    overflow: hidden;
+    background: #2e2e2e;
+    border-radius: 1em;
 }
 
-.scrp-details{
-    display: grid;
-    height: 22%;
-    align-content: space-evenly;
+.scrp-btn-span-grey{
+    background: #2e2e2e!important;
 }
 
-.scrp-cnt-details{
+.scrp-btn-span-grey:hover{
+    background: transparent!important;
+}
+
+.scrp-card-img img{
+    width: 100%;
+    height: 100%;
+}
+
+.scrp-card-details-main{
     display: flex;
     align-items: center;
-    width: 50px;
     justify-content: space-evenly;
 }
 
-.scrp-title{
+.scrp-card-details-container{
     display: flex;
+    flex-direction: column;
+    padding: 1em;
+    /* row-gap: 1em; */
+    height: 20%;
     justify-content: center;
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: capitalize;
-    grid-column: 1/-1;
-    text-align: center;
 }
 
-.scrp-cnt-details-box{
-    display: flex;
-    justify-content: space-evenly;
+.scrp-card-img {
+    width: 100%;
+    height: 80%;
 }
 
-.scrp-cnt-details-box img{
-    width: 20px;
-}
-
-.scrp-done-icn{
-    width: 50px;
-    position: absolute;
-    z-index: 10;
-    left: 35%;
-    top: 72%;
+.scrp-card-title-main {
+    padding: 0 1em;
+    font-size: 1.1em;
 }

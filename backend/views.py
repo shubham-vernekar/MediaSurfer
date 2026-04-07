@@ -26,7 +26,7 @@ from django.core.management import call_command
 from file_read_backwards import FileReadBackwards
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from collections import defaultdict
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import shortuuid
 from urllib.parse import urlparse
 import requests
@@ -491,6 +491,96 @@ class GetWebScrData(generics.GenericAPIView):
             return Response({
                     "dirs": results
                 })
+        
+class GetWebScrDataList(generics.GenericAPIView):
+
+    def __init__(self):
+        self.labels_data = json.loads(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "management/commands/labels.json"), 'r').read().lower())
+        self.external_sites = self.labels_data.get("external_sites")
+
+        all_thumbs_files = self.get_all_files(self.labels_data.get("tag_folders_thumb"), ["jpg", "jpeg", "png"])
+        self.done_bucket = defaultdict(list)
+        for i in all_thumbs_files:
+            if "\\done\\" in i.lower():
+                self.done_bucket["done"].append(i)
+
+        for tag_folder in self.labels_data.get("tag_folders"):
+            self.done_bucket["downloaded"] += self.get_all_files(tag_folder, ["mp4", "ts"]) 
+
+    def check_match(self, match, search_term):
+        for x in self.done_bucket["done"] + self.done_bucket["downloaded"]:
+            if match.lower() in x.lower():
+                return True
+        return False
+    
+    def get_all_files(self, root, extention):
+        fileList=[]
+        for path, _, files in os.walk(root):
+            for name in files:
+                name = os.path.join(path, name)
+                if name[name.rfind(".")+1:].lower() in extention:
+                    fileList.append(name)
+        return fileList
+    
+    def get(self, request):
+        try:
+            user_data_object = UserLevelData.objects.latest('websrc_dir')
+        except UserLevelData.DoesNotExist:
+            user_data_object = UserLevelData()
+
+        key_dir = request.GET.get('key', False)
+        limit = int(request.GET.get('limit', 0))
+        page_no = int(request.GET.get('page_no', 1))
+        response = {}
+
+        results = []
+        if key_dir:
+            if os.path.exists(os.path.join(user_data_object.websrc_dir, key_dir, "done")):
+                done_count = len(list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir, "done"))))
+            else:
+                done_count = 0
+
+            scr_data = list(os.listdir(os.path.join(user_data_object.websrc_dir, key_dir)))
+            scr_data = [x for x in scr_data if x.lower()!="done"][::-1]
+            total_count = len(scr_data)
+            summary = f"{done_count} Done and {total_count} Pending - {round((done_count)*100/(total_count + done_count), 2)} %"
+
+            if limit > 0:
+                start = (page_no - 1) * limit
+                end = start + limit
+                paginated_data = scr_data[start:end]
+            else:
+                paginated_data = scr_data
+
+            for poster_number, scr_pending in enumerate(paginated_data, start=(page_no - 1) * limit + 1 if limit > 0 else 1):
+                try:
+                    release_date = datetime.datetime.strptime(apply_regex(r"([\d]{4}-[\d]{2}-[\d]{2})", scr_pending), "%Y-%m-%d").date().strftime("%d %B %Y")
+                except:
+                    release_date = ""
+
+                movie_id = apply_regex(r"([a-zA-Z]{3,5}-\d{3,4})", scr_pending)
+                is_duplicate = self.check_match(movie_id, key_dir)
+
+                results.append({
+                    "title": os.path.splitext(scr_pending)[0],
+                    "movie_id": movie_id,
+                    "release_date": release_date,
+                    "count": poster_number,
+                    "video": self.external_sites.get("j_vid", "").replace("{key}", movie_id),
+                    "sub": self.external_sites.get("j_sub", "").replace("{key}", movie_id),
+                    "trailer": self.external_sites.get("j_trailer", "").replace("{key}", movie_id),
+                    "file_path": os.path.join(user_data_object.websrc_dir, key_dir, scr_pending),
+                    "is_duplicate": is_duplicate,
+                    "url": convert_url(os.path.join(user_data_object.websrc_dir, key_dir, scr_pending).replace("\\","/"))
+                })
+
+        response["results"] = results
+        response["summary"] = summary
+        response["done_count"] = done_count
+        response["total_count"] = total_count
+        response["has_more"] = (page_no * limit) < total_count if limit > 0 else False
+
+        return JsonResponse(response)
 
 class GetDebridDetails(generics.GenericAPIView):
 
@@ -635,7 +725,6 @@ class ListRealDebrid(generics.GenericAPIView):
             "has_more": len(all_filtered) > end
         })
 
-
 class DebridFilesImportAPIView(generics.GenericAPIView):
 
     def post(self, request):
@@ -663,14 +752,14 @@ class DebridFilesCreateAPIView(generics.ListCreateAPIView):
         if query:
             qs = qs.filter(Q(search_text__icontains=query))
 
-        favourites_qs = qs.filter(favourite=True).order_by('?')
-        rest_qs = qs.filter(favourite=False).order_by('-added')
-        return list(favourites_qs) + list(rest_qs)
+        favourites_qs = qs.filter(favourite=True, is_imported=True).order_by('?')
+        rest_qs = qs.filter(favourite=False, is_imported=True).order_by('-added')
+        to_import = qs.filter(is_imported=False).order_by('-added')
+        return list(to_import) + list(favourites_qs) + list(rest_qs)
     
     def perform_create(self, serializer):
         id = shortuuid.ShortUUID().random(length=8)
         serializer.save(id=id)
-
 
 class DebridFilesDeleteAPIView(generics.GenericAPIView):
     def post(self, request):
@@ -705,7 +794,6 @@ def check_status(request, task_id):
 
     return JsonResponse(response)
 
-
 class OpenPlayerDebridView(generics.GenericAPIView):
 
     def download_subtitle(self, subs_url):
@@ -718,8 +806,9 @@ class OpenPlayerDebridView(generics.GenericAPIView):
     def get(self, request):
         video_url = request.GET.get("url")
         player = request.GET.get("player", "pot")
-        subs = request.GET.get("subs", "")
+        subs = "" if (s := request.GET.get("subs", "")) == "null" else s
         debrid_link = request.GET.get("debrid_link", "")
+
         if debrid_link:
             video_url = unrestrict_link(debrid_link)
 
@@ -740,23 +829,28 @@ class OpenPlayerDebridView(generics.GenericAPIView):
         else:
             return Response({"url": video_url})
 
-
 class GetGatorView(generics.GenericAPIView):
     def get(self, request):
         movie_id = request.GET.get('movie_id')
+        subs = request.GET.get('subs')
 
         if not movie_id:
             return JsonResponse({'error': 'movie_id is required'}, status=400)
 
         out = StringIO()
-        call_command('gator', movie_id=movie_id, stdout=out)
-        download_link = out.getvalue().strip()
+        if subs:
+            call_command('gator', movie_id=movie_id, stdout=out)
+        else:
+            call_command('gator', movie_id=movie_id, subtitles="yes", stdout=out)
 
-        if not download_link:
+        gator_data = json.loads(out.getvalue().strip())
+        if subs:
+            gator_data["subs"] = subs
+
+        if not gator_data:
             return JsonResponse({'error': 'No link found'}, status=404)
 
-        return JsonResponse({'url': download_link})
-
+        return JsonResponse(gator_data)
 
 class DebridFilesUpdateAPIView(generics.UpdateAPIView):
     queryset = DebridFiles.objects.all()
@@ -765,3 +859,30 @@ class DebridFilesUpdateAPIView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         return super().perform_update(serializer)
+
+class GetSubtitlesView(generics.GenericAPIView):
+    def get(self, request):
+        url = request.GET.get('url')
+        if not url:
+            return HttpResponse("Missing URL", status=400)
+        try:
+            response = requests.get(url)
+            return HttpResponse(response.text, content_type="text/plain")
+        except Exception as e:
+            return HttpResponse(str(e), status=500)
+
+class DownloadSubtitlesView(generics.GenericAPIView):
+    def post(self, request):
+        movie_id = request.data.get("movie_id")
+        if not movie_id:
+            return JsonResponse({'error': 'movie_id is required'}, status=400)
+
+        out = StringIO()
+        call_command('save_subs', movie_id=movie_id, stdout=out)
+
+        results = json.loads(out.getvalue().strip())
+
+        if not results:
+            return JsonResponse({'error': 'No subs found'}, status=404)
+
+        return JsonResponse(results, safe=False)

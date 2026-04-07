@@ -25,6 +25,9 @@ urlpatterns = [
     path('debrid-files/delete', views.DebridFilesDeleteAPIView.as_view(), name='debrid-files-delete'),
     path('scan/logs', views.GetScanLogs.as_view(), name='get-scan-logs'),
     path('webscr', views.GetWebScrData.as_view(), name='get-webscr'),
+    path('webscr/list', views.GetWebScrDataList.as_view(), name='list-webscr'),
     path('task-status/<str:task_id>/', views.check_status),
     path('gator', views.GetGatorView.as_view(), name='get-gator-link'),
+    path('get-subs', views.GetSubtitlesView.as_view(), name='get-subs'),
+    path('dl-subs', views.DownloadSubtitlesView.as_view(), name='dl-subs'),
 ]

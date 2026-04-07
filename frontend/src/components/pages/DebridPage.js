@@ -115,13 +115,13 @@ function DebridPage() {
     <div>
       <div>
         <div className="debrid-search-input-container">
-          <div className="debrid-search-title" onClick={() => window.open("/debrid/manager").focus()}> 
+          <div className="debrid-search-title" onClick={() => window.location.replace("/debrid/manager")}> 
             DEBRID MANAGER
           </div>
           <div className="debrid-input-container">
             <div className="debrid-input-box">
               <div>
-                <div className="debrid-add-page" onClick={() => window.open("/debrid/add").focus()}>
+                <div className="debrid-add-page" onClick={() => window.location.replace("/debrid/add")}>
                   Add Video
                 </div>
               </div>

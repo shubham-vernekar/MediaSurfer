@@ -39,6 +39,7 @@ urlpatterns = [
     path('debrid/add', include('frontend.urls')),
     path('custom', include('frontend.urls')),
     path('scrp', include('frontend.urls')),
+    path('scrp/list', include('frontend.urls')),
     path('login/', include('pin_passcode.urls')),
     path("favicon.ico",RedirectView.as_view(url=staticfiles_storage.url("/images/favicon.ico")),),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

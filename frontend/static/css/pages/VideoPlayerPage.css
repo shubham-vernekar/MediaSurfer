@@ -85,9 +85,8 @@
 
 .video-player-details{
     display: grid;
-    padding-left: 4%;
+    padding: 1.2em 3rem 0 3rem;
     row-gap: 21px;
-    padding-top: 23px;
     margin-bottom: 50px;
 }
 

@@ -19,9 +19,12 @@ function DebridPlayerPage() {
   const [videoID, SetVideoID] = useState(searchParams.get("id") || "");
   const [inputURL, SetInputURL] = useState(searchParams.get("url") || "");
   const [subtitleURL, SetSubtitleURL] = useState(searchParams.get("subs") || "");
+  const [videoTitle, SetVideoTitle] = useState(searchParams.get("title") || "");
+  const [callbackID, SetCallbackID] = useState(searchParams.get("cid") || "");
   
 
   const [volume, SetVolume] = useState(0);
+  const [progress, SetProgress] = useState(0);
   const [clickToSkip, SetClickToSkip] = useState(false);
   const [videoData, SetVideoData] = useState({});
   const [videoFound, SetVideoFound] = useState(true);
@@ -30,9 +33,12 @@ function DebridPlayerPage() {
   const [loading, SetLoading] = useState(true);
   const [favorite, SetFavorite] = useState(false);
   const [relatedVideos, SetRelatedVideos] = useState([]);
+  const [callbackData, SetCallbackData] = useState([]);
   
   const [views, SetViews] = useState(0);
   const navigate = useNavigate();
+
+  const VideoDetailsRef = useRef(null);
 
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
@@ -67,9 +73,11 @@ function DebridPlayerPage() {
       }).then((response) => {
         // console.log(response.data);
         
-        SetVideoData(response.data);
+        SetProgress(response.data.progress)
+        SetVideoData(response.data)
         SetWatchTime(response.data.watch_time)
         SetRelatedVideos(response.data.related_videos)
+        SetVideoTitle(response.data.title)
         SetVideoSupported(SUPPORTED_VIDEO_EXTENSIONS.includes(response.data.extention?.toLowerCase()))
         document.title = response.data.title;
         SetVideoFound(true)
@@ -105,19 +113,36 @@ function DebridPlayerPage() {
         },
       }).then((response) => {
         if (response.data.error){
-          console.log(response.data.error);
+          // console.log(response.data.error);
+          SetVideoFound(false)
+          SetLoading(false)
         }else{
           // console.log(response.data)
+          if (!videoTitle){
+            SetVideoTitle(response.data.title)
+            document.title = response.data.title;
+          }else{
+            document.title = videoTitle;
+          }
 
           SetVideoData(response.data);
-          SetWatchTime(response.data.watch_time)
           SetRelatedVideos(response.data.related_videos)
-          document.title = response.data.title;
           SetVideoSupported(SUPPORTED_VIDEO_EXTENSIONS.includes(response.data.extention?.toLowerCase()))
           SetVideoFound(true)
           SetLoading(false)
         }
       });
+    }
+
+    if(callbackID){
+      axios({
+        method: "get",
+        url: "/api/videos/" + callbackID,
+      }).then((response) => {
+        SetCallbackData(response.data);
+        SetProgress(response.data.progress)
+        SetWatchTime(response.data.watch_time)
+      })
     }
 
   }, []);
@@ -167,13 +192,21 @@ function DebridPlayerPage() {
     }
 
     if (videoID){
-      axios({
+      sendProgressUpdate("/api/videos/debrid/" + videoData.id + "/update", videoData, progress, watchTime)
+    }else if (callbackID){
+      sendProgressUpdate("/api/videos/" + callbackID + "/update", callbackData, progress, watchTime)
+    }
+  }
+
+
+  const sendProgressUpdate = (url, data, progress, watchTime) => {
+    axios({
         method: "put",
-        url: "/api/videos/debrid/" + videoData.id + "/update",
+        url: url,
         data: {
-          id: videoData.id,
-          title: videoData.title,
-          url: videoData.url,
+          id: data.id,
+          title: data.title,
+          url: data.url,
           progress: progress,
           watch_time: watchTime,
         },
@@ -183,10 +216,24 @@ function DebridPlayerPage() {
             'X-CSRFToken': getCookie('csrftoken')
           },
       }).then((response) => {
+        // console.log(url, data, progress, watchTime, response.data.watch_time);
+        
         SetWatchTime(response.data.watch_time)
       });
-    }
   }
+
+  useEffect(() => {
+      const el = VideoDetailsRef.current;
+      if (!el) return;
+  
+      let fontSize = 32; // starting font size in px
+      el.style.fontSize = fontSize + "px";
+  
+      while (el.scrollWidth > el.offsetWidth && fontSize > 10) {
+          fontSize--;
+          el.style.fontSize = fontSize + "px";
+      }
+    }, [videoTitle]);
 
   return (
       <div>
@@ -197,11 +244,11 @@ function DebridPlayerPage() {
                 ? (
                   <ResponsivePlayer
                     url={videoData.url}
-                    title={videoData.title}
+                    title={videoTitle}
                     subtitle={subtitleURL}
                     poster={videoData.poster}
-                    progress={videoData.progress}
-                    watchTime={videoData.watch_time}
+                    progress={progress}
+                    watchTime={watchTime}
                     updateProgressCallback={updateProgress}
                     initialVolume={volume}
                     clickToSkip={clickToSkip}
@@ -223,7 +270,7 @@ function DebridPlayerPage() {
               
               <div className="video-player-details">
                 <div className={`video-player-title  ${favorite ? "fav-text" : ""}`}>
-                  <h1>{videoData.title}</h1>
+                  <h1 ref={VideoDetailsRef}>{videoTitle}</h1>
                 </div>
                 <div className="video-player-details-pane">
                   <div style={{"cursor": "pointer"}} onClick={() => window.open("/admin/videos/debridvideo/"+ videoData.id +"/change/", '_blank').focus()}> 

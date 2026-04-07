@@ -1,5 +1,5 @@
 import { React, useEffect, useState, useRef } from "react";
-import ScrpCard from "../Scrper/ScrpCard";
+import ScrpCastCard from "../Scrper/ScrpCastCard";
 import Spinner from "../utils/Spinner";
 import axios from "axios";
 import "../../../static/css/pages/ScrpPage.css";
@@ -10,6 +10,7 @@ function ScrpPage() {
   const [scrpImgData, SetScrpImgData] = useState([]);
   const [reverse, SetReverse] = useState(true);
   const [loading, SetLoading] = useState(false);
+  const [subsResult, SetSubsResult] = useState([]);
   let [searchParams, setSearchParams] = useSearchParams();
   let key = searchParams.get("key") || false;
   let index = searchParams.get("index") || 0;
@@ -99,13 +100,58 @@ function ScrpPage() {
     navigator.clipboard.writeText(movie_id);
   };
 
+  const openGator = (movie_id) => {
+    SetLoading(true)
+    axios({
+        method: "get",
+        url: "/api/gator",
+        params: {
+          "movie_id": movie_id
+        },
+      }).then((response) => {
+        SetLoading(false)
+        
+        if (response.data.download_link){
+          const params = new URLSearchParams({
+            url: response.data.download_link
+          });
+
+          if (response.data.subs) {
+            params.append("subs", response.data.subs);
+          }
+
+          if (response.data.title) {
+            params.append("title", response.data.title);
+          }
+          window.open(`/debrid/player?${params.toString()}`, '_blank');
+        }else{
+          console.log(response.data);
+        }
+      });
+  };
+
+  const saveSubs = (movie_id) => {
+    SetLoading(true)
+    SetSubsResult([]);
+    axios({
+        method: "post",
+        url: "/api/dl-subs",
+        data: {
+          "movie_id": movie_id
+        },
+      }).then((response) => {
+        SetLoading(false)
+        SetSubsResult(response.data);
+      });
+  };
+
   return (
     <div className="scrp-page-container" ref={mainRef}>
       {scrpDirData.length > 0 && !key && (
         <div className="scrp-cast-container">
           {scrpDirData.map((data, i) => (
             <div key={i}>
-              <ScrpCard
+              <ScrpCastCard
                 title={data.title}
                 pending={data.pending}
                 done={data.done}
@@ -188,14 +234,29 @@ function ScrpPage() {
                 Video{" "}
               </a>
             </div>
-            <div onClick={() => handleOnClickOpenFolder(scrpImgData.file_path)}>
-              <img
-                className="scrp-gl-icn"
-                src="/static/images/folder.svg"
-                alt=""
-              />
+            <div className='video-player-button' onClick={() => handleOnClickOpenFolder(scrpImgData.file_path)}>  
+              <img src="/static/images/folder.svg" width="30px" height="30px" ></img>
+            </div>
+            <div className='video-player-button' onClick={() => {openGator(scrpImgData.movie_id)}}>  
+              <img src="/static/images/television.png"  width="30px" height="30px" ></img>
+            </div>
+            <div className='video-player-button' onClick={() => {saveSubs(scrpImgData.movie_id)}}>  
+              <img src="/static/images/diskette.png"  width="26px" height="26px" ></img>
             </div>
           </div>
+
+          {subsResult.length > 0 && (
+            <div className="scrp-subs-result">
+              {subsResult.map((sub, i) => (
+                <div key={i} className="scrp-subs-item">
+                  <span className={`scrp-subs-status ${sub.status === "Success" ? "ok" : "err"}`}>
+                    {sub.status}
+                  </span>
+                  <span className="scrp-subs-title">{sub.title}</span>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div
             className="scrp-left scrp-move-btn"
@@ -213,6 +274,7 @@ function ScrpPage() {
           ></div>
         </div>
       )}
+
       {loading && (
         <Spinner 
           visible = {loading}

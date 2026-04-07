@@ -1,0 +1,27 @@
+.scrp-header-container{
+    display: flex;
+    flex-direction: column;
+    padding: 3vh 2vw 3vh 2vw;
+    align-items: center;
+}
+
+.scrp-page-title{
+    font-size: 3em;
+}
+
+.scrp-page-summary{
+    font-size: 1.5em;
+}
+
+.scrp-list-subs-result {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.scrp-header-container{
+    cursor: pointer;
+}

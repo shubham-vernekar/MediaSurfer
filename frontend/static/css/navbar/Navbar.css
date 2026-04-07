@@ -202,6 +202,7 @@ a{
 .navbar-populate svg{
 	height: 25px;
 	width: 25px;
+	display: block;
 }
 
 .navbar-populate svg:hover{
@@ -253,6 +254,11 @@ a{
 	transform:scale(1.025);
 }
 
+.scan-alert-container {
+    display: flex;
+    align-items: center;
+}
+
 .alert-text-color{
 	color: #ff6359;
 }
@@ -269,15 +275,21 @@ a{
 }
 
 .scanner-container{
-	display: flex;
-	margin-right: 30px;
-	column-gap: 13px;
+    display: flex;
+    margin-right: 30px;
+    align-items: center;
+    column-gap: 13px;
 }
 
 .navbar-btn img{
 	width: 23px;
 	cursor: pointer;
 	margin-right: 5px;
+}
+
+.navbar-btn {
+    display: flex;
+    align-items: center;
 }
 
 .navbar-btn:hover{
@@ -312,4 +324,15 @@ a{
 .video-summary-container:hover{
 	cursor: pointer;
 	opacity: 1;
+}
+
+.add-debrid-video-navbar {
+    position: absolute;
+    top: 183%;
+    right: -10.4vw;
+	z-index: 10;
+}
+
+.add-debrid-video-navbar-container{
+	position: relative;
 }
